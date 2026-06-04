@@ -1,0 +1,6 @@
+# Ignore directory used by Visual Studio for project generation
+.vs
+out
+# Ignore directory used by Visual Studio Code for project generation
+.vscode
+build
