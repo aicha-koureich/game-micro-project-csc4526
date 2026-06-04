@@ -1,0 +1,5 @@
+if(EXISTS "C:/Users/alexa/CSC4526/mini-projet/out/build/x64-Debug/src/test/unitTests[1]_tests.cmake")
+  include("C:/Users/alexa/CSC4526/mini-projet/out/build/x64-Debug/src/test/unitTests[1]_tests.cmake")
+else()
+  add_test(unitTests_NOT_BUILT unitTests_NOT_BUILT)
+endif()
