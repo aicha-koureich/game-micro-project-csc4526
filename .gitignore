@@ -4,3 +4,4 @@ out
 # Ignore directory used by Visual Studio Code for project generation
 .vscode
 build
+out/

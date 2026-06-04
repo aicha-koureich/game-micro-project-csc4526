@@ -1,6 +1,0 @@
-# This is a generated file and its contents are an internal implementation detail.
-# The update step will be re-executed if anything in this file changes.
-# No other meaning or use of this file is supported.
-
-command=C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/bin/cmake.exe;-DFREETYPE_DIR=C:/Users/alexa/CSC4526/mini-projet/out/build/x64-Debug/_deps/freetype-src;-P;C:/Users/alexa/CSC4526/mini-projet/out/build/x64-Debug/_deps/sfml-src/tools/freetype/PatchFreetype.cmake
-work_dir=C:/Users/alexa/CSC4526/mini-projet/out/build/x64-Debug/_deps/freetype-src
