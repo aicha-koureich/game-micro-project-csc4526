@@ -43,3 +43,4 @@ add_subdirectory(src/test)
 
 option(SFML_BUILD_AUDIO "Build audio" OFF)
 option(SFML_BUILD_NETWORK "Build network" OFF)
+
