@@ -7,7 +7,7 @@
 add_executable(unitTests
         RoundTargetTest.cpp
 )
-target_link_libraries(unitTests GTest::gtest_main lib_core pugixml sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
+target_link_libraries(unitTests GTest::gtest_main lib_core sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
 
 # The next line enables CMake’s test runner to discover the tests included in the binary,
 # using the GoogleTest CMake module.
