@@ -8,8 +8,10 @@ class Enemy : public Entity {
         //std::pair < std::unique_ptr<Weapon>, std::unique_ptr<Weapon>>
 
 	public:
+        Enemy(int healthPoints);
+         ~Enemy() override = default;
         const AttackType getSensitivity();
-        void takeDamage(const Entity& attacker, int attackRes) override;
+        void takeDamage(int attackRes) override;
         void attack(const Entity& target, AttackType type) override;
         // std::pair < std::unique_ptr<Weapon>, std::unique_ptr<Weapon>> dropWeapons();
 };

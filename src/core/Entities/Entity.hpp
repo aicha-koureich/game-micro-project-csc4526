@@ -9,7 +9,7 @@ class Entity {
 
  public:
 
-  virtual void takeDamage(const Entity& attacker, int attackRes) = 0;
+  virtual void takeDamage(int attackRes) = 0;
   virtual void attack(const Entity& target, AttackType type) = 0;
   Entity(int hp) : healthPoints(hp) {}
   virtual ~Entity() = default;
