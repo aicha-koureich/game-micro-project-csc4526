@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "AttackType.hpp"
 #include "Entity.hpp"
 
@@ -12,6 +10,7 @@ class Player : public Entity {
   int noseSize;
   float speed;
   bool isBlocking;
+  
 
  public:
   void takeDamage(const Entity& attacker, AttackType type) override;
