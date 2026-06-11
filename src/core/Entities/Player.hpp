@@ -22,7 +22,6 @@ class Player : public Entity {
   ~Player() override = default;
   void takeDamage(int attackRes) override;
   void attack(const Entity& target, AttackType type) override;
-  float computeDamage() override;
   void setAttackType();
   AttackType getCurrentAttackType();
   Weapon* getCurrentWeapon();
