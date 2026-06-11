@@ -18,11 +18,14 @@ class Player : public Entity {
   unique_ptr<Weapon> currentWeapon;
 
  public:
-  void takeDamage(const Entity& attacker, int attackRes) override;
+  Player(int hp);
+  ~Player() override = default;
+  void takeDamage(int attackRes) override;
   void attack(const Entity& target, AttackType type) override;
   void setAttackType();
   AttackType getCurrentAttackType();
-  Player(int hp);
-  ~Player() override = default;
+  Weapon* getCurrentWeapon();
+
+
 };
 #endif
