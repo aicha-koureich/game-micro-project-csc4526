@@ -1,5 +1,6 @@
 #include "Enemy.hpp"
-//#include "Weapons/Weapon.h"
+#include "AttackType.hpp"
+#include "Weapons/Weapon.h"
 
 Enemy::Enemy(int healthPoints) { 
 	this.healthPoints = healthPoints; 
@@ -7,11 +8,12 @@ Enemy::Enemy(int healthPoints) {
 
 AttackType Enemy::getSensitivity() { return sensitivity; }
 
-void Enemy::takeDamage(int attackRes) {
+void Enemy::takeDamage(AttackType type, int attackRes) {
 	target.healthPoints -= attackRes;
 }
 
 void Enemy::attack(const Entity& target, AttackType type) {
+
 
 }
 

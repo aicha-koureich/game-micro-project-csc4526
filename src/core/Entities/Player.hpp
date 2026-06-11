@@ -18,8 +18,9 @@ class Player : public Entity {
   unique_ptr<Weapon> currentWeapon;
 
  public:
-  void takeDamage(const Entity& attacker, int attackRes) override;
+  void takeDamage(AttackType type, int attackRes) override;
   void attack(const Entity& target, AttackType type) override;
+  float computeDamage() override;
   void setAttackType();
   AttackType getCurrentAttackType();
   Player(int hp);
