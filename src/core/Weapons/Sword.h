@@ -9,7 +9,7 @@ class Sword : public Weapon {
 
 	public:
         explicit Sword(int damage);
-         int getEffect() const override;
+        int getEffect() const override;
         AttackType getType() const override;
 };
 

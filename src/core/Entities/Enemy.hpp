@@ -13,6 +13,7 @@ class Enemy : public Entity {
   AttackType getSensitivity() const;
   void takeDamage(int attackRes) override;
   void attack(const Entity& target, AttackType type) override;
+  void receiveAttack(int damage, AttackType type) override;
   // std::pair < std::unique_ptr<Weapon>, std::unique_ptr<Weapon>>
   // dropWeapons();
 };

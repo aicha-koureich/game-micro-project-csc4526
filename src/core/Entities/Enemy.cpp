@@ -7,8 +7,11 @@ Enemy::Enemy(int hp) : Entity(hp), sensitivity(AttackType::STRENGTH), enemyDamag
 
 AttackType Enemy::getSensitivity() const{ return sensitivity; }
 
-void Enemy::takeDamage(int attackRes) {
+void Enemy::receiveAttack(int trueDamage, AttackType) {
+
 }
+
+void Enemy::takeDamage(int attackRes) { healthPoints -= attackRes; }
 
 void Enemy::attack(const Entity& target, AttackType type) {
 

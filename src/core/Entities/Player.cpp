@@ -6,14 +6,21 @@ Player::Player(int hp) : Entity(hp), baseDamage(5), baseDefense(2), noseSize(0),
     
 }
 
+AttackType Player::getCurrentAttackType() { return currentAttackType; }
+void Player::setAttackType(AttackType type) { currentAttackType = type; }
 
-void Player::takeDamage(AttackType type, int attackRes){
+Weapon* Player::getCurrentWeapon() { return (Weapon*)currentWeapon; }
+
+void Player::receiveDamage(int trueDamage, AttackType type) {
 
 }
 
+void Player::takeDamage(int attackRes) { healthPoints -= attackRes; }
+
 void Player::attack(const Entity& target, AttackType type){
-    //int damages = this-> currentWeapon;
     //Calcul des dégâts que va faire le joueur
+    int baseDamage = baseDamage;
+
 
     
 }

@@ -9,7 +9,7 @@ using namespace std;
 
 class Player : public Entity {
  private:
-  AttackType currentAttack;
+  AttackType currentAttackType;
   int baseDamage;
   int baseDefense;
   int noseSize;
@@ -20,11 +20,14 @@ class Player : public Entity {
  public:
   Player(int hp);
   ~Player() override = default;
-  void takeDamage(int attackRes) override;
-  void attack(const Entity& target, AttackType type) override;
-  void setAttackType();
   AttackType getCurrentAttackType();
   Weapon* getCurrentWeapon();
+  void setAttackType(AttackType type);
+  void takeDamage(int attackRes) override;
+  void attack(const Entity& target, AttackType type) override;
+  void receiveAttack(int trueDamage, AttackType type) override;
+  
+
 
 
 };

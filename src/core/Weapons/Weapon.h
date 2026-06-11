@@ -1,10 +1,8 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-enum class AttackType {
-	Force,
-	Eloquence
-};
+#include "Weapons/Weapon.h"
+#include "AttackType.hpp"
 
 class Weapon {
 	public:
