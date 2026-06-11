@@ -1,3 +1,6 @@
+#ifndef ATTACKTYPE_HPP
+#define ATTACKTYPE_HPP
+
 #include "AttackType.hpp"
 
 class Entity {
@@ -5,9 +8,11 @@ class Entity {
   int healthPoints;
 
  public:
-  virtual void takeDamage(const Entity& attacker, AttackType type) = 0;
+  virtual void takeDamage(const Entity& attacker, int attackRes) = 0;
   virtual void attack(const Entity& target, AttackType type) = 0;
   Entity(int hp) : healthPoints(hp) {}
   virtual ~Entity() = default;
   int getHealthPoints() const { return healthPoints; }
 };
+//l
+#endif
