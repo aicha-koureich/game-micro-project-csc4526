@@ -7,7 +7,7 @@ Player::Player(int hp) : Entity(hp), baseDamage(5), baseDefense(2), noseSize(0),
 
 //m
 
-void Player::takeDamage(AttackType type, int attackRes){
+void Player::takeDamage(int attackRes){
 
 }
 
