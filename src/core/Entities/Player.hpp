@@ -24,7 +24,7 @@ class Player : public Entity {
   Weapon* getCurrentWeapon();
   void setAttackType(AttackType type);
   void takeDamage(int attackRes) override;
-  void attack(const Entity& target, AttackType type) override;
+  void attack(const Entity& target, AttackType playerAttack) override;
   void receiveAttack(int trueDamage, AttackType type) override;
   
 
