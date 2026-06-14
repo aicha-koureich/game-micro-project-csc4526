@@ -4,7 +4,8 @@
 #include <memory>
 #include <vector>
 #include "Entity.hpp"
-#include "Weapon.h"
+#include "Weapons/Weapon.h"
+#include "Item/Item.hpp"
 using namespace std;
 
 class Player : public Entity {
@@ -12,10 +13,9 @@ class Player : public Entity {
   int totalMoney;
   int noseSize;
   float speed;
-  int eloquenceEffect;
   Weapon* currentWeapon;
   vector<unique_ptr<Weapon>> weaponInventory;
-  //vector<std::unique_ptr<Items>> itemInventory;
+  vector<std::unique_ptr<Item>> itemInventory;
 
  public:
   Player(int hp);
@@ -24,14 +24,13 @@ class Player : public Entity {
   int attack(const Entity& target) override;
   void pickWeapon(size_t idx);
   void increaseNoseSize();
-  /*void useItem(size_t idx);
+  void useItem(size_t idx);
   void addItem(std::unique_ptr<Item>);
   const vector<std::unique_ptr<Item>>& getItemInventory() const{return itemInventory;}
-  */
   void addWeapon(std::unique_ptr<Weapon>);
   Weapon* getCurrentWeapon() const{ return currentWeapon;}
+  void setCurrentWeapon(Weapon* weapon){currentWeapon = weapon; };
   const vector<std::unique_ptr<Weapon>>& getWeaponInventory() const{ return weaponInventory;}
   int getTotalMoney() const{return totalMoney;}
-
 };
 #endif

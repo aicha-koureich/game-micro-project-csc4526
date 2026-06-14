@@ -1,7 +1,7 @@
-#ifndef ATTACKTYPE_HPP
-#define ATTACKTYPE_HPP
+#ifndef ENTITY_HPP
+#define ENTITY_HPP
 
-#include "AttackType.hpp"
+#define MAX_HEALTH_POINTS 100
 
 class Entity {
  protected:
@@ -14,6 +14,7 @@ class Entity {
   Entity(int hp) : healthPoints(hp) {}
   virtual ~Entity() = default;
   int getHealthPoints() const { return healthPoints; }
+  void setHealthPoints(int hp) {healthPoints = hp;}
 };
 
 #endif

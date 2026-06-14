@@ -7,7 +7,7 @@ class Feather : public Weapon {
  public:
   explicit Feather( WeaponType type, const std::string& name, int weaponEffect, int cost);
   ~Feather() override = default;
-  int attack(Entity&);
+  int attack(Entity&) override;
 }; 
 
 #endif

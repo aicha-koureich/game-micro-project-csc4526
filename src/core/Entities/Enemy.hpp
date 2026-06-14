@@ -1,4 +1,6 @@
-#include "AttackType.hpp"
+#ifndef ENEMY_HPP
+#define ENEMY_HPP
+
 #include "Entity.hpp"
 
 class Enemy : public Entity {
@@ -10,7 +12,8 @@ class Enemy : public Entity {
  public:
   Enemy(int hp);
   ~Enemy() override = default;
-  float getSensitivityToEloq() const { return sensitivityToEloq;}
+  float getSensitivityToEloq() const { return sensitivityToEloq; }
   void takeDamage(int attackRes) override;
   int attack(const Entity& target) override;
 };
+#endif

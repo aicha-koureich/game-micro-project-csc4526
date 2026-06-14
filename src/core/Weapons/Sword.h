@@ -7,7 +7,7 @@ class Sword : public Weapon {
  public:
   explicit Sword(WeaponType type, const std::string& name, int weaponEffect, int cost);
   ~Sword() override = default;
-  int attack(Entity&);
+  int attack(Entity&)override;
 };
 
 #endif

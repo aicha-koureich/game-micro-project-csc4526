@@ -7,5 +7,5 @@ Enemy::Enemy(int hp) : Entity(hp){}
 void Enemy::takeDamage(int attackRes) {
 }
 
-int Enemy::attack(const Entity& target) {}
+int Enemy::attack(const Entity& target) {return 0;}
 

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "RoundTarget.hpp"
+#include "Others/RoundTarget.hpp"
 
 namespace RoundTarget_test {
 
