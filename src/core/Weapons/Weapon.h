@@ -21,8 +21,6 @@ class Weapon {
 	protected:
 		int effect;
         std::string name;
-  WeaponType type;
-  int weaponEffect;
         int cost;
         AttackType type;
 

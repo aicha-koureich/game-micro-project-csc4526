@@ -20,7 +20,7 @@ class Player : public Entity {
  public:
   Player(int hp);
   ~Player() override = default;
-  void takeDamage(int attackRes) override;
+  void receiveAttack(int attackRes) override;
   int attack(const Entity& target) override;
   void pickWeapon(size_t idx);
   void increaseNoseSize();

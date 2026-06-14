@@ -1,18 +1,21 @@
 #include "Feather.h"
+#include "Entity.hpp"
 #include <iostream>
 using namespace std;
 
-Feather::Feather(int power, std::string name, int cost) : Weapon(power, name, cost, AttackType::ELOQUENCE) {}
+Feather::Feather(int power, std::string name, int cost) : Weapon(power, name, cost, AttackType::ELOQUENCE), currentChoice(DebuffType::STRENGTH) {}
 
-int Feather::reduceEnemyStrength(Entity& other) { return 1; }
-
-int Feather::reduceEnemyDefense(Entity& other) { return 2; }
-
+void Feather::setDebuffChoice(DebuffType choice) { 
+	currentChoice = choice;
+}
 
 int Feather::attack(Entity& target, float performance) {
-	//si le player choisit reduceEnemyDamage:
-    reduceEnemyStrength(target);
+  int calculatedEffect = effect * performance;
 
-	//si le joueur choisit reduceEnemyDefense
-    reduceEnemyDefense(target);
+  if (currentChoice == DebuffType::STRENGTH) {
+    target.reduceStrength(calculatedEffect);
+  } else if (currentChoice == DebuffType::DEFENSE) {
+    target.reduceDefense(calculatedEffect);
+  }
+
 }
