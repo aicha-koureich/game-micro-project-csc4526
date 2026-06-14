@@ -1,9 +1,7 @@
 #include "Sword.h"
+² Sword::Sword(int damage, std::string swordName, int swordCost) : Weapon(damage, swordName, swordCost, AttackType::STRENGTH) {}
 
-Sword::Sword(int damage) : weaponEffect(damage) {}
 
-int Sword::getEffect() const { return weaponEffect; }
-
-AttackType Sword::getType() const { return AttackType::STRENGTH; }
-
-int Sword::attack(Entity& other) { return 0; }
+int Sword::attack(Entity& target, float performance) {
+  return effect * performance;	
+}

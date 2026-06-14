@@ -7,10 +7,8 @@ class Sword : public Weapon {
 	private:
 
 	public:
-        explicit Sword(int damage);
-        int getEffect() const override;
-        AttackType getType() const override;
-        int attack(Entity& other) override;
+        Sword(int damage, std::string swordName, int swordCost);
+        int attack(Entity& target, float performance) override;
 };
 
 #endif

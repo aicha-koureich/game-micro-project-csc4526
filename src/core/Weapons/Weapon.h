@@ -1,8 +1,10 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
-#include "Entity.hpp"
+#include <string>
 
+
+class Entity;
 
 enum class AttackType {
 	STRENGTH,
@@ -11,17 +13,24 @@ enum class AttackType {
 
 class Weapon {
 
-	private:
-		int weaponEffect;
+	protected:
+		int effect;
         std::string name;
         int cost;
         AttackType type;
 
 	public:
+        Weapon(int weaponEffect, std::string weaponName, int weaponCost,
+               AttackType attackType)
+            : effect(weaponEffect),
+              name(weaponName),
+              cost(weaponCost),
+              type(attackType) {}
 		virtual ~Weapon() = default;
-		virtual int getEffect() const = 0;
-		virtual AttackType getType() const = 0;
-        virtual int attack(Entity& other) = 0;
+
+        int getEffect() {return effect;}
+        AttackType getType() { return type; }
+        virtual int attack(Entity& target, float performance) = 0;
 };
 
 #endif

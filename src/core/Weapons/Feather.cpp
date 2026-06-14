@@ -1,9 +1,16 @@
 #include "Feather.h"
 
-Feather::Feather(int power) : eloquencePower(power) {}
+Feather::Feather(int power, std::string name, int cost) : Weapon(power, name, cost, AttackType::ELOQUENCE) {}
 
-int Feather::getEffect() const{ return eloquencePower; }
+int Feather::reduceEnemyStrength(Entity& other) { return 1; }
 
-AttackType Feather::getType() const { return AttackType::ELOQUENCE; }
+int Feather::reduceEnemyDefense(Entity& other) { return 2; }
 
-int Feather::attack(Entity& other) { return 0; }
+
+int Feather::attack(Entity& target, float performance) {
+	//si le player choisit reduceEnemyDamage:
+    reduceEnemyStrength(target);
+
+	//si le joueur choisit reduceEnemyDefense
+    reduceEnemyDefense(target);
+}

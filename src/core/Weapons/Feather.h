@@ -7,10 +7,9 @@ class Feather : public Weapon {
 	private:
 
     public:
-        explicit Feather(int power);
-        int getEffect() const override;
-        AttackType getType() const override;
-        int attack(Entity& other) override;
+        Feather(int eloquencePower, std::string featherName, int featherCost);
+
+        int attack(Entity& target, float performance) override;
 
 };
 
