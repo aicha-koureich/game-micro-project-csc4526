@@ -6,7 +6,7 @@
 
 #include "Weapons/Weapon.h"
 /* - Factory va lire le XML avec toutes les armes et appeler le bon constructeur
-  - Pas besoin de 2 factories avec un xml, le type est déja précisé*/
+  - Pas besoin de 2 factories avec un xml, le type est d�ja pr�cis�*/
 
 class WeaponFactory {
  public:
