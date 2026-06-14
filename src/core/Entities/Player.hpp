@@ -2,33 +2,36 @@
 #define PLAYER_HPP
 
 #include <memory>
-#include "AttackType.hpp"
+#include <vector>
 #include "Entity.hpp"
 #include "Weapon.h"
 using namespace std;
 
 class Player : public Entity {
  private:
-  AttackType currentAttackType;
-  int baseDamage;
-  int baseDefense;
+  int totalMoney;
   int noseSize;
   float speed;
-  bool isBlocking;
-  unique_ptr<Weapon> currentWeapon;
+  int eloquenceEffect;
+  Weapon* currentWeapon;
+  vector<unique_ptr<Weapon>> weaponInventory;
+  //vector<std::unique_ptr<Items>> itemInventory;
 
  public:
   Player(int hp);
   ~Player() override = default;
-  AttackType getCurrentAttackType();
-  Weapon* getCurrentWeapon();
-  void setAttackType(AttackType type);
   void takeDamage(int attackRes) override;
-  void attack(const Entity& target, AttackType playerAttack) override;
-  void receiveAttack(int trueDamage, AttackType type) override;
-  
-
-
+  int attack(const Entity& target) override;
+  void pickWeapon(size_t idx);
+  void increaseNoseSize();
+  /*void useItem(size_t idx);
+  void addItem(std::unique_ptr<Item>);
+  const vector<std::unique_ptr<Item>>& getItemInventory() const{return itemInventory;}
+  */
+  void addWeapon(std::unique_ptr<Weapon>);
+  Weapon* getCurrentWeapon() const{ return currentWeapon;}
+  const vector<std::unique_ptr<Weapon>>& getWeaponInventory() const{ return weaponInventory;}
+  int getTotalMoney() const{return totalMoney;}
 
 };
 #endif

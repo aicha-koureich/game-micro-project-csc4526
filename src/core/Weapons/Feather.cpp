@@ -1,7 +1,10 @@
 #include "Feather.h"
+#include <iostream>
+using namespace std;
 
-Feather::Feather(int power) : eloquencePower(power) {}
+Feather::Feather(WeaponType type, const std::string& name, int weaponEffect, int cost):Weapon(type, name, weaponEffect, cost){}
 
-int Feather::getEffect() const{ return eloquencePower; }
-
-AttackType Feather::getType() const { return AttackType::ELOQUENCE; }
+int attack(Entity& entity){
+    cout<<"feather attacks entity\n";
+    return 0;
+}

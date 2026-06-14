@@ -1,7 +1,10 @@
 #include "Sword.h"
+#include <iostream>
+using namespace std;
 
-Sword::Sword(int damage) : swordDamage(damage) {}
+Sword::Sword(WeaponType type, const std::string& name, int weaponEffect, int cost) : Weapon(type, name, weaponEffect, cost) {}
 
-int Sword::getEffect() const { return swordDamage; }
-
-AttackType Sword::getType() const { return AttackType::STRENGTH; }
+int attack(Entity& entity){
+    cout<<"sword attacks entity\n";
+    return 0;
+}

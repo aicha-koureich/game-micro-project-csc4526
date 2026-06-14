@@ -3,17 +3,14 @@
 
 class Enemy : public Entity {
  private:
-  const AttackType sensitivity;
+  float sensitivityToEloq;
   int enemyDamage;
-  // std::pair < std::unique_ptr<Weapon>, std::unique_ptr<Weapon>>
+  int enemyLevel;
 
  public:
   Enemy(int hp);
   ~Enemy() override = default;
-  AttackType getSensitivity() const;
+  float getSensitivityToEloq() const { return sensitivityToEloq;}
   void takeDamage(int attackRes) override;
-  void attack(const Entity& target, AttackType enemyAttack) override;
-  void receiveAttack(int damage, AttackType type) override;
-  // std::pair < std::unique_ptr<Weapon>, std::unique_ptr<Weapon>>
-  // dropWeapons();
+  int attack(const Entity& target) override;
 };
