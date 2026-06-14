@@ -8,9 +8,9 @@ class Sword : public Weapon {
 
 	public:
         explicit Sword(int damage);
-        void attack(Entity& other) override;
         int getEffect() const override;
         AttackType getType() const override;
+        int attack(Entity& other) override;
 };
 
 #endif

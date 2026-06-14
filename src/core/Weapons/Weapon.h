@@ -5,8 +5,8 @@
 
 
 enum class AttackType {
-	Force,
-	Eloquence
+	STRENGTH,
+	ELOQUENCE
 };
 
 class Weapon {
@@ -19,10 +19,9 @@ class Weapon {
 
 	public:
 		virtual ~Weapon() = default;
-
-		virtual void attack(Entity& other) = 0;
 		virtual int getEffect() const = 0;
 		virtual AttackType getType() const = 0;
+        virtual int attack(Entity& other) = 0;
 };
 
 #endif

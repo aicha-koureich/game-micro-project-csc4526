@@ -4,6 +4,6 @@ Feather::Feather(int power) : eloquencePower(power) {}
 
 int Feather::getEffect() const{ return eloquencePower; }
 
-AttackType Feather::getType() const { return AttackType::Eloquence; }
+AttackType Feather::getType() const { return AttackType::ELOQUENCE; }
 
-void Feather::attack(Entity& other) { return; }
+int Feather::attack(Entity& other) { return 0; }

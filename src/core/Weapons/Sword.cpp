@@ -4,6 +4,6 @@ Sword::Sword(int damage) : weaponEffect(damage) {}
 
 int Sword::getEffect() const { return weaponEffect; }
 
-AttackType Sword::getType() const { return AttackType::Force; }
+AttackType Sword::getType() const { return AttackType::STRENGTH; }
 
-void Sword::attack(Entity& other) { return; }
+int Sword::attack(Entity& other) { return 0; }

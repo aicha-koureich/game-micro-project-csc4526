@@ -10,7 +10,7 @@ class Feather : public Weapon {
         explicit Feather(int power);
         int getEffect() const override;
         AttackType getType() const override;
-        void attack(Entity& other) override;
+        int attack(Entity& other) override;
 
 };
 
