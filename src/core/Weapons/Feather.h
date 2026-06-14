@@ -4,14 +4,10 @@
 #include "Weapon.h"
 
 class Feather : public Weapon {
-	private:
-		int eloquencePower;
-
-    public:
-        explicit Feather(int power);
-        int getEffect() const override;
-        AttackType getType() const override; 
-
-};
+ public:
+  explicit Feather( WeaponType type, const std::string& name, int weaponEffect, int cost);
+  ~Feather() override = default;
+  int attack(Entity&);
+}; 
 
 #endif

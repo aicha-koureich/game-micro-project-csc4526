@@ -2,21 +2,15 @@
 #define FACTORY_H
 
 #include <memory>
+#include <pugixml.hpp>
 #include "Weapons/Weapon.h"
+/* - Factory va lire le XML avec toutes les armes et appeler le bon constructeur*/
 
-class Factory {
+class WeaponFactory {
  public:
-     virtual ~Factory() = default;
-	 virtual std::unique_ptr<Weapon> createWeapon(int value) = 0;
+     virtual ~WeaponFactory() = default;
+	 virtual std::unique_ptr<Weapon> createWeapon(const std::string& name);
  
-};
-
-class StrengthFactory : public Factory {
-	std::unique_ptr<Weapon> createWeapon(int value) override;
-};
-
-class EloquenceFactory : public Factory {
-  std::unique_ptr<Weapon> createWeapon(int value) override;
 };
 
 #endif

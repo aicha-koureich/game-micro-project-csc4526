@@ -2,18 +2,13 @@
 #include "Player.hpp"
 #include "Weapons/Weapon.h"
 
-Player::Player(int hp) : Entity(hp), baseDamage(5), baseDefense(2), noseSize(0), speed(1.0f), isBlocking(false){
-    
-}
+Player::Player(int hp) : Entity(hp){}
 
 
-void Player::takeDamage(AttackType type, int attackRes){
+void Player::takeDamage(int attackRes){}
 
-}
-
-void Player::attack(const Entity& target, AttackType type){
+int Player::attack(const Entity& target){}
     //int damages = this-> currentWeapon;
-    //Calcul des dégâts que va faire le joueur
+    //Calcul des dï¿½gï¿½ts que va faire le joueur
 
     
-}

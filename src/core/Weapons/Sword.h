@@ -4,13 +4,10 @@
 #include "Weapon.h"
 
 class Sword : public Weapon {
-	private:
-		int swordDamage;
-
-	public:
-        explicit Sword(int damage);
-         int getEffect() const override;
-        AttackType getType() const override;
+ public:
+  explicit Sword(WeaponType type, const std::string& name, int weaponEffect, int cost);
+  ~Sword() override = default;
+  int attack(Entity&);
 };
 
 #endif
