@@ -19,11 +19,11 @@ void Player::takeDamage(int attackRes) { healthPoints -= attackRes; }
 
 void Player::attack(const Entity& target, AttackType playerAttack){
     //Calcul des dégâts que va faire le joueur
-    int baseDamage = baseDamage;
+  Weapon* playerWeapon = getCurrentWeapon();
 
-    Weapon* playerWeapon = getCurrentWeapon();
 
-    if (playerWeapon)
+  int weaponDamage = playerWeapon->getEffect();
+
 
 
     
