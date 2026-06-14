@@ -1,15 +1,26 @@
 #ifndef WEAPON_H
 #define WEAPON_H
 
+#include "Entity.hpp"
+
+
 enum class AttackType {
 	Force,
 	Eloquence
 };
 
 class Weapon {
+
+	private:
+		int weaponEffect;
+        std::string name;
+        int cost;
+        AttackType type;
+
 	public:
 		virtual ~Weapon() = default;
 
+		virtual void attack(Entity& other) = 0;
 		virtual int getEffect() const = 0;
 		virtual AttackType getType() const = 0;
 };

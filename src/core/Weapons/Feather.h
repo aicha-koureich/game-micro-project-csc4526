@@ -5,12 +5,12 @@
 
 class Feather : public Weapon {
 	private:
-		int eloquencePower;
 
     public:
         explicit Feather(int power);
         int getEffect() const override;
-        AttackType getType() const override; 
+        AttackType getType() const override;
+        void attack(Entity& other) override;
 
 };
 

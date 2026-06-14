@@ -5,11 +5,11 @@
 
 class Sword : public Weapon {
 	private:
-		int swordDamage;
 
 	public:
         explicit Sword(int damage);
-         int getEffect() const override;
+        void attack(Entity& other) override;
+        int getEffect() const override;
         AttackType getType() const override;
 };
 
