@@ -8,7 +8,7 @@ class Sword : public Weapon {
 
 	public:
         Sword(int damage, std::string swordName, int swordCost);
-        int attack(Entity& target, float performance) override;
+        void attack(Entity& target, float performance) override;
 };
 
 #endif

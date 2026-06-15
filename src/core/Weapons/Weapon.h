@@ -2,6 +2,7 @@
 #define WEAPON_H
 
 #include <string>
+#include <cmath>
 #include "Entities/Entity.hpp"
 
 /* - les effets des armes sont sous une variable weaponEffect
@@ -35,7 +36,7 @@ class Weapon {
 
         int getEffect() {return effect;}
         AttackType getType() { return type; }
-        virtual int attack(Entity& target, float performance) = 0;
+        virtual void attack(Entity& target, float performance) = 0;
 };
 
 #endif
