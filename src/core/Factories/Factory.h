@@ -2,7 +2,7 @@
 #define FACTORY_H
 
 #include <memory>
-#include <pugixml.hpp>
+
 
 #include "Weapons/Weapon.h"
 /* - Factory va lire le XML avec toutes les armes et appeler le bon constructeur

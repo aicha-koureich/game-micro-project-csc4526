@@ -10,7 +10,6 @@
    - J'ai ajout� nom, comme ca ils pourront apparaitre dans le catalogue et le jeu en g�n�ral
    - AttackType a plus trop d'utilit� en fait, on sait qu'une feather c'est eloq, et la logique d'attaque est dans l'arme mtn donc info redondante*/
 
-class Entity;
 
 enum class AttackType {
 	STRENGTH,

@@ -1,4 +1,5 @@
-
+#ifndef ENTITY_HPP
+#define ENTITY_HPP
 
 class Entity {
  protected:
@@ -6,7 +7,7 @@ class Entity {
 
  public:
 
-  virtual void receiveAttack(int attackRes) = 0;
+  virtual void takeDamage(int attackRes) = 0;
   virtual void reduceStrength(int amount) = 0;
   virtual void reduceDefense(int amount) = 0;
   Entity(int hp) : healthPoints(hp) {}
@@ -14,5 +15,6 @@ class Entity {
   int getHealthPoints() const { return healthPoints; }
 };
 
+#endif
 
 

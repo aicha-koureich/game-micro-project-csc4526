@@ -12,6 +12,7 @@ class Player : public Entity {
   int totalMoney;
   int noseSize;
   float speed;
+  int baseDefense;
   int eloquenceEffect;
   Weapon* currentWeapon;
   vector<unique_ptr<Weapon>> weaponInventory;
@@ -20,15 +21,15 @@ class Player : public Entity {
  public:
   Player(int hp);
   ~Player() override = default;
-  void receiveAttack(int attackRes) override;
-  int attack(const Entity& target) override;
-  void pickWeapon(size_t idx);
-  void increaseNoseSize();
+  void takeDamage(int attackRes) override;
+  void playerAttack(Entity& target, float performance);
+  //void pickWeapon(size_t idx);
+  //void increaseNoseSize();
   /*void useItem(size_t idx);
   void addItem(std::unique_ptr<Item>);
   const vector<std::unique_ptr<Item>>& getItemInventory() const{return itemInventory;}
   */
-  void addWeapon(std::unique_ptr<Weapon>);
+  //void addWeapon(std::unique_ptr<Weapon>);
   Weapon* getCurrentWeapon() const{ return currentWeapon;}
   const vector<std::unique_ptr<Weapon>>& getWeaponInventory() const{ return weaponInventory;}
   int getTotalMoney() const{return totalMoney;}

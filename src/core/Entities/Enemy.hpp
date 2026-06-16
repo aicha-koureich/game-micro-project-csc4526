@@ -1,20 +1,33 @@
-#include "AttackType.hpp"
+#ifndef ENEMY_HPP
+#define ENEMY_HPP
+
 #include "Entity.hpp"
 
 class Enemy : public Entity {
  private:
   float sensitivityToEloq;
-  int enemyDamage;
-  int enemyDefense;
   int enemyLevel;
+
+  int baseDamage;
+  int currentDamage;
+  int baseDefense;
+  int currentDefense;
+  
 
 
  public:
-  Enemy(int hp, float sensitivity, int damage, int level);
+  Enemy(int hp, float sensitivity, int damage, int defense, int level);
   ~Enemy() override = default;
-  float getSensitivityToEloq() const { return sensitivityToEloq;}
 
-  void receiveAttack(int attackRes) override;
+  float getSensitivityToEloq() const { return sensitivityToEloq;}
+  int getCurrentDamage() const { return currentDamage; }
+  int getCurrentDefense() const { return currentDefense; }
+
+  void takeDamage(int attackRes) override;
   void reduceStrength(int amount) override;
   void reduceDefense(int amount) override;
+
+  void resetTurnDebuffs();
+  void enemyAttack(Entity& target);
 };
+#endif
