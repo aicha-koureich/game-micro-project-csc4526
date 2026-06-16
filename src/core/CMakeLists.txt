@@ -1,7 +1,10 @@
 add_library(lib_core
-        "Others/Game.cpp" Others/Game.hpp
-	"Others/RoundTarget.cpp" Others/RoundTarget.hpp
-        "Others/myMain.cpp" "Others/myMain.h"
+        "Entities/Enemy.hpp" "Entities/Enemy.cpp"
+        "Entities/Entity.hpp"
+        "Weapons/Feather.h" "Weapons/Feather.cpp"
+        "Weapons/Sword.h" "Weapons/Sword.cpp"
+        "Weapons/Weapon.h"
+
 )
 
 target_include_directories(lib_core PUBLIC ./)

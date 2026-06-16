@@ -1,5 +1,4 @@
 #include "Feather.h"
-#include "Entity.hpp"
 #include <iostream>
 using namespace std;
 
