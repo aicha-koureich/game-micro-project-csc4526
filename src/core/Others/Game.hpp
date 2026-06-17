@@ -2,9 +2,9 @@
 #define BOOK_GAME_HPP
 
 #include <SFML/Graphics.hpp>
+#include "Button.hpp"
 
-#include "RoundTarget.hpp"
-
+enum class GameState{MAIN_MENU, SHOP, FIGHT, WIN, DEAD};
 class Game {
  public:
   Game();
@@ -22,15 +22,25 @@ class Game {
 
   static const sf::Time TimePerFrame;
 
-  sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "SFML Application"};
+  sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "Jeu Cyrano AA"};
   sf::Texture mTexture;
-  std::vector<RoundTarget> mTargets;
   sf::Font mFont;
   sf::Text mStatisticsText{mFont};
   sf::Time mStatisticsUpdateTime;
-
   std::size_t mStatisticsNumFrames{0};
   bool mMouseLeftButtonReleased{true};
+  GameState mCurrentState;
+  std::vector<Button> mMenuButtons;
+  std::vector<Button> mShopButtons;
+  std::vector<Button> mFightButtons;
+  std::vector<Button> mWinButtons;
+  std::vector<Button> mDeadButtons;
+  std::vector<sf::Text> mMenuText;
+  std::vector<sf::Text> mShopText;
+  std::vector<sf::Text> mFightText;
+  std::vector<sf::Text> mWinText;
+  std::vector<sf::Text> mDeadText;
+ 
 };
 
 #endif  // BOOK_GAME_HPP

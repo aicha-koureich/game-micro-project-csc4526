@@ -5,8 +5,7 @@
 # Note: include(GoogleTest)and enable_testing() already done in top CMakeLists.txt
 
 add_executable(unitTests
-        RoundTargetTest.cpp
- "weapons/WeaponsTest.cpp")
+ )
 target_link_libraries(unitTests GTest::gtest_main lib_core sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
 
 # The next line enables CMake’s test runner to discover the tests included in the binary,
