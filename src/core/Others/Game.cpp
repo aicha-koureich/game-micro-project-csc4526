@@ -17,7 +17,7 @@ Game::Game() {
   titleMenu.setFillColor(sf::Color::White);
   titleMenu.setPosition(sf::Vector2f(130.0f, 100.0f));
   mMenuText.push_back(titleMenu);
-  Button startButton(sf::Vector2f(220.f,240.f ), sf::Vector2f(200.f, 60.f), "START", mFont, sf::Color::White, 30);
+  Button startButton(sf::Vector2f(220.f,240.f ), sf::Vector2f(200.f, 60.f), "START", mFont, sf::Color::Red, 30);
   mMenuButtons.push_back(startButton);
  
   //Shop
@@ -25,9 +25,27 @@ Game::Game() {
   titleShop.setString(" SHOP");
   titleShop.setCharacterSize(50);
   titleShop.setFillColor(sf::Color::White);
-  titleShop.setPosition(sf::Vector2f(130.0f, 100.0f));
+  titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
-
+  sf::Text swords{mFont};
+  swords.setString(" CYRANO-SWORDS");
+  swords.setCharacterSize(30);
+  swords.setFillColor(sf::Color::White);
+  swords.setPosition(sf::Vector2f(0.f, 100.0f));
+  mShopText.push_back(swords);
+  sf::Text feathers{mFont};
+  feathers.setString(" CYRANO-FEATHER");
+  feathers.setCharacterSize(30);
+  feathers.setFillColor(sf::Color::White);
+  feathers.setPosition(sf::Vector2f(0.f, 225.f));
+  mShopText.push_back(feathers);
+  sf::Text items{mFont};
+  items.setString("ITEMS");
+  items.setCharacterSize(30);
+  items.setFillColor(sf::Color::White);
+  items.setPosition(sf::Vector2f(0.0f, 350.0f));
+  mShopText.push_back(items);
+  
 }
 
 void Game::run() {
@@ -113,7 +131,7 @@ void Game::handleMouseLeftButtonPressed() {
 
   if(mMenuButtons[0].isPressed(mousePosition)){
     mCurrentState = GameState::SHOP;
-    
+  
   
 
   }

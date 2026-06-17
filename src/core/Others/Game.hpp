@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Button.hpp"
 
-enum class GameState{MAIN_MENU, SHOP, FIGHT, WIN, DEAD};
+enum class GameState{MAIN_MENU, SHOP, FIGHT, WIN, DEAD, SETTING};
 class Game {
  public:
   Game();
