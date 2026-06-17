@@ -34,7 +34,9 @@ class Weapon {
 		virtual ~Weapon() = default;
 
         int getEffect() {return effect;}
+        int getCost() { return cost; }
         AttackType getType() { return type; }
+        
         virtual void attack(Entity& target, float performance) = 0;
 };
 

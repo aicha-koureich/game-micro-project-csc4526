@@ -4,16 +4,14 @@
 #include <memory>
 #include <vector>
 #include "Entity.hpp"
-#include "Weapon.h"
+#include "Weapons/Weapon.h"
 using namespace std;
 
 class Player : public Entity {
  private:
   int totalMoney;
-  int noseSize;
-  float speed;
+  float noseSize;
   int baseDefense;
-  int eloquenceEffect;
   Weapon* currentWeapon;
   vector<unique_ptr<Weapon>> weaponInventory;
   //vector<std::unique_ptr<Items>> itemInventory;
@@ -21,18 +19,39 @@ class Player : public Entity {
  public:
   Player(int hp);
   ~Player() override = default;
+
+  // Getters
+  int getTotalMoney() const { return totalMoney; }
+
+  Weapon* getCurrentWeapon() const { return currentWeapon; }
+
+  const vector<std::unique_ptr<Weapon>>& getWeaponInventory() const {
+    return weaponInventory;
+  }
+
+  /* const vector<std::unique_ptr<Item>>& getItemInventory() const {
+    return itemInventory;
+  } */
+
+  //IncreaseNoseSize
+  void increaseNoseSize();
+
+  //Weapon Methods  
+  void pickWeapon(size_t idx);
+  void purchaseWeapon(std::unique_ptr<Weapon>);
+
+  //Attack Methods
   void takeDamage(int attackRes) override;
   void playerAttack(Entity& target, float performance);
-  //void pickWeapon(size_t idx);
-  //void increaseNoseSize();
+
+  
+  //Items Methodes
   /*void useItem(size_t idx);
   void addItem(std::unique_ptr<Item>);
-  const vector<std::unique_ptr<Item>>& getItemInventory() const{return itemInventory;}
+  
   */
-  //void addWeapon(std::unique_ptr<Weapon>);
-  Weapon* getCurrentWeapon() const{ return currentWeapon;}
-  const vector<std::unique_ptr<Weapon>>& getWeaponInventory() const{ return weaponInventory;}
-  int getTotalMoney() const{return totalMoney;}
+  
+
 
 };
 #endif
