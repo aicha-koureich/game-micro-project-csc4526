@@ -3,7 +3,7 @@
 
 #include <string>
 #include <cmath>
-#include "Entities/Entity.hpp"
+#include "Entities/Enemy.hpp"
 
 /* - les effets des armes sont sous une variable weaponEffect
    - Les getters font la meme chose pour sword et feather donc pas besoin qu'ils soient virtuels pures 
@@ -37,7 +37,7 @@ class Weapon {
         int getCost() { return cost; }
         AttackType getType() { return type; }
         
-        virtual void attack(Entity& target, float performance) = 0;
+        virtual void attack(Enemy& target, float performance) = 0;
 };
 
 #endif

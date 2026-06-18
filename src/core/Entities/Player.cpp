@@ -2,12 +2,12 @@
 #include "Player.hpp"
 
 
-Player::Player(int hp)
+Player::Player(int hp, int money, float size, int defense, Weapon* playerWeapon)
     : Entity(hp),
-      totalMoney(0),
-      noseSize(0),
-      baseDefense(15),
-      currentWeapon(nullptr) {}
+      totalMoney(money),
+      noseSize(size),
+      baseDefense(defense),
+      currentWeapon(playerWeapon) {}
 
 
 
@@ -24,7 +24,7 @@ void Player::pickWeapon(size_t idx) {
 void Player::purchaseWeapon(std::unique_ptr<Weapon> newWeapon) {
   int weaponCost = newWeapon->getCost();
   if (totalMoney >= weaponCost) {
-    weaponInventory.push_back(newWeapon);
+    weaponInventory.push_back(std::move(newWeapon));
     totalMoney -= weaponCost;
   }
     
@@ -35,6 +35,6 @@ void Player::takeDamage(int attackRes){
   healthPoints = std::max(0, finalDamage);
 }
 
-void Player::playerAttack(Entity& target, float performance) {
+void Player::playerAttack(Enemy& target, float performance) {
     currentWeapon->attack(target, performance);
 }

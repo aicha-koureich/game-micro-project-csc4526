@@ -1,5 +1,6 @@
 add_library(lib_core
         "Entities/Enemy.hpp" "Entities/Enemy.cpp"
+        "Entities/Player.hpp" "Entities/Player.cpp"
         "Entities/Entity.hpp"
         "Weapons/Feather.h" "Weapons/Feather.cpp"
         "Weapons/Sword.h" "Weapons/Sword.cpp"

@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <vector>
-#include "Entity.hpp"
+#include "Enemy.hpp"
 #include "Weapons/Weapon.h"
 using namespace std;
 
@@ -17,12 +17,14 @@ class Player : public Entity {
   //vector<std::unique_ptr<Items>> itemInventory;
 
  public:
-  Player(int hp);
+  Player(int hp, int money, float size, int defense, Weapon* playerWeapon);
   ~Player() override = default;
 
   // Getters
   int getTotalMoney() const { return totalMoney; }
 
+  float getNoseSize() const { return noseSize; }
+ 
   Weapon* getCurrentWeapon() const { return currentWeapon; }
 
   const vector<std::unique_ptr<Weapon>>& getWeaponInventory() const {
@@ -42,7 +44,7 @@ class Player : public Entity {
 
   //Attack Methods
   void takeDamage(int attackRes) override;
-  void playerAttack(Entity& target, float performance);
+  void playerAttack(Enemy& target, float performance);
 
   
   //Items Methodes
