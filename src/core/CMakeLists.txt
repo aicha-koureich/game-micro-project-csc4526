@@ -1,8 +1,7 @@
 add_library(lib_core
-        "Others/Game.cpp" Others/Game.hpp
-	"Others/RoundTarget.cpp" Others/RoundTarget.hpp
-        "Others/myMain.cpp" "Others/myMain.h"
-        "Others/Button.cpp" "Others/Button.hpp"
+        "Game/Game.cpp" Game/Game.hpp
+        "Game/myMain.cpp" "Game/myMain.h"
+        "Game/Button.cpp" "Game/Button.hpp"
 )
 
 target_include_directories(lib_core PUBLIC ./)
