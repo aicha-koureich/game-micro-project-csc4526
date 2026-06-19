@@ -24,8 +24,8 @@ class Enemy : public Entity {
   int getCurrentDefense() const { return currentDefense; }
 
   void takeDamage(int attackRes) override;
-  void reduceStrength(int amount) override;
-  void reduceDefense(int amount) override;
+  void reduceStrength(int amount);
+  void reduceDefense(int amount);
 
   void resetTurnDebuffs();
   void enemyAttack(Entity& target);
