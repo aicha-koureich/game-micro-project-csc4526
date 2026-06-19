@@ -8,9 +8,9 @@
 /* - Factory va lire le XML avec toutes les armes et appeler le bon constructeur
   - Pas besoin de 2 factories avec un xml, le type est d�ja pr�cis�*/
 
-class WeaponFactory {
+class Factory {
  public:
-  virtual ~WeaponFactory() = default;
+  virtual ~Factory() = default;
   static std::unique_ptr<Weapon> createWeapon(const std::string& name);
 };
 
