@@ -11,10 +11,18 @@ Player::Player(int maxHp, int money, float size, int defense, Weapon* playerWeap
 
 
 
-void Player::increaseNoseSize() { 
+void Player::increaseNoseSize(int enemyLevel) { 
     float noseScore = healthPoints * 0.1f; 
     noseSize += noseScore;
+
+    maxHealthPoints += 10;
+    baseDefense += (2 * enemyLevel);
+
 }
+
+void Player::addMoney(int amount) { totalMoney += amount; }
+
+void Player::restoreHealth() { healthPoints = maxHealthPoints; }
 
 
 void Player::pickWeapon(size_t idx) { 

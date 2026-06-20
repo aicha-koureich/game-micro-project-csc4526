@@ -24,6 +24,8 @@ class Player : public Entity {
   int getTotalMoney() const { return totalMoney; }
 
   float getNoseSize() const { return noseSize; }
+
+  int getBaseDefense() const { return baseDefense; }
  
   Weapon* getCurrentWeapon() const { return currentWeapon; }
 
@@ -35,8 +37,10 @@ class Player : public Entity {
     return itemInventory;
   } */
 
-  //IncreaseNoseSize
-  void increaseNoseSize();
+  //EndFight bonus
+  void increaseNoseSize(int enemyLevel);
+  void addMoney(int amount);
+  void restoreHealth();
 
   //Weapon Methods  
   void pickWeapon(size_t idx);

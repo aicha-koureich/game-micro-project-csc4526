@@ -19,6 +19,9 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
   mMenuText.push_back(titleMenu);
   Button startButton(sf::Vector2f(220.f,240.f ), sf::Vector2f(200.f, 60.f), "START", mFont, sf::Color::Red, 30);
   mMenuButtons.push_back(startButton);
+  Button fightButton(sf::Vector2f(220.f, 320.f), sf::Vector2f(200.f, 50.f),
+                     "FIGHT", mFont, sf::Color(80, 80, 200), 18);
+  mMenuButtons.push_back(fightButton);
  
   //Shop
   sf::Text titleShop{mFont};
@@ -232,6 +235,18 @@ void Game::update(sf::Time elapsedTime) {
                : mSentenceQte.sentencePerf;
       mPlayer.playerAttack(enemy, perf);
 
+      if (enemy.getHealthPoints() <= 0) {
+        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.1f) *
+                          enemy.getEnemyLevel();
+        mPlayer.addMoney(moneyGained);
+        mPlayer.increaseNoseSize(enemy.getEnemyLevel());
+        mPlayer.restoreHealth();
+        
+        mPlayerTurnResMessage.setString("Enemy is dead !");
+        mCurrentState = GameState::WIN;
+        return;
+      }
+
       if (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
         enemy.resetDefenseDebuff();
         mPlayerTurnResMessage.setString("Sword strike !");
@@ -240,6 +255,7 @@ void Game::update(sf::Time elapsedTime) {
       }
 
       mResolutionTimer = 1.5f;
+      mFightPhase = FightPhase::WAITING_AFTER_PLAYER;
       break;
     }
     
@@ -258,36 +274,45 @@ void Game::update(sf::Time elapsedTime) {
 
     case FightPhase::RESOLUTION_ENEMY:
       enemy.enemyAttack(mPlayer, mCircleQte.circlePerf);
+
+      if (mPlayer.getHealthPoints() <= 0) {
+        mPlayerTurnResMessage.setString("You lost !");
+        mCurrentState = GameState::DEAD;
+        return;
+      }
+
       enemy.resetAttackDebuff();
       mPlayerTurnResMessage.setString("Enemy attacks !");
+
       mResolutionTimer = 1.5f;
+      mFightPhase = FightPhase::WAITING_AFTER_ENEMY;
       break;
 
-  }
-
-  //Pause d'affichage après le tour d'une entité
-  if (mResolutionTimer > 0.f) {
-    mResolutionTimer -= dt;
-    if (mResolutionTimer <= 0.f) {
-      if (mFightPhase == FightPhase::RESOLUTION_PLAYER) {
-        //Qte défense 
+    case FightPhase::WAITING_AFTER_PLAYER:
+      mResolutionTimer -= dt;
+      if (mResolutionTimer <= 0.f) {
         mCircleQte = {150.f, 80.f, 40.f, 0.f};
         mFightPhase = FightPhase::PLAYER_DEFENSE_QTE;
-      } else if (mFightPhase == FightPhase::RESOLUTION_ENEMY) {
-        //Tour suivant
+      }
+      break;
+       
+    case FightPhase::WAITING_AFTER_ENEMY:
+      mResolutionTimer -= dt;
+      if (mResolutionTimer <= 0.f) {
         mPlayerTurnResMessage.setString("");
         mFightPhase = FightPhase::PLAYER_CHOICE;
       }
-    }
+      break;
   }
+
 
   //Barres de vie mises à jour
   mPlayerHpBar.setSize(
       {120.f * mPlayer.getHealthPoints() / mPlayer.getMaxHealthPoints(),
-       16.f});  // remplacer 100 par maxHealthPoints
+       16.f}); 
   mEnemyHpBar.setSize(
       {120.f * enemy.getHealthPoints() / enemy.getMaxHealthPoints(),
-       16.f});  // idem
+       16.f}); 
 
 }
 
@@ -369,9 +394,30 @@ void Game::handleMouseLeftButtonPressed() {
 
   if(mMenuButtons[0].isPressed(mousePosition)){
     mCurrentState = GameState::SHOP;
+  } else if (mMenuButtons.size() > 1 &&
+             mMenuButtons[1].isPressed(mousePosition)) {
+    mCurrentState = GameState::FIGHT;
   
-  
+  } else if (mCurrentState == GameState::FIGHT &&
+             mFightPhase == FightPhase::PLAYER_CHOICE) {
+    //Strength attack
+    if (mFightButtons[0].isPressed(mousePosition)) {
+      mPlayer.pickWeapon(mSwordIdx);
+      mCircleQte = {150.f, 80.f, 40.f, 0.f};
+      mFightPhase = FightPhase::PLAYER_QTE;
+    } else if (mFightButtons[1].isPressed(mousePosition)) {
+      mPlayer.pickWeapon(mFeatherIdx);
+      if (auto* feather = dynamic_cast<Feather*>(mPlayer.getCurrentWeapon())) {
+        feather->setDebuffChoice(DebuffType::DEFENSE);
+      }
 
+      mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
+      mSentenceText.setString(mSentenceQte.sentence);
+      mUserInputText.setString("");
+      mFightPhase = FightPhase::PLAYER_QTE;
+    }
+
+    //A ajouter : ITEM
   }
   mMouseLeftButtonReleased = false;
 

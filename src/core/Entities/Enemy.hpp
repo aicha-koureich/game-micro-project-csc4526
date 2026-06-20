@@ -22,6 +22,7 @@ class Enemy : public Entity {
   float getSensitivityToEloq() const { return sensitivityToEloq;}
   int getCurrentDamage() const { return currentDamage; }
   int getCurrentDefense() const { return currentDefense; }
+  int getEnemyLevel() const { return enemyLevel; }
 
   void takeDamage(int attackRes) override;
   void enemyAttack(Entity& target, float playerPerf);
