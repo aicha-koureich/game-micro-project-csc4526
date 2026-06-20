@@ -8,7 +8,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
-  loadXML();
+  loadXML(); //ici
 
   //Start Menu
   mCurrentState = GameState::MAIN_MENU;
