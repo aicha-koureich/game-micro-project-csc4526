@@ -4,6 +4,7 @@
 class Entity {
  protected:
   int healthPoints;
+  int maxHealthPoints;
 
  public:
 
@@ -11,6 +12,7 @@ class Entity {
   Entity(int hp) : healthPoints(hp) {}
   virtual ~Entity() = default;
   int getHealthPoints() const { return healthPoints; }
+  int getMaxHealthPoints() const { return maxHealthPoints; }
 };
 
 #endif

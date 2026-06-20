@@ -52,6 +52,9 @@ class Game {
 
   void updateStatistics(sf::Time elapsedTime);
 
+  void handleFightKeyPressed(sf::Keyboard::Key key);
+  void handleFightTextEntred(std::uint32_t unicode);
+
   static const sf::Time TimePerFrame;
 
   sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "Jeu Cyrano AA"};
@@ -72,6 +75,8 @@ class Game {
   std::vector<sf::Text> mFightText;
   std::vector<sf::Text> mWinText;
   std::vector<sf::Text> mDeadText;
+
+  //Fight Phase
  
   Player mPlayer;
   std::vector<Enemy> mEnemies;
@@ -81,6 +86,21 @@ class Game {
   CircleQTE mCircleQte{};
   SentenceQTE mSentenceQte{};
 
+  //Healthbars
+  sf::RectangleShape mPlayerHpBarBg, mPlayerHpBar;
+  sf::RectangleShape mEnemyHpBarBg, mEnemyHpBar;
+
+  sf::Text mWeaponNameText{mFont};
+
+  sf::CircleShape mQteTargetCircle;
+  sf::CircleShape mQteMovingCircle;
+  sf::Text mSentenceText{mFont};
+  sf::Text mUserInputText{mFont};
+  sf::Text mPlayerTurnResMessage{mFont};
+
+  float mResolutionTimer{0.f};
+  std::size_t mSwordIdx{0};
+  std::size_t mFeatherIdx{1};
 };
 
 #endif  // BOOK_GAME_HPP
