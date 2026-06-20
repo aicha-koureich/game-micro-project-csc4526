@@ -16,6 +16,7 @@ enum class GameState{MAIN_MENU, SHOP, FIGHT, WIN, DEAD, SETTING};
 //FIGHT PHASE
 enum class FightPhase { 
 	PLAYER_CHOICE, 
+	DEBUFF_CHOICE,
 	PLAYER_QTE, 
 	RESOLUTION_PLAYER,
 	WAITING_AFTER_PLAYER,
@@ -70,6 +71,7 @@ class Game {
   std::vector<Button> mMenuButtons;
   std::vector<Button> mShopButtons;
   std::vector<Button> mFightButtons;
+  std::vector<Button> mDebuffButtons;
   std::vector<Button> mWinButtons;
   std::vector<Button> mDeadButtons;
   std::vector<sf::Text> mMenuText;
@@ -89,6 +91,7 @@ class Game {
   sf::RectangleShape mEnemyShape;
 
   FightPhase mFightPhase{FightPhase::PLAYER_CHOICE};
+  DebuffType mPendingDebuffChoice{DebuffType::DEFENSE};
   CircleQTE mCircleQte{};
   SentenceQTE mSentenceQte{};
 

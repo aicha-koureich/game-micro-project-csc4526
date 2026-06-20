@@ -37,6 +37,10 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   items.setFillColor(sf::Color::White);
   items.setPosition(sf::Vector2f(0.0f, 350.0f));
   mShopText.push_back(items);
+  Button goFightButton(sf::Vector2f(220.f, 420.f), sf::Vector2f(200.f, 50.f),
+                       "GO FIGHT", mFont, sf::Color(80, 80, 200), 18);
+  mShopButtons.push_back(goFightButton);
+
 
   //Fight
 
@@ -120,6 +124,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mPlayerTurnResMessage.setPosition({180.f, 300.f});
 
   //Buttons
+  // Fight Buttons
   Button strengthButton(sf::Vector2f(40.f, 400.f), sf::Vector2f(150.f, 50.f),
                         "STRENGTH", mFont, sf::Color(78, 0, 0), 18); 
 
@@ -133,7 +138,17 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mFightButtons.push_back(eloquenceButton);
   mFightButtons.push_back(itemButton);
 
+  //Debuff Buttons
+  Button attackDebuffButton(sf::Vector2f(40.f, 400.f),
+                            sf::Vector2f(150.f, 50.f), "DEBUFF ATTACK", mFont,
+                            sf::Color(120, 0, 0), 16);
 
+  Button defenseDebuffButton(sf::Vector2f(240.f, 400.f),
+                            sf::Vector2f(150.f, 50.f), "DEBUFF DEFENSE", mFont,
+                            sf::Color(0, 0, 120), 16);
+
+  mDebuffButtons.push_back(attackDebuffButton);
+  mDebuffButtons.push_back(defenseDebuffButton);
 
   
 }
@@ -382,6 +397,8 @@ void Game::render() {
 
         if (mFightPhase == FightPhase::PLAYER_CHOICE) {
           for (const auto& button : mFightButtons) button.draw(mWindow);
+        } else if (mFightPhase == FightPhase::DEBUFF_CHOICE) {
+          for (const auto& button : mDebuffButtons) button.draw(mWindow);
         } else if (mFightPhase == FightPhase::PLAYER_QTE &&
                    mPlayer.getCurrentWeapon()->getType() ==
                        AttackType::STRENGTH) {
@@ -429,46 +446,66 @@ void Game::handleMouseLeftButtonPressed() {
     mCurrentState = GameState::FIGHT;
   
   } else if (mCurrentState == GameState::SHOP) {
-    for (size_t i = 0; i < mShopButtons.size(); ++i) {
-      if (mShopButtons[i].isPressed(mousePosition)) {
+    if (!mShopButtons.empty() && mShopButtons.back().isPressed(mousePosition)) {
+        //Le dernier bouton est le bouton fight car loadXML est appelé avant 
+      mCurrentState = GameState::FIGHT;
+    } else {
+        for (size_t i = 0; i < mShopWeapon.size(); ++i) {
+            if (mShopButtons[i].isPressed(mousePosition)) {
         
-        // 1. Si l'arme a déjà été vendue (le pointeur est vide)
-        if (mShopWeapon[i] == nullptr) {
-          std::cout << "Deja vendu !\n";
-          continue; 
-        }
+            // 1. Si l'arme a déjà été vendue (le pointeur est vide)
+            if (mShopWeapon[i] == nullptr) {
+                std::cout << "Deja vendu !\n";
+                continue; 
+            }
 
-        // 2. On tente l'achat
-        bool success = mPlayer.purchaseWeapon(mShopWeapon[i]);
+            // 2. On tente l'achat
+            bool success = mPlayer.purchaseWeapon(mShopWeapon[i]);
         
-        if (success) {
-          std::cout << "Achat reussi !\n";
-        } else {
-          std::cout << "Fonds insuffisants !\n";
+            if (success) {
+            std::cout << "Achat reussi !\n";
+            } else {
+            std::cout << "Fonds insuffisants !\n";
+            }
         }
-      }
+    
+        }
     }
   } else if (mCurrentState == GameState::FIGHT &&
              mFightPhase == FightPhase::PLAYER_CHOICE) {
-    //Strength attack
+    // Strength attack
     if (mFightButtons[0].isPressed(mousePosition)) {
       mPlayer.pickWeapon(mSwordIdx);
       mCircleQte = {150.f, 80.f, 40.f, 0.f};
       mFightPhase = FightPhase::PLAYER_QTE;
     } else if (mFightButtons[1].isPressed(mousePosition)) {
       mPlayer.pickWeapon(mFeatherIdx);
-      if (auto* feather = dynamic_cast<Feather*>(mPlayer.getCurrentWeapon())) {
+      mFightPhase = FightPhase::DEBUFF_CHOICE;
+    }
+  } else if (mCurrentState == GameState::FIGHT && mFightPhase == FightPhase::DEBUFF_CHOICE) {
+    if (mDebuffButtons[0].isPressed(mousePosition)) {
+        mPendingDebuffChoice = DebuffType::STRENGTH;
+    } else if (mDebuffButtons[1].isPressed(mousePosition)) {
+      mPendingDebuffChoice = DebuffType::DEFENSE;
+    } else {
+      mMouseLeftButtonReleased = false;
+      return;
+    }
+    
+    if (auto* feather = dynamic_cast<Feather*>(mPlayer.getCurrentWeapon())) {
         feather->setDebuffChoice(DebuffType::DEFENSE);
-      }
-
-      mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
-      mSentenceText.setString(mSentenceQte.sentence);
-      mUserInputText.setString("");
-      mFightPhase = FightPhase::PLAYER_QTE;
     }
 
-    //A ajouter : ITEM
+    mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
+    mSentenceText.setString(mSentenceQte.sentence);
+    mUserInputText.setString("");
+    mFightPhase = FightPhase::PLAYER_QTE;
   }
+      
+    
+
+  //A ajouter : ITEM
+  
   mMouseLeftButtonReleased = false;
 
 }
