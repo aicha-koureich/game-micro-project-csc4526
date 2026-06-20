@@ -14,7 +14,7 @@ TEST(increaseNoseSize, noseSize_increasesAfterAFight) {
   Sword sword{10, "Excalibur", 100};
   Player player{100, 50, 10.f, 5, &sword};
   
-  player.increaseNoseSize();
+  player.increaseNoseSize(0);
 
   EXPECT_FLOAT_EQ(player.getNoseSize(), 20.f);
 }
@@ -24,7 +24,7 @@ TEST(takeDamage, player_takeDamage) {
     Enemy enemy{100, 2.0f, 10, 20, 2};  //Ennemi qui fait 10 de dégâts
     Player player{100, 50, 10.f, 5, &sword};    //Player avec 5 points de défense 
 
-    enemy.enemyAttack(player); //Ennemi inflige 10 - 5 = 5 dégats
+    enemy.enemyAttack(player, 0.f); //Ennemi inflige 10 - 5 = 5 dégats
 
     EXPECT_EQ(player.getHealthPoints(), 95);
 
@@ -35,7 +35,7 @@ TEST(takeDamage, enemyDamageTooLow) {
   Enemy enemy{100, 2.0f, 10, 5, 2};   // Ennemi avec 10 points de dégâts
   Player player{100, 50, 10.f, 15, &sword};  // Player avec 15 points de défense
 
-  enemy.enemyAttack(player);  // Ennemi inflige 10 - 15 = -5 donc son attaque va
+  enemy.enemyAttack(player, 0.f);  // Ennemi inflige 10 - 15 = -5 donc son attaque va
                               // faire 1 point de dégâts
 
   EXPECT_EQ(player.getHealthPoints(), 99);
@@ -47,7 +47,7 @@ TEST(takeDamage, enemyKillPlayer) {
               2};  // Ennemi qui avec 100 hp et 5 points de défense
   Player player{100, 50, 10.f, 15, &sword};  // Player avec 15 points de défense
 
-  enemy.enemyAttack(player);  // Ennemi inflige 10 - 15 = -5 donc son attaque va
+  enemy.enemyAttack(player, 0.f);  // Ennemi inflige 10 - 15 = -5 donc son attaque va
                               // faire 1 point de dégâts
 
   EXPECT_EQ(player.getHealthPoints(), 0);

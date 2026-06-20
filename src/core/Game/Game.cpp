@@ -4,7 +4,7 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
-Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
+Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   loadXML();
   assert(mFont.openFromFile("res/Sansation.ttf"));
   mStatisticsText.setPosition({5.f, 5.f});
@@ -40,16 +40,7 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
 
   //Fight
 
-  //Armes de bases d�j� �quip�es pour le joueur
-  std::unique_ptr<Weapon> baseSword =
-      std::make_unique<Sword>(10, "Wooden stick", 0);
-  std::unique_ptr<Weapon> baseFeather =
-      std::make_unique<Feather>(5, "Pigeon feather", 0);
-
-  mPlayer.purchaseWeapon(std::move(baseSword));
-  mPlayer.purchaseWeapon(std::move(baseFeather));
-  
-  mPlayer.pickWeapon(0);
+  //Armes de bases d�j� �quip�es pour le joueurs
 
   Enemy firstEnemy{50, 0.5f, 15, 10, 1};
   mEnemies.push_back(firstEnemy);
@@ -148,7 +139,7 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
 }
 void Game::loadXML(){
   pugi::xml_document doc;
-  pugi::xml_parse_result res = doc.load_file("src/core/Others/Weapons.xml");
+  pugi::xml_parse_result res = doc.load_file("./Weapons.xml");
   if(!res){
     std::cerr<<"Erreur chargement xml\n";
     return;
