@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Weapons>
+    <Sword type="Sword" name="Baton d'aveugle" effect="5" cost="5" />
+    <Sword type="Sword" name="Rapiere rouillee" effect="20" cost="20" />
+    <Sword type="Sword" name="Fleuret d'entrainement" effect="45" cost="50" />
+    <Sword type="Sword" name="Lame de Gascogne" effect="70" cost="150" />
+    <Sword type="Sword" name="La Flamboyante" effect="100" cost="400" />
+
+    <Feather type="Feather" name="Stylo Bic baveux" effect="5" cost="5" />
+    <Feather type="Feather" name="Plume de pigeon" effect="20" cost="20" />
+    <Feather type="Feather" name="Plume d'oie" effect="45" cost="50" />
+    <Feather type="Feather" name="Plume de corbeau" effect="70" cost="150" />
+    <Feather type="Feather" name="Le Panache Blanc" effect="100" cost="400" />
+</Weapons>

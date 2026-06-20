@@ -33,10 +33,10 @@ class Weapon {
               type(attackType) {}
 		virtual ~Weapon() = default;
 
-        int getEffect() {return effect;}
-        int getCost() { return cost; }
-        AttackType getType() { return type; }
-        
+        int getEffect() const {return effect;}
+        int getCost() const{ return cost; }
+        AttackType getType() const { return type; }
+        std::string getName() const {return name;}
         virtual void attack(Enemy& target, float performance) = 0;
 };
 
