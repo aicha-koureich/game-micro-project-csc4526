@@ -5,6 +5,7 @@
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
+  loadXML();
   assert(mFont.openFromFile("res/Sansation.ttf"));
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
@@ -30,18 +31,6 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
   titleShop.setFillColor(sf::Color::White);
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
-  sf::Text swords{mFont};
-  swords.setString(" CYRANO-SWORDS");
-  swords.setCharacterSize(30);
-  swords.setFillColor(sf::Color::White);
-  swords.setPosition(sf::Vector2f(0.f, 100.0f));
-  mShopText.push_back(swords);
-  sf::Text feathers{mFont};
-  feathers.setString(" CYRANO-FEATHER");
-  feathers.setCharacterSize(30);
-  feathers.setFillColor(sf::Color::White);
-  feathers.setPosition(sf::Vector2f(0.f, 225.f));
-  mShopText.push_back(feathers);
   sf::Text items{mFont};
   items.setString("ITEMS");
   items.setCharacterSize(30);
@@ -51,7 +40,7 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
 
   //Fight
 
-  //Armes de bases déjà équipées pour le joueur
+  //Armes de bases dï¿½jï¿½ ï¿½quipï¿½es pour le joueur
   std::unique_ptr<Weapon> baseSword =
       std::make_unique<Sword>(10, "Wooden stick", 0);
   std::unique_ptr<Weapon> baseFeather =
@@ -156,6 +145,53 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
 
 
   
+}
+void Game::loadXML(){
+  pugi::xml_document doc;
+  pugi::xml_parse_result res = doc.load_file("src/core/Others/Weapons.xml");
+  if(!res){
+    std::cerr<<"Erreur chargement xml\n";
+    return;
+  }
+  pugi::xml_node weaponsNode = doc.child("Weapons");
+  float currentY = 50.f; 
+  float currentX = 0.f; 
+  std::string category = ""; // Pour le changement de catÃ©gorie
+  for (pugi::xml_node node = weaponsNode.first_child(); node; node = node.next_sibling()) {
+   std::unique_ptr<Weapon> weapon = Factory::create(node);
+    if (weapon != nullptr) {
+      if (category != node.name()) {
+        if (!category.empty()) { 
+          currentY += 100.f; 
+        }  
+        category = node.name();
+        //titre
+        sf::Text title{mFont};
+        title.setString(category);
+        title.setCharacterSize(30);
+        title.setFillColor(sf::Color::Green);
+        title.setPosition(sf::Vector2f(0.f, currentY));
+        mShopText.push_back(title);
+        
+        currentY += 50.f; 
+        currentX = 5.f;
+      }
+    //titre et prix des armes
+    sf::Text weaponText{mFont};
+    weaponText.setString(weapon->getName() + "\n" + std::to_string(weapon->getCost()) + " ecus");
+    weaponText.setCharacterSize(12);
+    weaponText.setFillColor(sf::Color::White);
+    weaponText.setPosition(sf::Vector2f(currentX, currentY));
+    mShopText.push_back(weaponText);
+
+    currentX += 130.f; 
+    
+    mShopWeapon.push_back(std::move(weapon));
+  } else {
+    std::cerr << "Type d'arme: " << node.name() << " non reconnu par la factory\n";
+  }
+}
+
 }
 
 void Game::run() {
@@ -306,7 +342,7 @@ void Game::update(sf::Time elapsedTime) {
   }
 
 
-  //Barres de vie mises à jour
+  //Barres de vie mises ï¿½ jour
   mPlayerHpBar.setSize(
       {120.f * mPlayer.getHealthPoints() / mPlayer.getMaxHealthPoints(),
        16.f}); 
@@ -424,15 +460,15 @@ void Game::handleMouseLeftButtonPressed() {
 }
 
 
-// Cette méthode est appelé lorsque le joueur va devoir executer une QTE avec un cercle: cela peut être pour son tour lors d'une attaque à l'épée ou lorsqu'il doit défendre pendant le tour de l'ennemi
+// Cette mï¿½thode est appelï¿½ lorsque le joueur va devoir executer une QTE avec un cercle: cela peut ï¿½tre pour son tour lors d'une attaque ï¿½ l'ï¿½pï¿½e ou lorsqu'il doit dï¿½fendre pendant le tour de l'ennemi
 void Game::handleFightKeyPressed(sf::Keyboard::Key key) {
   if (key != sf::Keyboard::Key::Space) return;
   if (mFightPhase == FightPhase::PLAYER_QTE && mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
     
-    // On calcule la distance entre le rayon du cercle qui rétrécit et le rayon du cercle visé, plus cette distance est petite, plus la performance est proche de 1 donc les dégats sont élevés
+    // On calcule la distance entre le rayon du cercle qui rï¿½trï¿½cit et le rayon du cercle visï¿½, plus cette distance est petite, plus la performance est proche de 1 donc les dï¿½gats sont ï¿½levï¿½s
     float diff = std::abs(mCircleQte.currentRadius - mCircleQte.targetRadius);
     mCircleQte.circlePerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
-    mFightPhase = FightPhase::RESOLUTION_PLAYER; //Le tour du joueur se termine après la QTE d'attaque
+    mFightPhase = FightPhase::RESOLUTION_PLAYER; //Le tour du joueur se termine aprï¿½s la QTE d'attaque
 
   } else if (mFightPhase == FightPhase::PLAYER_DEFENSE_QTE) {
     float diff = std::abs(mCircleQte.currentRadius - mCircleQte.targetRadius);

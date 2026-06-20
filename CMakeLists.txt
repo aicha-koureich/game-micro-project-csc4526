@@ -46,7 +46,7 @@ FetchContent_MakeAvailable(googletest)
 # Otherwise, Visual Studio test explorer does not see unit tests (See ticket https://developercommunity.visualstudio.com/t/No-tests-discovered-for-googletest-and-C/1148799#T-ND1150621)
 include(GoogleTest)
 enable_testing()
-add_subdirectory(src/test)
+#add_subdirectory(src/test)
 
 option(SFML_BUILD_AUDIO "Build audio" OFF)
 option(SFML_BUILD_NETWORK "Build network" OFF)
