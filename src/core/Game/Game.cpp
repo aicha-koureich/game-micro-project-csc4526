@@ -139,7 +139,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
 }
 void Game::loadXML(){
   pugi::xml_document doc;
-  pugi::xml_parse_result res = doc.load_file("../../../src/core/Game/Weapons.xml");
+  pugi::xml_parse_result res = doc.load_file("res/Weapons.xml");
   if(!res){
     std::cerr<<"Erreur chargement xml\n";
     return;
