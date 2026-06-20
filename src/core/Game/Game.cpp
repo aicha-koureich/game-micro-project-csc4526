@@ -5,10 +5,10 @@
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
 Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
-  loadXML();
   assert(mFont.openFromFile("res/Sansation.ttf"));
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
+  loadXML();
 
   //Start Menu
   mCurrentState = GameState::MAIN_MENU;
@@ -148,7 +148,7 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
 }
 void Game::loadXML(){
   pugi::xml_document doc;
-  pugi::xml_parse_result res = doc.load_file("src/core/Others/Weapons.xml");
+  pugi::xml_parse_result res = doc.load_file("../../../src/core/Game/Weapons.xml");
   if(!res){
     std::cerr<<"Erreur chargement xml\n";
     return;
