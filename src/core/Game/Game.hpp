@@ -4,7 +4,39 @@
 #include <SFML/Graphics.hpp>
 #include "Button.hpp"
 
+#include "Entities/Enemy.hpp"
+#include "Entities/Player.hpp"
+
+#include "Weapons/Sword.h"
+#include "Weapons/Feather.h"
+
+
 enum class GameState{MAIN_MENU, SHOP, FIGHT, WIN, DEAD, SETTING};
+
+//FIGHT PHASE
+enum class FightPhase { 
+	PLAYER_CHOICE, 
+	PLAYER_QTE, 
+	RESOLUTION_PLAYER,
+	PLAYER_DEFENSE_QTE,
+	RESOLUTION_ENEMY
+};
+
+struct CircleQTE {
+  float currentRadius;
+  float closeSpeed;
+  float targetRadius;
+  float circlePerf;
+
+};
+
+struct SentenceQTE {
+  std::string sentence;
+  std::string userInput;
+  float remainingTime;
+  float sentencePerf;
+};
+
 class Game {
  public:
   Game();
@@ -41,6 +73,14 @@ class Game {
   std::vector<sf::Text> mWinText;
   std::vector<sf::Text> mDeadText;
  
+  Player mPlayer;
+  std::vector<Enemy> mEnemies;
+  std::size_t mCurrentEnemyIdx{0};
+
+  FightPhase mFightPhase{FightPhase::PLAYER_CHOICE};
+  CircleQTE mCircleQte{};
+  SentenceQTE mSentenceQte{};
+
 };
 
 #endif  // BOOK_GAME_HPP

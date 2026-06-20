@@ -24,10 +24,15 @@ class Enemy : public Entity {
   int getCurrentDefense() const { return currentDefense; }
 
   void takeDamage(int attackRes) override;
+  void enemyAttack(Entity& target, float playerPerf);
   void reduceStrength(int amount);
   void reduceDefense(int amount);
 
-  void resetTurnDebuffs();
-  void enemyAttack(Entity& target);
+  //Debuffs
+  bool attackDebuffActive{false};
+  bool defenseDebuffActive{false};
+  void resetAttackDebuff();
+  void resetDefenseDebuff();
+  
 };
 #endif

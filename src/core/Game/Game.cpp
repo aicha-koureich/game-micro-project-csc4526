@@ -4,7 +4,7 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
-Game::Game() {
+Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
@@ -45,6 +45,29 @@ Game::Game() {
   items.setFillColor(sf::Color::White);
   items.setPosition(sf::Vector2f(0.0f, 350.0f));
   mShopText.push_back(items);
+
+  //Fight
+
+  //Armes de bases déjà équipées pour le joueur
+  std::unique_ptr<Weapon> baseSword =
+      std::make_unique<Sword>(10, "Wooden stick", 0);
+  std::unique_ptr<Weapon> baseFeather =
+      std::make_unique<Feather>(5, "Pigeon feather", 0);
+
+  mPlayer.purchaseWeapon(std::move(baseSword));
+  mPlayer.purchaseWeapon(std::move(baseFeather));
+  
+  mPlayer.pickWeapon(0);
+
+  Enemy firstEnemy{50, 0.5f, 15, 10, 1};
+  mEnemies.push_back(firstEnemy);
+
+
+
+
+
+
+
   
 }
 
