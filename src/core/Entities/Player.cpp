@@ -32,13 +32,15 @@ void Player::pickWeapon(size_t idx) {
      
 }
 
-void Player::purchaseWeapon(std::unique_ptr<Weapon> newWeapon) {
+bool Player::purchaseWeapon(std::unique_ptr<Weapon>& newWeapon) {
   int weaponCost = newWeapon->getCost();
   if (totalMoney >= weaponCost) {
     weaponInventory.push_back(std::move(newWeapon));
     totalMoney -= weaponCost;
+    return true;
   } else {
     printf("Not enough money to buy this weapon !\n");
+    return false;
   }
     
 }
