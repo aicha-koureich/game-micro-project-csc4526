@@ -14,7 +14,6 @@ attacks/AttackTest.cpp player/PlayerTest.cpp
 target_include_directories(unitTests PRIVATE
     ${CMAKE_SOURCE_DIR}/src/core/Factories
     ${CMAKE_SOURCE_DIR}/src/core/Weapons
-    ${CMAKE_SOURCE_DIR}/src/core/Others
 )
 
 target_link_libraries(unitTests GTest::gtest_main lib_core pugixml sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
