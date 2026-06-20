@@ -82,6 +82,9 @@ class Game {
   std::vector<Enemy> mEnemies;
   std::size_t mCurrentEnemyIdx{0};
 
+  sf::RectangleShape mPlayerShape;
+  sf::RectangleShape mEnemyShape;
+
   FightPhase mFightPhase{FightPhase::PLAYER_CHOICE};
   CircleQTE mCircleQte{};
   SentenceQTE mSentenceQte{};

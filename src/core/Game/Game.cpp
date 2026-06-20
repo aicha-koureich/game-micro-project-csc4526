@@ -69,8 +69,13 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
   titleFight.setString(" FIGHT ");
   titleFight.setCharacterSize(40);
   titleFight.setFillColor(sf::Color::White);
-  titleFight.setPosition(sf::Vector2f(230.f, 10.f));
+  titleFight.setPosition(sf::Vector2f(220.f, 10.f));
   mFightText.push_back(titleFight);
+
+  //Player renderer
+  mPlayerShape.setSize({60.f, 100.f});
+  mPlayerShape.setFillColor(sf::Color::Blue);
+  mPlayerShape.setPosition({80.f, 120.f});
 
   // Player Healthbar (background and fill)
   mPlayerHpBarBg.setSize({150.f, 20.f});
@@ -79,6 +84,11 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
   mPlayerHpBar.setSize({150.f, 20.f});
   mPlayerHpBar.setFillColor(sf::Color::Green);
   mPlayerHpBar.setPosition({40.f, 350.f});
+
+  //Enemy renderer
+  mEnemyShape.setSize({60.f, 100.f});
+  mEnemyShape.setFillColor(sf::Color::Magenta);
+  mEnemyShape.setPosition({500.f, 120.f});
 
   //Enemy HealthBar (background and fill)
   mEnemyHpBarBg.setSize({150.f, 20.f});
@@ -97,7 +107,7 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
   //Target Circle
   mQteTargetCircle.setRadius(40.f);
   mQteTargetCircle.setOrigin({40.f, 40.f});
-  mQteTargetCircle.setPosition({320.f, 220.f});
+  mQteTargetCircle.setPosition({320.f, 420.f});
   mQteTargetCircle.setFillColor(sf::Color::Transparent);
   mQteTargetCircle.setOutlineColor(sf::Color::White);
   mQteTargetCircle.setOutlineThickness(3.f);
@@ -105,35 +115,35 @@ Game::Game() : mPlayer(100, 50, 0, 5, nullptr) {
   //Moving Circle
   mQteMovingCircle.setOrigin(
       {mQteMovingCircle.getRadius(), mQteMovingCircle.getRadius()});
-  mQteMovingCircle.setPosition({320.f, 220.f});
+  mQteMovingCircle.setPosition({320.f, 420.f});
   mQteMovingCircle.setFillColor(sf::Color::Transparent);
   mQteMovingCircle.setOutlineColor(sf::Color::Yellow);
   mQteMovingCircle.setOutlineThickness(2.f);
 
   //Sentence QTE (Eloquence Qte)
   //Sentence to Complete
-  mSentenceText.setCharacterSize(20);
+  mSentenceText.setCharacterSize(18);
   mSentenceText.setFillColor(sf::Color(150, 150, 150));
-  mSentenceText.setPosition({40.f, 220.f});
+  mSentenceText.setPosition({40.f, 390.f});
 
   //Input sentence
-  mUserInputText.setCharacterSize(20);
+  mUserInputText.setCharacterSize(18);
   mUserInputText.setFillColor(sf::Color::White);
-  mUserInputText.setPosition({40.f, 250.f});
+  mUserInputText.setPosition({40.f, 420.f});
 
   //Message afetr player action
   mPlayerTurnResMessage.setCharacterSize(22);
   mPlayerTurnResMessage.setFillColor(sf::Color::Yellow);
-  mPlayerTurnResMessage.setPosition({200.f, 400.f});
+  mPlayerTurnResMessage.setPosition({180.f, 300.f});
 
   //Buttons
-  Button strengthButton(sf::Vector2f(40.f, 420.f), sf::Vector2f(150.f, 40.f),
+  Button strengthButton(sf::Vector2f(40.f, 400.f), sf::Vector2f(150.f, 50.f),
                         "STRENGTH", mFont, sf::Color(78, 0, 0), 18); 
 
-  Button eloquenceButton(sf::Vector2f(220.f, 420.f), sf::Vector2f(150.f, 40.f),
+  Button eloquenceButton(sf::Vector2f(240.f, 400.f), sf::Vector2f(150.f, 50.f),
                         "ELOQUENCE", mFont, sf::Color(75, 0, 110), 18);
 
-  Button itemButton(sf::Vector2f(220.f, 420.f), sf::Vector2f(150.f, 40.f),
+  Button itemButton(sf::Vector2f(440.f, 400.f), sf::Vector2f(150.f, 50.f),
                         "ITEM", mFont, sf::Color(0, 103, 79), 18);
 
   mFightButtons.push_back(strengthButton);
@@ -273,11 +283,11 @@ void Game::update(sf::Time elapsedTime) {
 
   //Barres de vie mises à jour
   mPlayerHpBar.setSize(
-      {150.f * mPlayer.getHealthPoints() / mPlayer.getMaxHealthPoints(),
-       20.f});  // remplacer 100 par maxHealthPoints
+      {120.f * mPlayer.getHealthPoints() / mPlayer.getMaxHealthPoints(),
+       16.f});  // remplacer 100 par maxHealthPoints
   mEnemyHpBar.setSize(
-      {150.f * enemy.getHealthPoints() / enemy.getMaxHealthPoints(),
-       20.f});  // idem
+      {120.f * enemy.getHealthPoints() / enemy.getMaxHealthPoints(),
+       16.f});  // idem
 
 }
 
@@ -304,8 +314,12 @@ void Game::render() {
 
       case GameState::FIGHT:
         for (const auto& text : mFightText) mWindow.draw(text);
+
+        mWindow.draw(mPlayerShape);
         mWindow.draw(mPlayerHpBarBg);
         mWindow.draw(mPlayerHpBar);
+
+        mWindow.draw(mEnemyShape);
         mWindow.draw(mEnemyHpBarBg);
         mWindow.draw(mEnemyHpBar);
 

@@ -18,6 +18,12 @@ option(SFML_BUILD_AUDIO "Build audio" ON)
 option(SFML_BUILD_NETWORK "Build network" ON)
 FetchContent_MakeAvailable(sfml)
 
+FetchContent_Declare(
+  pugixml
+  URL https://github.com/zeux/pugixml/archive/refs/tags/v1.14.tar.gz
+)
+FetchContent_MakeAvailable(pugixml)
+
 set(CMAKE_CXX_STANDARD 23)
 
 add_subdirectory(src/core)

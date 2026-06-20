@@ -3,8 +3,8 @@
 
 class Entity {
  protected:
-  int healthPoints;
-  int maxHealthPoints;
+  int healthPoints{0};
+  int maxHealthPoints{100};
 
  public:
 

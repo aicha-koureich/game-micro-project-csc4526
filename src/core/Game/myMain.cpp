@@ -1,3 +1,4 @@
+#include "pugixml.hpp"
 #include "Game.hpp"
 #include "myMain.h"
 
