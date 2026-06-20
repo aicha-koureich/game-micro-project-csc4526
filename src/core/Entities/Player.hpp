@@ -44,7 +44,7 @@ class Player : public Entity {
 
   //Weapon Methods  
   void pickWeapon(size_t idx);
-  void purchaseWeapon(std::unique_ptr<Weapon>);
+  bool purchaseWeapon(std::unique_ptr<Weapon>&);
 
   //Attack Methods
   void takeDamage(int attackRes) override;

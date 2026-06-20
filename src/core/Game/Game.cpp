@@ -9,6 +9,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
+  loadXML();
 
   //Start Menu
   mCurrentState = GameState::MAIN_MENU;
@@ -174,7 +175,9 @@ void Game::loadXML(){
     weaponText.setFillColor(sf::Color::White);
     weaponText.setPosition(sf::Vector2f(currentX, currentY));
     mShopText.push_back(weaponText);
-
+    //bouton achat
+    Button buyBtn(sf::Vector2f(currentX, currentY + 50.f), sf::Vector2f(80.f, 30.f), "ACHETER", mFont, sf::Color::Red, 15);
+    mShopButtons.push_back(buyBtn);
     currentX += 130.f; 
     
     mShopWeapon.push_back(std::move(weapon));
@@ -421,10 +424,31 @@ void Game::handleMouseLeftButtonPressed() {
 
   if(mMenuButtons[0].isPressed(mousePosition)){
     mCurrentState = GameState::SHOP;
+    
   } else if (mMenuButtons.size() > 1 &&
              mMenuButtons[1].isPressed(mousePosition)) {
     mCurrentState = GameState::FIGHT;
   
+  } else if (mCurrentState == GameState::SHOP) {
+    for (size_t i = 0; i < mShopButtons.size(); ++i) {
+      if (mShopButtons[i].isPressed(mousePosition)) {
+        
+        // 1. Si l'arme a déjà été vendue (le pointeur est vide)
+        if (mShopWeapon[i] == nullptr) {
+          std::cout << "Deja vendu !\n";
+          continue; 
+        }
+
+        // 2. On tente l'achat
+        bool success = mPlayer.purchaseWeapon(mShopWeapon[i]);
+        
+        if (success) {
+          std::cout << "Achat reussi !\n";
+        } else {
+          std::cout << "Fonds insuffisants !\n";
+        }
+      }
+    }
   } else if (mCurrentState == GameState::FIGHT &&
              mFightPhase == FightPhase::PLAYER_CHOICE) {
     //Strength attack
