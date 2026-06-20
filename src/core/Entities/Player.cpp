@@ -2,8 +2,8 @@
 #include "Player.hpp"
 
 
-Player::Player(int hp, int money, float size, int defense, Weapon* playerWeapon)
-    : Entity(hp),
+Player::Player(int maxHp, int money, float size, int defense, Weapon* playerWeapon)
+    : Entity(maxHp),
       totalMoney(money),
       noseSize(size),
       baseDefense(defense),

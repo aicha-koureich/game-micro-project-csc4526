@@ -17,7 +17,7 @@ class Player : public Entity {
   //vector<std::unique_ptr<Items>> itemInventory;
 
  public:
-  Player(int hp, int money, float size, int defense, Weapon* playerWeapon);
+  Player(int maxHp, int money, float size, int defense, Weapon* playerWeapon);
   ~Player() override = default;
 
   // Getters

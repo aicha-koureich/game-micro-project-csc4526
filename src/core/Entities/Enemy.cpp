@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 
-Enemy::Enemy(int hp, float sensitivity, int damage, int defense, int level) : Entity(hp), sensitivityToEloq(sensitivity), baseDamage(damage), currentDamage(damage), baseDefense(defense), currentDefense(defense), enemyLevel(level){}
+Enemy::Enemy(int maxHp, float sensitivity, int damage, int defense, int level) : Entity(maxHp), sensitivityToEloq(sensitivity), baseDamage(damage), currentDamage(damage), baseDefense(defense), currentDefense(defense), enemyLevel(level){}
 
 
 void Enemy::takeDamage(int attackRes) {

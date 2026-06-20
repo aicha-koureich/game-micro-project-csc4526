@@ -9,7 +9,7 @@ class Entity {
  public:
 
   virtual void takeDamage(int attackRes) = 0;
-  Entity(int hp) : healthPoints(hp) {}
+  Entity(int maxHp) : healthPoints(maxHp), maxHealthPoints(maxHp) {}
   virtual ~Entity() = default;
   int getHealthPoints() const { return healthPoints; }
   int getMaxHealthPoints() const { return maxHealthPoints; }

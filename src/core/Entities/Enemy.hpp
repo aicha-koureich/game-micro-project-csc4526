@@ -16,7 +16,7 @@ class Enemy : public Entity {
 
 
  public:
-  Enemy(int hp, float sensitivity, int damage, int defense, int level);
+  Enemy(int maxHp, float sensitivity, int damage, int defense, int level);
   ~Enemy() override = default;
 
   float getSensitivityToEloq() const { return sensitivityToEloq;}
