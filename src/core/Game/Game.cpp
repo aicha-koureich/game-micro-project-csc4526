@@ -20,9 +20,11 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mMenuText.push_back(titleMenu);
   Button startButton(sf::Vector2f(220.f,240.f ), sf::Vector2f(200.f, 60.f), "START", mFont, sf::Color::Red, 30);
   mMenuButtons.push_back(startButton);
+  /*
   Button fightButton(sf::Vector2f(220.f, 320.f), sf::Vector2f(200.f, 50.f),
                      "FIGHT", mFont, sf::Color(80, 80, 200), 18);
   mMenuButtons.push_back(fightButton);
+  */
  
   //Shop
   sf::Text titleShop{mFont};
@@ -150,6 +152,28 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mDebuffButtons.push_back(attackDebuffButton);
   mDebuffButtons.push_back(defenseDebuffButton);
 
+
+  //WIN / DEAD
+  sf::Text winTitle{mFont};
+  winTitle.setString("VICTORY !!!");
+  winTitle.setCharacterSize(40);
+  winTitle.setFillColor(sf::Color::Green);
+  winTitle.setPosition({200.f, 150.f});
+  mWinText.push_back(winTitle);
+  Button winToShopButton(sf::Vector2f(220.f, 300.f), sf::Vector2f(200.f, 50.f),
+                         "BACK TO SHOP", mFont, sf::Color(80, 80, 200), 18);
+  mWinButtons.push_back(winToShopButton);
+
+  sf::Text deadTitle{mFont};
+  deadTitle.setString("YOU LOST !");
+  deadTitle.setCharacterSize(36);
+  deadTitle.setFillColor(sf::Color::Red);
+  deadTitle.setPosition({150.f, 150.f});
+  mDeadText.push_back(deadTitle);
+  Button deadRestartButton(sf::Vector2f(220.f, 300.f),
+                           sf::Vector2f(200.f, 50.f), "TRY AGAIN", mFont,
+                           sf::Color(150, 0, 0), 18);
+  mDeadButtons.push_back(deadRestartButton);
   
 }
 void Game::loadXML(){
@@ -261,12 +285,13 @@ void Game::update(sf::Time elapsedTime) {
             {mCircleQte.currentRadius, mCircleQte.currentRadius});
         mCircleQte.currentRadius -= mCircleQte.closeSpeed * dt;
         if (mCircleQte.currentRadius <= 0.f) {
-          mCircleQte.circlePerf = 0.f;
+          mCircleQte.circlePerf = 0.5f;
           mFightPhase = FightPhase::RESOLUTION_PLAYER;
         }
       } else {
         mSentenceQte.remainingTime -= dt;
         if (mSentenceQte.remainingTime <= 0.f) {
+          mSentenceQte.sentencePerf = 0.5f;
           mFightPhase = FightPhase::RESOLUTION_PLAYER;
         }
       }
@@ -310,7 +335,7 @@ void Game::update(sf::Time elapsedTime) {
 
       mCircleQte.currentRadius -= mCircleQte.closeSpeed * dt;
       if (mCircleQte.currentRadius <= 0.f) {
-        mCircleQte.circlePerf = 0.f;
+        mCircleQte.circlePerf = 0.5f;
         mFightPhase = FightPhase::RESOLUTION_ENEMY;
       }
 
@@ -414,6 +439,17 @@ void Game::render() {
 
         break;
 
+      case GameState::WIN:
+        for (const auto& text : mWinText) mWindow.draw(text);
+        for (const auto& button : mWinButtons) button.draw(mWindow);
+        break;
+
+      case GameState::DEAD:
+        for (const auto& text : mDeadText) mWindow.draw(text);
+        for (const auto& button : mDeadButtons) button.draw(mWindow);
+        break;
+       
+
   }
 
   mWindow.display();
@@ -441,11 +477,11 @@ void Game::handleMouseLeftButtonPressed() {
   if(mMenuButtons[0].isPressed(mousePosition)){
     mCurrentState = GameState::SHOP;
     
-  } else if (mMenuButtons.size() > 1 &&
+  } /* else if (mMenuButtons.size() > 1 &&
              mMenuButtons[1].isPressed(mousePosition)) {
     mCurrentState = GameState::FIGHT;
   
-  } else if (mCurrentState == GameState::SHOP) {
+  } */else if (mCurrentState == GameState::SHOP) {
     if (!mShopButtons.empty() && mShopButtons.back().isPressed(mousePosition)) {
         //Le dernier bouton est le bouton fight car loadXML est appelé avant 
       mCurrentState = GameState::FIGHT;
@@ -500,6 +536,14 @@ void Game::handleMouseLeftButtonPressed() {
     mSentenceText.setString(mSentenceQte.sentence);
     mUserInputText.setString("");
     mFightPhase = FightPhase::PLAYER_QTE;
+  } else if (mCurrentState == GameState::WIN) {
+    if (!mWinButtons.empty() && mWinButtons[0].isPressed(mousePosition)) {
+      mCurrentState = GameState::SHOP;
+    }
+  } else if (mCurrentState == GameState::DEAD) {
+    if (!mDeadButtons.empty() && mDeadButtons[0].isPressed(mousePosition)) {
+      mCurrentState = GameState::MAIN_MENU;
+    }
   }
       
     
@@ -518,12 +562,14 @@ void Game::handleFightKeyPressed(sf::Keyboard::Key key) {
     
     // On calcule la distance entre le rayon du cercle qui r�tr�cit et le rayon du cercle vis�, plus cette distance est petite, plus la performance est proche de 1 donc les d�gats sont �lev�s
     float diff = std::abs(mCircleQte.currentRadius - mCircleQte.targetRadius);
-    mCircleQte.circlePerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
+    float rawPerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
+    mCircleQte.circlePerf = 0.5f + rawPerf * 1.5f;  //QTE manquée -> moitié des dégats infligés, QTE parfaitement réussie -> double des dégats 
     mFightPhase = FightPhase::RESOLUTION_PLAYER; //Le tour du joueur se termine apr�s la QTE d'attaque
 
   } else if (mFightPhase == FightPhase::PLAYER_DEFENSE_QTE) {
     float diff = std::abs(mCircleQte.currentRadius - mCircleQte.targetRadius);
-    mCircleQte.circlePerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
+    float rawPerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
+    mCircleQte.circlePerf = 0.5 + rawPerf * 1.5f;
     mFightPhase = FightPhase::RESOLUTION_ENEMY;
 
   }
