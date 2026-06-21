@@ -33,12 +33,22 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   titleShop.setFillColor(sf::Color::White);
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
+
+  mShopMoneyText.setCharacterSize(28);
+  mShopMoneyText.setFillColor(sf::Color::White);
+  mShopMoneyText.setPosition({450.f, 10.f});
+
   sf::Text items{mFont};
   items.setString("ITEMS");
   items.setCharacterSize(30);
   items.setFillColor(sf::Color::White);
   items.setPosition(sf::Vector2f(0.0f, 350.0f));
   mShopText.push_back(items);
+
+  mPlayerStatsText.setCharacterSize(16);
+  mPlayerStatsText.setFillColor(sf::Color::White);
+  mPlayerStatsText.setPosition({400.f, 350.f});
+
   Button goFightButton(sf::Vector2f(220.f, 420.f), sf::Vector2f(200.f, 50.f),
                        "GO FIGHT", mFont, sf::Color(80, 80, 200), 18);
   mShopButtons.push_back(goFightButton);
@@ -46,10 +56,10 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
 
   //Fight
 
-  //Armes de bases d�j� �quip�es pour le joueurs
-
-  Enemy firstEnemy{50, 0.5f, 15, 10, 1};
-  mEnemies.push_back(firstEnemy);
+  //Ennemies
+  mEnemies.push_back(Enemy{50, 0.5f, 15, 2, 1});
+  mEnemies.push_back(Enemy{70, 0.4f, 20, 12, 2});
+  mEnemies.push_back(Enemy{90, 0.3f, 25, 15, 3});
 
   // Graphics
 
@@ -64,28 +74,42 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   //Player renderer
   mPlayerShape.setSize({60.f, 100.f});
   mPlayerShape.setFillColor(sf::Color::Blue);
-  mPlayerShape.setPosition({80.f, 120.f});
+  mPlayerShape.setPosition({80.f, 145.f});
 
   // Player Healthbar (background and fill)
   mPlayerHpBarBg.setSize({150.f, 20.f});
   mPlayerHpBarBg.setFillColor(sf::Color(60, 60, 60));
-  mPlayerHpBarBg.setPosition({40.f, 350.f});
+  mPlayerHpBarBg.setPosition({40.f, 115.f});
   mPlayerHpBar.setSize({150.f, 20.f});
   mPlayerHpBar.setFillColor(sf::Color::Green);
-  mPlayerHpBar.setPosition({40.f, 350.f});
+  mPlayerHpBar.setPosition({40.f, 115.f});
+
+  mPlayerHpText.setString(std::to_string(mPlayer.getHealthPoints()) + "/" +
+                          std::to_string(mPlayer.getMaxHealthPoints()));
+  mPlayerHpText.setCharacterSize(16);
+  mPlayerHpText.setFillColor(sf::Color::White);
+  mPlayerHpText.setPosition({40.f, 90.f});
+  
 
   //Enemy renderer
   mEnemyShape.setSize({60.f, 100.f});
   mEnemyShape.setFillColor(sf::Color::Magenta);
-  mEnemyShape.setPosition({500.f, 120.f});
+  mEnemyShape.setPosition({500.f, 145.f});
 
   //Enemy HealthBar (background and fill)
   mEnemyHpBarBg.setSize({150.f, 20.f});
   mEnemyHpBarBg.setFillColor(sf::Color(60, 60, 60));
-  mEnemyHpBarBg.setPosition({450.f, 60.f});
+  mEnemyHpBarBg.setPosition({450.f, 115.f});
   mEnemyHpBar.setSize({150.f, 20.f});
   mEnemyHpBar.setFillColor(sf::Color::Red);
-  mEnemyHpBar.setPosition({450.f, 60.f});
+  mEnemyHpBar.setPosition({450.f, 115.f});
+
+  mEnemyHpText.setString(std::to_string(mEnemies[mCurrentEnemyIdx].getHealthPoints()) + "/" +
+      std::to_string(mEnemies[mCurrentEnemyIdx].getMaxHealthPoints()));
+  mEnemyHpText.setCharacterSize(16);
+  mEnemyHpText.setFillColor(sf::Color::White);
+  mEnemyHpText.setPosition({450.f, 90.f});
+  
 
   //Weapon Text
   mWeaponNameText.setCharacterSize(18);
@@ -174,6 +198,15 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
                            sf::Vector2f(200.f, 50.f), "TRY AGAIN", mFont,
                            sf::Color(150, 0, 0), 18);
   mDeadButtons.push_back(deadRestartButton);
+
+  //Game Finished
+  sf::Text finishedTitle{mFont};
+  finishedTitle.setString("You beat every enemy");
+  finishedTitle.setCharacterSize(36);
+  finishedTitle.setFillColor(sf::Color::Yellow);
+  finishedTitle.setPosition({120.f, 200.f});
+  mFinishedText.push_back(finishedTitle);
+
   
 }
 void Game::loadXML(){
@@ -305,14 +338,19 @@ void Game::update(sf::Time elapsedTime) {
       mPlayer.playerAttack(enemy, perf);
 
       if (enemy.getHealthPoints() <= 0) {
-        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.1f) *
+        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.3f) *
                           enemy.getEnemyLevel();
         mPlayer.addMoney(moneyGained);
         mPlayer.increaseNoseSize(enemy.getEnemyLevel());
         mPlayer.restoreHealth();
-        
-        mPlayerTurnResMessage.setString("Enemy is dead !");
-        mCurrentState = GameState::WIN;
+
+        mCurrentEnemyIdx++;
+        if (mCurrentEnemyIdx >= mEnemies.size()) {
+          mCurrentState = GameState::GAME_FINISHED;
+        } else {
+          mPlayerTurnResMessage.setString("Enemy is dead !");
+          mCurrentState = GameState::WIN;
+        }
         return;
       }
 
@@ -379,9 +417,13 @@ void Game::update(sf::Time elapsedTime) {
   mPlayerHpBar.setSize(
       {120.f * mPlayer.getHealthPoints() / mPlayer.getMaxHealthPoints(),
        16.f}); 
+  mPlayerHpText.setString(std::to_string(mPlayer.getHealthPoints()) + "/" +
+                          std::to_string(mPlayer.getMaxHealthPoints()));
   mEnemyHpBar.setSize(
       {120.f * enemy.getHealthPoints() / enemy.getMaxHealthPoints(),
-       16.f}); 
+       16.f});
+  mEnemyHpText.setString(std::to_string(enemy.getHealthPoints()) + "/" +
+                          std::to_string(enemy.getMaxHealthPoints()));
 
 }
 
@@ -398,12 +440,15 @@ void Game::render() {
     }
       break;
     case GameState::SHOP:
-    for(const auto& text : mShopText){
-      mWindow.draw(text);
-    }
-    for(const auto& button : mShopButtons){
-       button.draw(mWindow);
-    }
+      mShopMoneyText.setString(
+          "Money : " + std::to_string(mPlayer.getTotalMoney()) + " ecus");
+      mWindow.draw(mShopMoneyText);
+      for(const auto& text : mShopText){
+        mWindow.draw(text);
+      }
+      for(const auto& button : mShopButtons){
+        button.draw(mWindow);
+      }
       break;
 
       case GameState::FIGHT:
@@ -412,10 +457,12 @@ void Game::render() {
         mWindow.draw(mPlayerShape);
         mWindow.draw(mPlayerHpBarBg);
         mWindow.draw(mPlayerHpBar);
+        mWindow.draw(mPlayerHpText);
 
         mWindow.draw(mEnemyShape);
         mWindow.draw(mEnemyHpBarBg);
         mWindow.draw(mEnemyHpBar);
+        mWindow.draw(mEnemyHpText);
 
         mWindow.draw(mWeaponNameText);
         mWindow.draw(mPlayerTurnResMessage);
@@ -440,6 +487,14 @@ void Game::render() {
         break;
 
       case GameState::WIN:
+        mPlayerStatsText.setString(
+            "Money : " + std::to_string(mPlayer.getTotalMoney()) + " ecus\n" +
+            "Nose Size : " + std::to_string(mPlayer.getNoseSize()) + "\n" + 
+            "Health Points : " + std::to_string(mPlayer.getMaxHealthPoints()) + "HP\n" + 
+            "Defense : " + std::to_string(mPlayer.getBaseDefense())
+        );
+        mWindow.draw(mPlayerStatsText);
+
         for (const auto& text : mWinText) mWindow.draw(text);
         for (const auto& button : mWinButtons) button.draw(mWindow);
         break;
@@ -447,6 +502,17 @@ void Game::render() {
       case GameState::DEAD:
         for (const auto& text : mDeadText) mWindow.draw(text);
         for (const auto& button : mDeadButtons) button.draw(mWindow);
+        break;
+
+      case GameState::GAME_FINISHED:
+        mPlayerStatsText.setString(
+            "Money : " + std::to_string(mPlayer.getTotalMoney()) + " ecus\n" +
+            "Nose Size : " + std::to_string(mPlayer.getNoseSize()) + "\n" +
+            "Health Points : " + std::to_string(mPlayer.getMaxHealthPoints()) +
+            "HP\n" + "Defense : " + std::to_string(mPlayer.getBaseDefense()));
+        mWindow.draw(mPlayerStatsText);
+
+        for (const auto& text : mFinishedText) mWindow.draw(text);
         break;
        
 
@@ -474,17 +540,15 @@ void Game::handleMouseLeftButtonPressed() {
   }
   sf::Vector2i mousePosition = sf::Mouse::getPosition(mWindow);
 
-  if(mMenuButtons[0].isPressed(mousePosition)){
+  if(mCurrentState == GameState::MAIN_MENU && mMenuButtons[0].isPressed(mousePosition)){
     mCurrentState = GameState::SHOP;
     
-  } /* else if (mMenuButtons.size() > 1 &&
-             mMenuButtons[1].isPressed(mousePosition)) {
-    mCurrentState = GameState::FIGHT;
-  
-  } */else if (mCurrentState == GameState::SHOP) {
+  } else if (mCurrentState == GameState::SHOP) {
     if (!mShopButtons.empty() && mShopButtons.back().isPressed(mousePosition)) {
         //Le dernier bouton est le bouton fight car loadXML est appelé avant 
       mCurrentState = GameState::FIGHT;
+      mFightPhase = FightPhase::PLAYER_CHOICE;  
+      mPlayerTurnResMessage.setString("");
     } else {
         for (size_t i = 0; i < mShopWeapon.size(); ++i) {
             if (mShopButtons[i].isPressed(mousePosition)) {

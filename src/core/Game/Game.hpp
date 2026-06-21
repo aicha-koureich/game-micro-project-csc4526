@@ -11,7 +11,15 @@
 #include "Weapons/Feather.h"
 
 
-enum class GameState{MAIN_MENU, SHOP, FIGHT, WIN, DEAD, SETTING};
+enum class GameState {
+  MAIN_MENU,
+  SHOP,
+  FIGHT,
+  WIN,
+  DEAD,
+  GAME_FINISHED, 
+  SETTING
+};
 
 //FIGHT PHASE
 enum class FightPhase { 
@@ -23,6 +31,7 @@ enum class FightPhase {
 	PLAYER_DEFENSE_QTE,
 	RESOLUTION_ENEMY,
 	WAITING_AFTER_ENEMY
+	
 };
 
 struct CircleQTE {
@@ -81,7 +90,11 @@ class Game {
   std::vector<sf::Text> mFightText;
   std::vector<sf::Text> mWinText;
   std::vector<sf::Text> mDeadText;
+  std::vector<sf::Text> mFinishedText;
+
   std::vector<unique_ptr<Weapon>> mShopWeapon;
+  sf::Text mShopMoneyText{mFont};
+
 
   //Fight Phase
  
@@ -100,8 +113,13 @@ class Game {
   //Healthbars
   sf::RectangleShape mPlayerHpBarBg, mPlayerHpBar;
   sf::RectangleShape mEnemyHpBarBg, mEnemyHpBar;
+  sf::Text mPlayerHpText{mFont};
+  sf::Text mEnemyHpText{mFont};
+
+
 
   sf::Text mWeaponNameText{mFont};
+  sf::Text mPlayerStatsText{mFont};
 
   sf::CircleShape mQteTargetCircle;
   sf::CircleShape mQteMovingCircle;
