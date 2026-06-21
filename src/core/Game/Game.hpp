@@ -58,6 +58,8 @@ class Game {
   void handleFightKeyPressed(sf::Keyboard::Key key);
   void handleFightTextEntred(std::uint32_t unicode);
 
+  void equipBestWeapon(AttackType type);
+
   static const sf::Time TimePerFrame;
 
   sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "Jeu Cyrano AA"};
@@ -108,8 +110,6 @@ class Game {
   sf::Text mPlayerTurnResMessage{mFont};
 
   float mResolutionTimer{0.f};
-  std::size_t mSwordIdx{0};
-  std::size_t mFeatherIdx{1};
 };
 
 #endif  // BOOK_GAME_HPP

@@ -511,11 +511,11 @@ void Game::handleMouseLeftButtonPressed() {
              mFightPhase == FightPhase::PLAYER_CHOICE) {
     // Strength attack
     if (mFightButtons[0].isPressed(mousePosition)) {
-      mPlayer.pickWeapon(mSwordIdx);
+      equipBestWeapon(AttackType::STRENGTH);
       mCircleQte = {150.f, 80.f, 40.f, 0.f};
       mFightPhase = FightPhase::PLAYER_QTE;
     } else if (mFightButtons[1].isPressed(mousePosition)) {
-      mPlayer.pickWeapon(mFeatherIdx);
+      equipBestWeapon(AttackType::ELOQUENCE);
       mFightPhase = FightPhase::DEBUFF_CHOICE;
     }
   } else if (mCurrentState == GameState::FIGHT && mFightPhase == FightPhase::DEBUFF_CHOICE) {
@@ -529,7 +529,7 @@ void Game::handleMouseLeftButtonPressed() {
     }
     
     if (auto* feather = dynamic_cast<Feather*>(mPlayer.getCurrentWeapon())) {
-        feather->setDebuffChoice(DebuffType::DEFENSE);
+        feather->setDebuffChoice(mPendingDebuffChoice);
     }
 
     mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
@@ -594,4 +594,25 @@ void Game::handleFightTextEntred(std::uint32_t unicode) {
         mFightPhase = FightPhase::RESOLUTION_PLAYER;
       }
     }
+}
+
+void Game::equipBestWeapon(AttackType type) {
+  const auto& inventory = mPlayer.getWeaponInventory();
+  int bestEffect = -1;
+  size_t bestIdx = 0;
+  bool found = false;
+
+  for (size_t i = 0; i < inventory.size(); ++i) {
+    if (inventory[i]->getType() == type && inventory[i]->getEffect() > bestEffect) {
+      bestEffect = inventory[i]->getEffect();
+      bestIdx = i;
+      found = true;
+      
+    }
+  }
+
+  if (found) {
+    mPlayer.pickWeapon(bestIdx);
+  }
+
 }
