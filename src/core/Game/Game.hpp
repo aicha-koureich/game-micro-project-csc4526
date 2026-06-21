@@ -47,6 +47,7 @@ class Game {
   Game &operator=(const Game &) = delete;
   void run();
   void loadXML();
+
  private:
   void handleMouseLeftButtonPressed();
   void processEvents();
@@ -80,6 +81,7 @@ class Game {
   std::vector<sf::Text> mWinText;
   std::vector<sf::Text> mDeadText;
   std::vector<unique_ptr<Weapon>> mShopWeapon;
+  sf::Text mMoneyText{mFont};
 
   //Fight Phase
  

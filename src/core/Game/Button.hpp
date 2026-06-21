@@ -12,6 +12,8 @@ class Button {
  ~Button() = default;
  void draw(sf::RenderWindow& window) const;
  bool isPressed(const sf::Vector2i& mousePosition) const;
+ void setText(const std::string& newText) {mButtonText.setString(newText);}
+ void setBackColor(const sf::Color& color) {mButtonShape.setFillColor(color);}
 };
 
 #endif
