@@ -182,9 +182,9 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   winTitle.setString("VICTORY !!!");
   winTitle.setCharacterSize(40);
   winTitle.setFillColor(sf::Color::Green);
-  winTitle.setPosition({200.f, 150.f});
+  winTitle.setPosition({200.f, 60.f});
   mWinText.push_back(winTitle);
-  Button winToShopButton(sf::Vector2f(220.f, 300.f), sf::Vector2f(200.f, 50.f),
+  Button winToShopButton(sf::Vector2f(220.f, 330.f), sf::Vector2f(200.f, 50.f),
                          "BACK TO SHOP", mFont, sf::Color(80, 80, 200), 18);
   mWinButtons.push_back(winToShopButton);
 
@@ -338,6 +338,11 @@ void Game::update(sf::Time elapsedTime) {
       mPlayer.playerAttack(enemy, perf);
 
       if (enemy.getHealthPoints() <= 0) {
+        mPrevMoney = mPlayer.getTotalMoney();
+        mPrevNoseSize = mPlayer.getNoseSize();
+        mPrevMaxHp = mPlayer.getMaxHealthPoints();
+        mPrevBaseDefense = mPlayer.getBaseDefense();
+
         int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.3f) *
                           enemy.getEnemyLevel();
         mPlayer.addMoney(moneyGained);
@@ -442,7 +447,16 @@ void Game::render() {
     case GameState::SHOP:
       mShopMoneyText.setString(
           "Money : " + std::to_string(mPlayer.getTotalMoney()) + " ecus");
+
+      {
+        sf::FloatRect moneyBounds = mShopMoneyText.getLocalBounds();
+        mShopMoneyText.setOrigin({moneyBounds.position.x + moneyBounds.size.x,
+                                  moneyBounds.position.y});
+        mShopMoneyText.setPosition({620.f, 10.f});  // 620 = 640 - marge de 20px
+      }
+
       mWindow.draw(mShopMoneyText);
+
       for(const auto& text : mShopText){
         mWindow.draw(text);
       }
@@ -486,18 +500,37 @@ void Game::render() {
 
         break;
 
-      case GameState::WIN:
+      case GameState::WIN: {
+        int moneyGain = mPlayer.getTotalMoney() - mPrevMoney;
+        float noseGain = mPlayer.getNoseSize() - mPrevNoseSize;
+        int hpGain = mPlayer.getMaxHealthPoints() - mPrevMaxHp;
+        int defGain = mPlayer.getBaseDefense() - mPrevBaseDefense;
+
         mPlayerStatsText.setString(
-            "Money : " + std::to_string(mPlayer.getTotalMoney()) + " ecus\n" +
-            "Nose Size : " + std::to_string(mPlayer.getNoseSize()) + "\n" + 
-            "Health Points : " + std::to_string(mPlayer.getMaxHealthPoints()) + "HP\n" + 
-            "Defense : " + std::to_string(mPlayer.getBaseDefense())
-        );
+            "Argent : " + std::to_string(mPlayer.getTotalMoney()) + " ecus (+" +
+            std::to_string(moneyGain) + ")\n" +
+            "Taille du nez : " + std::to_string(mPlayer.getNoseSize()) + " (+" +
+            std::to_string(noseGain) + ")\n" +
+            "PV max : " + std::to_string(mPlayer.getMaxHealthPoints()) + " (+" +
+            std::to_string(hpGain) + ")\n" +
+            "Defense : " + std::to_string(mPlayer.getBaseDefense()) + " (+" +
+            std::to_string(defGain) + ")");
+
+        mPlayerStatsText.setCharacterSize(20);
+        mPlayerStatsText.setFillColor(sf::Color(120, 255, 120));
+
+        sf::FloatRect bounds = mPlayerStatsText.getLocalBounds();
+        mPlayerStatsText.setOrigin(
+            {bounds.position.x + bounds.size.x / 2.f, bounds.position.y});
+        mPlayerStatsText.setPosition({320.f, 220.f});
+
         mWindow.draw(mPlayerStatsText);
 
         for (const auto& text : mWinText) mWindow.draw(text);
         for (const auto& button : mWinButtons) button.draw(mWindow);
         break;
+      }
+        
 
       case GameState::DEAD:
         for (const auto& text : mDeadText) mWindow.draw(text);

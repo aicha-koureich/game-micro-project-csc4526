@@ -128,6 +128,12 @@ class Game {
   sf::Text mPlayerTurnResMessage{mFont};
 
   float mResolutionTimer{0.f};
+
+  //Pre fight stats
+  int mPrevMoney{0};
+  float mPrevNoseSize{0.f};
+  int mPrevMaxHp{0};
+  int mPrevBaseDefense{0};
 };
 
 #endif  // BOOK_GAME_HPP

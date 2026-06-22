@@ -24,7 +24,7 @@ TEST(takeDamage, player_takeDamage) {
     Enemy enemy{100, 2.0f, 10, 20, 2};  //Ennemi qui fait 10 de dégâts
     Player player{100, 50, 10.f, 5, &sword};    //Player avec 5 points de défense 
 
-    enemy.enemyAttack(player, 0.f); //Ennemi inflige 10 - 5 = 5 dégats
+    enemy.enemyAttack(player, 1.f); //Ennemi inflige 10 - 5 = 5 dégats
 
     EXPECT_EQ(player.getHealthPoints(), 95);
 
@@ -35,7 +35,7 @@ TEST(takeDamage, enemyDamageTooLow) {
   Enemy enemy{100, 2.0f, 10, 5, 2};   // Ennemi avec 10 points de dégâts
   Player player{100, 50, 10.f, 15, &sword};  // Player avec 15 points de défense
 
-  enemy.enemyAttack(player, 0.f);  // Ennemi inflige 10 - 15 = -5 donc son attaque va
+  enemy.enemyAttack(player, 1.f);  // Ennemi inflige 10 - 15 = -5 donc son attaque va
                               // faire 1 point de dégâts
 
   EXPECT_EQ(player.getHealthPoints(), 99);
@@ -47,7 +47,7 @@ TEST(takeDamage, enemyKillPlayer) {
               2};  // Ennemi qui avec 100 hp et 5 points de défense
   Player player{100, 50, 10.f, 15, &sword};  // Player avec 15 points de défense
 
-  enemy.enemyAttack(player, 0.f);  // Ennemi inflige 10 - 15 = -5 donc son attaque va
+  enemy.enemyAttack(player, 1.f);  // Ennemi inflige 10 - 15 = -5 donc son attaque va
                               // faire 1 point de dégâts
 
   EXPECT_EQ(player.getHealthPoints(), 0);
@@ -69,7 +69,7 @@ TEST(pickWeapon, player_withoutWeaponTakesAFeatherFromInventory) {
   std::unique_ptr<Weapon> feather =
       std::make_unique<Feather>(20, "Goose Feather", 150);
 
-  player.purchaseWeapon(std::move(feather));
+  player.purchaseWeapon(feather);
   EXPECT_EQ(player.getTotalMoney(), 350);
 
   player.pickWeapon(0);
@@ -85,9 +85,9 @@ TEST(pickWeapon, player_takesAWeaponInInventoryThenOutOfRange) {
 
    Player player{100, 500, 10.f, 5, nullptr};
 
-   player.purchaseWeapon(std::move(sword1));
-   player.purchaseWeapon(std::move(feather1));
-   player.purchaseWeapon(std::move(sword2));
+   player.purchaseWeapon(sword1);
+   player.purchaseWeapon(feather1);
+   player.purchaseWeapon(sword2);
 
    EXPECT_EQ(player.getWeaponInventory().size(), 3);
 
@@ -106,7 +106,7 @@ TEST(purchaseWeapon, player_withoutEnoughMoney) {
   std::unique_ptr<Weapon> feather =
       std::make_unique<Feather>(20, "Goose Feather", 150);
 
-  player.purchaseWeapon(std::move(feather));
+  player.purchaseWeapon(feather);
   EXPECT_EQ(player.getTotalMoney(), 100);  // Le joueur n'a pas depensé d'argent
 
   EXPECT_EQ(player.getWeaponInventory().size(),
