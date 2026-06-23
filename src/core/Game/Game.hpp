@@ -136,6 +136,7 @@ class Game {
   sf::Text mWeaponNameText{mFont};
   sf::Text mPlayerStatsText{mFont};
 
+  sf::Text mQteText{mFont};
   sf::CircleShape mQteTargetCircle;
   sf::CircleShape mQteMovingCircle;
   sf::Text mSentenceText{mFont};

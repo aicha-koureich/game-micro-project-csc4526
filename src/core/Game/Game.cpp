@@ -175,6 +175,13 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mHoverInfoBg.setSize({0.f, 0.f});
 
   //Circle QTE (strength or defense QTE)
+  // 
+  // Indications for the player
+  mQteText.setCharacterSize(22);
+  mQteText.setFillColor(sf::Color::Yellow);
+  mQteText.setPosition({180.f, 300.f});
+  mQteText.setString("PRESS SPACE TO INTERACT !");
+
   //Target Circle
   mQteTargetCircle.setRadius(40.f);
   mQteTargetCircle.setOrigin({40.f, 40.f});
@@ -202,7 +209,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mUserInputText.setFillColor(sf::Color::White);
   mUserInputText.setPosition({40.f, 420.f});
 
-  //Message afetr player action
+  //Message after player action
   mPlayerTurnResMessage.setCharacterSize(22);
   mPlayerTurnResMessage.setFillColor(sf::Color::Yellow);
   mPlayerTurnResMessage.setPosition({180.f, 300.f});
@@ -367,21 +374,11 @@ void Game::update(sf::Time elapsedTime) {
   Enemy& enemy = mEnemies[mCurrentEnemyIdx];
 
   switch (mFightPhase) { 
-    case FightPhase::PLAYER_CHOICE:
+    case FightPhase::PLAYER_CHOICE: {
       if (mPlayer.getMana() < eloquenceCost) {
-        mFightButtons[1].setBackColor(sf::Color (65, 65, 65));
+        mFightButtons[1].setBackColor(sf::Color(65, 65, 65));
       } else {
         mFightButtons[1].setBackColor(sf::Color(75, 0, 110));
-      }
-
-      if (mFightButtons[0].isHovered(mousePos)) {
-        mHoverInfoText.setString("Degats : " + std::to_string(bestEffect));
-      } else if (mFightButtons[1].isHovered(mousePos)) {
-        mHoverInfoText.setString("Debuff : " + std::to_string(bestEffect) +
-                                 " (cout " + std::to_string(eloquenceCost) +
-                                 " mana)");
-      } else {
-        mHoverInfoText.setString("");
       }
 
       // Ajuste le cadre à la taille du texte (avec un padding)
@@ -394,6 +391,8 @@ void Game::update(sf::Time elapsedTime) {
             {bounds.size.x + padding * 2.f, bounds.size.y + padding * 2.f});
       }
       break;
+    }
+      
 
     case FightPhase::PLAYER_QTE:
       if (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
@@ -488,6 +487,7 @@ void Game::update(sf::Time elapsedTime) {
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
         mCircleQte = {150.f, 80.f, 40.f, 0.f};
+        mPlayerTurnResMessage.setString("");
         mFightPhase = FightPhase::PLAYER_DEFENSE_QTE;
       }
       break;
@@ -577,12 +577,14 @@ void Game::render() {
         } else if (mFightPhase == FightPhase::PLAYER_QTE &&
                    mPlayer.getCurrentWeapon()->getType() ==
                        AttackType::STRENGTH) {
+          mWindow.draw(mQteText);
           mWindow.draw(mQteTargetCircle);
           mWindow.draw(mQteMovingCircle);
         } else if (mFightPhase == FightPhase::PLAYER_QTE) {
           mWindow.draw(mSentenceText);
           mWindow.draw(mUserInputText);
         } else if (mFightPhase == FightPhase::PLAYER_DEFENSE_QTE) {
+          mWindow.draw(mQteText);
           mWindow.draw(mQteTargetCircle);
           mWindow.draw(mQteMovingCircle);
         }
@@ -851,7 +853,7 @@ void Game::equipBestWeapon(AttackType type) {
 
 }
 
-int Game::getBestWeaponEffect(AttackType type) {
+int Game::getBestWeaponEffect(AttackType type) const {
   const auto& inventory = mPlayer.getWeaponInventory();
   int bestEffect = -1;
   for (const auto& weapon : inventory) {
