@@ -116,12 +116,16 @@ class Game {
   sf::RectangleShape mPlayerShape;
   sf::RectangleShape mEnemyShape;
 
-  /*
+  /* //Sprites
   * sf::Texture mPlayerTexture;
   * sf::Texture mEnemyTextures[3];
   * sf::Sprite mPlayerSprite{mPlayerTexture};
   * sf::Sprite mEnemySprite{mEnemyTexture[0]};
   */
+
+  // UI Portraits
+  sf::RectangleShape mPlayerPortraitBg;
+  sf::RectangleShape mEnemyPortraitBg;
 
   FightPhase mFightPhase{FightPhase::PLAYER_CHOICE};
   DebuffType mPendingDebuffChoice{DebuffType::DEFENSE};
@@ -133,6 +137,7 @@ class Game {
   sf::RectangleShape mEnemyHpBarBg, mEnemyHpBar;
   sf::Text mPlayerHpText{mFont};
   sf::Text mEnemyHpText{mFont};
+  sf::Text mEnemyLevelText{mFont};
 
   //Mana
   const int eloquenceCost = 25;

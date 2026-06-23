@@ -102,58 +102,101 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   titleFight.setString(" FIGHT ");
   titleFight.setCharacterSize(40);
   titleFight.setFillColor(sf::Color::White);
-  titleFight.setPosition(sf::Vector2f(220.f, 10.f));
+
+  sf::FloatRect bounds = titleFight.getLocalBounds();
+  titleFight.setOrigin({bounds.size.x / 2.f, bounds.size.y / 2.f});
+
+  titleFight.setPosition(sf::Vector2f(320.f, 10.f));
   mFightText.push_back(titleFight);
+
+  // PLAYER GRAPHICS
+
+  // Player frame
+  mPlayerPortraitBg.setSize({60.f, 60.f});
+  mPlayerPortraitBg.setFillColor(sf::Color(40, 40, 40));  
+  mPlayerPortraitBg.setOutlineThickness(2.f);
+  mPlayerPortraitBg.setOutlineColor(sf::Color(218, 165, 32));  
+  mPlayerPortraitBg.setPosition({40.f, 49.f});
 
   //Player renderer
   mPlayerShape.setSize({60.f, 100.f});
   mPlayerShape.setFillColor(sf::Color::Blue);
-  mPlayerShape.setPosition({80.f, 145.f});
+  mPlayerShape.setPosition({130.f, 145.f});
 
   // Player Healthbar (background and fill)
   mPlayerHpBarBg.setSize({150.f, 20.f});
   mPlayerHpBarBg.setFillColor(sf::Color(60, 60, 60));
-  mPlayerHpBarBg.setPosition({40.f, 115.f});
+  mPlayerHpBarBg.setPosition({110.f, 65.f});
+  mPlayerHpBarBg.setOutlineThickness(2.f);
+  mPlayerHpBarBg.setOutlineColor(sf::Color(218, 165, 32));
   mPlayerHpBar.setSize({150.f, 20.f});
   mPlayerHpBar.setFillColor(sf::Color::Green);
-  mPlayerHpBar.setPosition({40.f, 115.f});
+  mPlayerHpBar.setPosition({110.f, 65.f});
 
   mPlayerHpText.setString(std::to_string(mPlayer.getHealthPoints()) + "/" +
                           std::to_string(mPlayer.getMaxHealthPoints()));
   mPlayerHpText.setCharacterSize(16);
   mPlayerHpText.setFillColor(sf::Color::White);
-  mPlayerHpText.setPosition({40.f, 90.f});
+  mPlayerHpText.setPosition({120.f, 67.f});
+  mPlayerHpText.setOutlineThickness(1.f);
+  mPlayerHpText.setOutlineColor(sf::Color::Black);
 
   //Player Mana
   mManaBarBg.setSize({150.f, 14.f});
   mManaBarBg.setFillColor(sf::Color(60, 60, 60));
-  mManaBarBg.setPosition({40.f, 145.f});
+  mManaBarBg.setPosition({110.f, 95.f});
+  mManaBarBg.setOutlineThickness(2.f);
+  mManaBarBg.setOutlineColor(sf::Color(192, 192, 192));
   mManaBar.setSize({150.f, 14.f});
   mManaBar.setFillColor(sf::Color::Blue);
-  mManaBar.setPosition({40.f, 145.f});
+  mManaBar.setPosition({110.f, 95.f});
   mManaText.setCharacterSize(14);
   mManaText.setFillColor(sf::Color::White);
-  mManaText.setPosition({40.f, 165.f});
+  mManaText.setPosition({120.f, 97.f});
+  mManaText.setOutlineThickness(1.f);
+  mManaText.setOutlineColor(sf::Color::Black);
 
+
+  // ENEMY GRAPHICS
+  
+  //Enemy frame
+  mEnemyPortraitBg.setSize({60.f, 60.f});
+  mEnemyPortraitBg.setFillColor(sf::Color(40, 40, 40));
+  mEnemyPortraitBg.setOutlineThickness(2.f);
+  mEnemyPortraitBg.setOutlineColor(sf::Color(218, 165, 32));
+  mEnemyPortraitBg.setPosition({540.f, 49.f});
 
   //Enemy renderer
   mEnemyShape.setSize({60.f, 100.f});
   mEnemyShape.setFillColor(sf::Color::Magenta);
-  mEnemyShape.setPosition({500.f, 145.f});
+  mEnemyShape.setPosition({450.f, 145.f});
 
   //Enemy HealthBar (background and fill)
   mEnemyHpBarBg.setSize({150.f, 20.f});
   mEnemyHpBarBg.setFillColor(sf::Color(60, 60, 60));
-  mEnemyHpBarBg.setPosition({450.f, 115.f});
+  mEnemyHpBarBg.setPosition({380.f, 65.f});
+  mEnemyHpBarBg.setOutlineThickness(2.f);
+  mEnemyHpBarBg.setOutlineColor(sf::Color(218, 165, 32));
   mEnemyHpBar.setSize({150.f, 20.f});
   mEnemyHpBar.setFillColor(sf::Color::Red);
-  mEnemyHpBar.setPosition({450.f, 115.f});
+  mEnemyHpBar.setPosition({380.f, 65.f});
 
   mEnemyHpText.setString(std::to_string(mEnemies[mCurrentEnemyIdx].getHealthPoints()) + "/" +
       std::to_string(mEnemies[mCurrentEnemyIdx].getMaxHealthPoints()));
   mEnemyHpText.setCharacterSize(16);
   mEnemyHpText.setFillColor(sf::Color::White);
-  mEnemyHpText.setPosition({450.f, 90.f});
+  mEnemyHpText.setPosition({390.f, 67.f});
+  mEnemyHpText.setOutlineThickness(1.f);
+  mEnemyHpText.setOutlineColor(sf::Color::Black);
+
+  //Enemy level
+  mEnemyLevelText.setCharacterSize(14);
+  mEnemyLevelText.setFillColor(sf::Color::White);
+  mEnemyLevelText.setPosition({390.f, 97.f});
+  mEnemyLevelText.setOutlineThickness(1.f);
+  mEnemyLevelText.setOutlineColor(sf::Color(218, 165, 32));
+  mEnemyLevelText.setString(
+      "LEVEL : " + std::to_string(mEnemies[mCurrentEnemyIdx].getEnemyLevel()));
   
 
   //Weapon Text
@@ -539,15 +582,18 @@ void Game::render() {
       case GameState::FIGHT:
         for (const auto& text : mFightText) mWindow.draw(text);
 
+        mWindow.draw(mPlayerPortraitBg);
         mWindow.draw(mPlayerShape);
         mWindow.draw(mPlayerHpBarBg);
         mWindow.draw(mPlayerHpBar);
         mWindow.draw(mPlayerHpText);
 
+        mWindow.draw(mEnemyPortraitBg);
         mWindow.draw(mEnemyShape);
         mWindow.draw(mEnemyHpBarBg);
         mWindow.draw(mEnemyHpBar);
         mWindow.draw(mEnemyHpText);
+        mWindow.draw(mEnemyLevelText);
 
         mWindow.draw(mManaBarBg);
         mWindow.draw(mManaBar);
@@ -663,8 +709,8 @@ void Game::handleHover() {
     } else if (mFightButtons[1].isHovered(mousePosition)) {
       int effect = getBestWeaponEffect(AttackType::ELOQUENCE);
       mHoverInfoText.setString(
-          effect >= 0 ? "Debuff brut : " + std::to_string(effect) + " (cout " +
-                            std::to_string(eloquenceCost) + " mana)"
+          effect >= 0 ? "Cout : " +
+                            std::to_string(eloquenceCost) + " mana"
                       : "Aucune plume equipee");
     } else {
       mHoverInfoText.setString("");
@@ -679,7 +725,7 @@ void Game::handleHover() {
       int reelDebuff = std::max(
           1, mEnemies[mCurrentEnemyIdx].getCurrentDamage() - reduction);
       mHoverInfoText.setString(
-          "Reduit l'attaque de l'ennemi\n Reduction : " +
+          "Reduit l'attaque de l'ennemi\n Reduction max : " +
                                std::to_string(reelDebuff) + " points d'attaque"
              );
     } else if (mDebuffButtons[1].isHovered(mousePosition)) {
@@ -692,7 +738,7 @@ void Game::handleHover() {
       int reelDebuff = std::max(
           1, mEnemies[mCurrentEnemyIdx].getCurrentDefense() - reduction);
       mHoverInfoText.setString(
-          "Reduit la defense de l'ennemi\n Reduction : " +
+          "Reduit la defense de l'ennemi\n Reduction max : " +
                                std::to_string(reelDebuff) + " points de defense");
     } else {
       mHoverInfoText.setString("");
