@@ -34,7 +34,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
     //items 
-  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(20, 0.5f);
+  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(10, 0.5f);
   std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(20, 0.5f);
   std::unique_ptr<Item> ink = std::make_unique<InkFlask>(20, 0.5f);
 
