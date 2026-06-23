@@ -820,6 +820,7 @@ void Game::handleMouseLeftButtonPressed() {
     
     if (mFightButtons[0].isPressed(mousePosition)) {
       equipBestWeapon(AttackType::STRENGTH);
+      mPlayerTurnResMessage.setString("");
       mCircleQte = {150.f, 80.f, 40.f, 0.f};
       mFightPhase = FightPhase::PLAYER_QTE;
     } else if (mFightButtons[1].isPressed(mousePosition)) {
