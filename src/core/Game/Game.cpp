@@ -372,10 +372,11 @@ void Game::update(sf::Time elapsedTime) {
   if (mCurrentState != GameState::FIGHT) return;
   float dt = elapsedTime.asSeconds();
   Enemy& enemy = mEnemies[mCurrentEnemyIdx];
+  handleHover();
 
   switch (mFightPhase) { 
     case FightPhase::PLAYER_CHOICE: {
-      handleHover();
+      
       if (mPlayer.getMana() < eloquenceCost) {
         mFightButtons[1].setBackColor(sf::Color(65, 65, 65));
       } else {
@@ -653,21 +654,54 @@ void Game::updateStatistics(sf::Time elapsedTime) {
 void Game::handleHover() {
   sf::Vector2i mousePosition = sf::Mouse::getPosition(mWindow);
 
-  if (mFightButtons[0].isHovered(mousePosition)) {
-    int effect = getBestWeaponEffect(AttackType::STRENGTH);
-    mHoverInfoText.setString(effect >= 0 ? "Degats : " + std::to_string(effect)
-                                         : "Aucune arme equipee");
-  } else if (mFightButtons[1].isHovered(mousePosition)) {
-    int effect = getBestWeaponEffect(AttackType::ELOQUENCE);
-    mHoverInfoText.setString(
-        effect >= 0 ? "Debuff : " + std::to_string(effect) + " (cout " +
-                          std::to_string(eloquenceCost) + " mana)"
-                    : "Aucune arme equipee");
+  if (mFightPhase == FightPhase::PLAYER_CHOICE) {
+    if (mFightButtons[0].isHovered(mousePosition)) {
+      int effect = getBestWeaponEffect(AttackType::STRENGTH);
+      mHoverInfoText.setString(effect >= 0
+                                   ? "Degats bruts : " + std::to_string(effect)
+                                   : "Aucune epee equipee");
+    } else if (mFightButtons[1].isHovered(mousePosition)) {
+      int effect = getBestWeaponEffect(AttackType::ELOQUENCE);
+      mHoverInfoText.setString(
+          effect >= 0 ? "Debuff brut : " + std::to_string(effect) + " (cout " +
+                            std::to_string(eloquenceCost) + " mana)"
+                      : "Aucune plume equipee");
+    } else {
+      mHoverInfoText.setString("");
+    }   
+  } else if (mFightPhase == FightPhase::DEBUFF_CHOICE) {
+    if (mDebuffButtons[0].isHovered(mousePosition)) {
+      int playerRawDebuff =
+          getBestWeaponEffect(AttackType::ELOQUENCE) *
+          2.f;    // On montre le debuff max que l'on peut appliqué à l'ennemi
+        int reduction =  (playerRawDebuff * mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()) /
+              mEnemies[mCurrentEnemyIdx].getEnemyLevel();
+      int reelDebuff = std::max(
+          1, mEnemies[mCurrentEnemyIdx].getCurrentDamage() - reduction);
+      mHoverInfoText.setString(
+          "Reduit l'attaque de l'ennemi\n Reduction : " +
+                               std::to_string(reelDebuff) + " points d'attaque"
+             );
+    } else if (mDebuffButtons[1].isHovered(mousePosition)) {
+      int playerRawDebuff =
+          getBestWeaponEffect(AttackType::ELOQUENCE) *
+          2.f;  // On montre le debuff max que l'on peut appliqué à l'ennemi
+      int reduction = (playerRawDebuff *
+                       mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()) /
+                      mEnemies[mCurrentEnemyIdx].getEnemyLevel();
+      int reelDebuff = std::max(
+          1, mEnemies[mCurrentEnemyIdx].getCurrentDefense() - reduction);
+      mHoverInfoText.setString(
+          "Reduit la defense de l'ennemi\n Reduction : " +
+                               std::to_string(reelDebuff) + " points de defense");
+    } else {
+      mHoverInfoText.setString("");
+    }
   } else {
     mHoverInfoText.setString("");
+    mHoverInfoBg.setSize(sf::Vector2f(0, 0));
   }
 
-  // Ajuste le cadre à la taille du texte (avec un padding)
   sf::FloatRect bounds = mHoverInfoText.getLocalBounds();
   if (!mHoverInfoText.getString().isEmpty()) {
     float padding = 8.f;
@@ -676,6 +710,7 @@ void Game::handleHover() {
     mHoverInfoBg.setSize(
         {bounds.size.x + padding * 2.f, bounds.size.y + padding * 2.f});
   }
+  
 }
 
 void Game::handleMouseLeftButtonPressed() {
