@@ -61,6 +61,7 @@ class Game {
   void loadXML();
 
  private:
+  void handleHover();
   void handleMouseLeftButtonPressed();
   void processEvents();
   void update(sf::Time elapsedTime);
@@ -114,6 +115,13 @@ class Game {
 
   sf::RectangleShape mPlayerShape;
   sf::RectangleShape mEnemyShape;
+
+  /*
+  * sf::Texture mPlayerTexture;
+  * sf::Texture mEnemyTextures[3];
+  * sf::Sprite mPlayerSprite{mPlayerTexture};
+  * sf::Sprite mEnemySprite{mEnemyTexture[0]};
+  */
 
   FightPhase mFightPhase{FightPhase::PLAYER_CHOICE};
   DebuffType mPendingDebuffChoice{DebuffType::DEFENSE};

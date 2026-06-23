@@ -28,7 +28,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
  
   //Shop
   sf::Text titleShop{mFont};
-  titleShop.setString(" SHOP");
+  titleShop.setString(" MAGASIN");
   titleShop.setCharacterSize(35);
   titleShop.setFillColor(sf::Color::White);
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
@@ -39,7 +39,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   std::unique_ptr<Item> ink = std::make_unique<InkFlask>(20, 0.5f);
 
   sf::Text items{mFont};
-  items.setString("Items");
+  items.setString("OBJETS");
   items.setCharacterSize(30);
   items.setFillColor(sf::Color::Green);
   items.setPosition(sf::Vector2f(0.0f, 315.0f));
@@ -180,7 +180,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mQteText.setCharacterSize(22);
   mQteText.setFillColor(sf::Color::Yellow);
   mQteText.setPosition({180.f, 300.f});
-  mQteText.setString("PRESS SPACE TO INTERACT !");
+  mQteText.setString("APPUYEZ SUR ESPACE !");
 
   //Target Circle
   mQteTargetCircle.setRadius(40.f);
@@ -375,20 +375,11 @@ void Game::update(sf::Time elapsedTime) {
 
   switch (mFightPhase) { 
     case FightPhase::PLAYER_CHOICE: {
+      handleHover();
       if (mPlayer.getMana() < eloquenceCost) {
         mFightButtons[1].setBackColor(sf::Color(65, 65, 65));
       } else {
         mFightButtons[1].setBackColor(sf::Color(75, 0, 110));
-      }
-
-      // Ajuste le cadre à la taille du texte (avec un padding)
-      sf::FloatRect bounds = mHoverInfoText.getLocalBounds();
-      if (!mHoverInfoText.getString().isEmpty()) {
-        float padding = 8.f;
-        mHoverInfoBg.setPosition({mHoverInfoText.getPosition().x - padding,
-                                  mHoverInfoText.getPosition().y - padding});
-        mHoverInfoBg.setSize(
-            {bounds.size.x + padding * 2.f, bounds.size.y + padding * 2.f});
       }
       break;
     }
@@ -436,7 +427,7 @@ void Game::update(sf::Time elapsedTime) {
         if (mCurrentEnemyIdx >= mEnemies.size()) {
           mCurrentState = GameState::GAME_FINISHED;
         } else {
-          mPlayerTurnResMessage.setString("Enemy is dead !");
+          mPlayerTurnResMessage.setString("L'ENNEMI EST MORT !");
           mCurrentState = GameState::WIN;
         }
         return;
@@ -444,9 +435,9 @@ void Game::update(sf::Time elapsedTime) {
 
       if (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
         enemy.resetDefenseDebuff();
-        mPlayerTurnResMessage.setString("Sword strike !");
+        mPlayerTurnResMessage.setString("COUP D'EPEE !");
       } else {
-        mPlayerTurnResMessage.setString("Debuff applied !");
+        mPlayerTurnResMessage.setString("L'ENNEMI EST AFFAIBLI PAR VOTRE ELOQUENCE !");
       }
 
       mResolutionTimer = 1.5f;
@@ -471,13 +462,13 @@ void Game::update(sf::Time elapsedTime) {
       enemy.enemyAttack(mPlayer, mCircleQte.circlePerf);
 
       if (mPlayer.getHealthPoints() <= 0) {
-        mPlayerTurnResMessage.setString("You lost !");
+        mPlayerTurnResMessage.setString("VOUS AVEZ PERDU !");
         mCurrentState = GameState::DEAD;
         return;
       }
 
       enemy.resetAttackDebuff();
-      mPlayerTurnResMessage.setString("Enemy attacks !");
+      mPlayerTurnResMessage.setString("ATTAQUE DE L'ENNEMI !");
 
       mResolutionTimer = 1.5f;
       mFightPhase = FightPhase::WAITING_AFTER_ENEMY;
@@ -495,7 +486,7 @@ void Game::update(sf::Time elapsedTime) {
     case FightPhase::WAITING_AFTER_ENEMY:
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
-        mPlayer.regenMana(10);
+        mPlayer.regenMana(5);
         mPlayerTurnResMessage.setString("");
         mFightPhase = FightPhase::PLAYER_CHOICE;
       }
@@ -658,6 +649,35 @@ void Game::updateStatistics(sf::Time elapsedTime) {
   }
 }
 
+
+void Game::handleHover() {
+  sf::Vector2i mousePosition = sf::Mouse::getPosition(mWindow);
+
+  if (mFightButtons[0].isHovered(mousePosition)) {
+    int effect = getBestWeaponEffect(AttackType::STRENGTH);
+    mHoverInfoText.setString(effect >= 0 ? "Degats : " + std::to_string(effect)
+                                         : "Aucune arme equipee");
+  } else if (mFightButtons[1].isHovered(mousePosition)) {
+    int effect = getBestWeaponEffect(AttackType::ELOQUENCE);
+    mHoverInfoText.setString(
+        effect >= 0 ? "Debuff : " + std::to_string(effect) + " (cout " +
+                          std::to_string(eloquenceCost) + " mana)"
+                    : "Aucune arme equipee");
+  } else {
+    mHoverInfoText.setString("");
+  }
+
+  // Ajuste le cadre à la taille du texte (avec un padding)
+  sf::FloatRect bounds = mHoverInfoText.getLocalBounds();
+  if (!mHoverInfoText.getString().isEmpty()) {
+    float padding = 8.f;
+    mHoverInfoBg.setPosition({mHoverInfoText.getPosition().x - padding,
+                              mHoverInfoText.getPosition().y - padding});
+    mHoverInfoBg.setSize(
+        {bounds.size.x + padding * 2.f, bounds.size.y + padding * 2.f});
+  }
+}
+
 void Game::handleMouseLeftButtonPressed() {
   if (!mMouseLeftButtonReleased) {
     return;
@@ -716,27 +736,14 @@ void Game::handleMouseLeftButtonPressed() {
   } else if (mCurrentState == GameState::FIGHT &&
              mFightPhase == FightPhase::PLAYER_CHOICE) {
     // Strength attack
-    if (mFightButtons[0].isHovered(mousePosition)) {
-      int effect = getBestWeaponEffect(AttackType::STRENGTH);
-      mHoverInfoText.setString(effect >= 0
-                                   ? "Degats : " + std::to_string(effect)
-                                   : "Aucune arme equipee");
-    } else if (mFightButtons[1].isHovered(mousePosition)) {
-      int effect = getBestWeaponEffect(AttackType::ELOQUENCE);
-      mHoverInfoText.setString(
-          effect >= 0 ? "Debuff : " + std::to_string(effect) + " (cout " +
-                            std::to_string(eloquenceCost) + " mana)"
-                      : "Aucune arme equipee");
-    } else {
-      mHoverInfoText.setString("");
-    }
+    
     if (mFightButtons[0].isPressed(mousePosition)) {
       equipBestWeapon(AttackType::STRENGTH);
       mCircleQte = {150.f, 80.f, 40.f, 0.f};
       mFightPhase = FightPhase::PLAYER_QTE;
     } else if (mFightButtons[1].isPressed(mousePosition)) {
       if (mPlayer.getMana() < eloquenceCost) {
-        mPlayerTurnResMessage.setString("Pas assez de mana !");
+        mPlayerTurnResMessage.setString("PAS ASSEZ DE MANA !");
         mMouseLeftButtonReleased = false;
         return;
       }
