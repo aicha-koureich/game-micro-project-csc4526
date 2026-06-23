@@ -131,6 +131,11 @@ class Game {
   sf::Text mUserInputText{mFont};
   sf::Text mPlayerTurnResMessage{mFont};
 
+  sf::Texture mWineTexture;
+  sf::Texture mLetterTexture;
+  sf::Texture mInkTexture;
+  std::vector<sf::Sprite> mItemSprites;
+  std::vector<sf::Text> mItemQtyTxt;
   float mResolutionTimer{0.f};
 
   //Pre fight stats

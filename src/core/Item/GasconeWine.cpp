@@ -16,3 +16,6 @@ bool GasconeWine::used(Player& player) {
   player.setHealthPoints(buffedHp);
   return true;
 }
+std::unique_ptr<Item> GasconeWine::clone() const {
+    return std::make_unique<GasconeWine>(*this); 
+}

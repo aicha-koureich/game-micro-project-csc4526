@@ -16,9 +16,13 @@ bool InkFlask::used(Player& player) {
       buffedWeaponEff = MAX_WEAPON_EFFECT;
     }
     weapon->setEffect(buffedWeaponEff);
+
     return true;
   }
   else{ //currentWeapon == SWORD
     return false;
   }
+}
+std::unique_ptr<Item> InkFlask::clone() const {
+    return std::make_unique<InkFlask>(*this); 
 }

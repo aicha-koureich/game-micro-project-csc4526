@@ -8,6 +8,7 @@ class GasconeWine : public Item {
   GasconeWine(int cost, float effect);
   ~GasconeWine() = default;
   bool used(Player& player) override;
+  std::unique_ptr<Item> clone() const override;
 };
 
 #endif

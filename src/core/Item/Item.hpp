@@ -1,5 +1,6 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
+#include <memory>
 
 class Player; // juste pour quil sache que player existe
 class Item {
@@ -11,6 +12,7 @@ class Item {
   Item(int c, float e) : cost(c), effect(e) {}
   virtual ~Item() = default;
   virtual bool used(Player& player) = 0;
+  virtual std::unique_ptr<Item> clone() const = 0;
   int getCost() const{ return cost; }
 };
 #endif

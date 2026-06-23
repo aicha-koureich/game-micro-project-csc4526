@@ -21,3 +21,6 @@ bool RoxanneLetter::used(Player& player) {
     return false;
   }
 }
+std::unique_ptr<Item> RoxanneLetter::clone() const {
+    return std::make_unique<RoxanneLetter>(*this); 
+}

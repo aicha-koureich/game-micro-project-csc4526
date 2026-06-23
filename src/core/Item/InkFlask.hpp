@@ -8,6 +8,7 @@ class InkFlask : public Item {
   InkFlask(int cost, float effect);
   ~InkFlask() = default;
   bool used(Player& player) override;
+  std::unique_ptr<Item> clone() const override;
 };
 
 #endif

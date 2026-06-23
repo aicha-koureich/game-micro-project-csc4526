@@ -8,6 +8,7 @@ class RoxanneLetter : public Item {
   RoxanneLetter(int cost, float effect);
   ~RoxanneLetter() = default;
   bool used(Player& player) override;
+  std::unique_ptr<Item> clone() const override;
 };
 
 #endif
