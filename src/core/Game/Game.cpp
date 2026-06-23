@@ -682,21 +682,26 @@ void Game::handleMouseLeftButtonPressed() {
            }
     
         }
+        //buying items
         for (size_t j = 0; j < mShopItem.size(); ++j) {
             // Le bouton correspondant à l'item est décalé par le nombre d'armes 
             size_t buttonIndex = mShopWeapon.size() + j; 
 
             if (mShopButtons[buttonIndex].isPressed(mousePosition)) {
+              if (mShopItem[j] == nullptr) {
+                    std::cerr << "ERREUR : mShopItem[" << j << "] est nul !" << std::endl;
+                    return; 
+                }
               //on les crée à la volée et on clone l'item dans le catalogue
               std::unique_ptr<Item> newItem = mShopItem[j]->clone();
               //achat
-              bool success = mPlayer.purchaseItem(mShopItem[j]); 
+              bool success = mPlayer.purchaseItem(newItem); 
               
               if (success) {
                   std::cout << "Achat d'item reussi !\n";
               } else {
                   mPlayerTurnResMessage.setString("Fonds insuffisants !");
-              }
+              } return;
             }
         }
     }
