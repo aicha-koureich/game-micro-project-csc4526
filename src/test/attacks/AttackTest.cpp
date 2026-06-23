@@ -54,7 +54,7 @@ TEST(EnemyTest, resetTurnDebuffs_restoresOriginalStats) {
 
   // Act
   feather.attack(enemyRef, 1.0f);  
-  enemy.resetTurnDebuffs();     
+  enemy.resetDefenseDebuff();     
 
   // Assert
   EXPECT_EQ(enemy.getCurrentDefense(),

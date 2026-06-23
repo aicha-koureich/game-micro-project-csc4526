@@ -20,9 +20,11 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mMenuText.push_back(titleMenu);
   Button startButton(sf::Vector2f(220.f,240.f ), sf::Vector2f(200.f, 60.f), "START", mFont, sf::Color::Red, 30);
   mMenuButtons.push_back(startButton);
+  /*
   Button fightButton(sf::Vector2f(220.f, 320.f), sf::Vector2f(200.f, 50.f),
                      "FIGHT", mFont, sf::Color(80, 80, 200), 18);
   mMenuButtons.push_back(fightButton);
+  */
  
   //Shop
   sf::Text titleShop{mFont};
@@ -73,6 +75,9 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
     mShopButtons.push_back(buyItem);
     currentX+= 180.f;
   }
+  mPlayerStatsText.setCharacterSize(16);
+  mPlayerStatsText.setFillColor(sf::Color::White);
+  mPlayerStatsText.setPosition({400.f, 350.f});
 
   Button goFightButton(sf::Vector2f(220.f, 420.f), sf::Vector2f(200.f, 50.f),
                        "GO FIGHT", mFont, sf::Color(80, 80, 200), 18);
@@ -85,10 +90,10 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
 
   //Fight
 
-  //Armes de bases d�j� �quip�es pour le joueurs
-
-  Enemy firstEnemy{50, 0.5f, 15, 10, 1};
-  mEnemies.push_back(firstEnemy);
+  //Ennemies
+  mEnemies.push_back(Enemy{50, 0.5f, 15, 2, 1});
+  mEnemies.push_back(Enemy{70, 0.4f, 20, 12, 2});
+  mEnemies.push_back(Enemy{90, 0.3f, 25, 15, 3});
 
   // Graphics
 
@@ -103,28 +108,42 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   //Player renderer
   mPlayerShape.setSize({60.f, 100.f});
   mPlayerShape.setFillColor(sf::Color::Blue);
-  mPlayerShape.setPosition({80.f, 120.f});
+  mPlayerShape.setPosition({80.f, 145.f});
 
   // Player Healthbar (background and fill)
   mPlayerHpBarBg.setSize({150.f, 20.f});
   mPlayerHpBarBg.setFillColor(sf::Color(60, 60, 60));
-  mPlayerHpBarBg.setPosition({40.f, 350.f});
+  mPlayerHpBarBg.setPosition({40.f, 115.f});
   mPlayerHpBar.setSize({150.f, 20.f});
   mPlayerHpBar.setFillColor(sf::Color::Green);
-  mPlayerHpBar.setPosition({40.f, 350.f});
+  mPlayerHpBar.setPosition({40.f, 115.f});
+
+  mPlayerHpText.setString(std::to_string(mPlayer.getHealthPoints()) + "/" +
+                          std::to_string(mPlayer.getMaxHealthPoints()));
+  mPlayerHpText.setCharacterSize(16);
+  mPlayerHpText.setFillColor(sf::Color::White);
+  mPlayerHpText.setPosition({40.f, 90.f});
+  
 
   //Enemy renderer
   mEnemyShape.setSize({60.f, 100.f});
   mEnemyShape.setFillColor(sf::Color::Magenta);
-  mEnemyShape.setPosition({500.f, 120.f});
+  mEnemyShape.setPosition({500.f, 145.f});
 
   //Enemy HealthBar (background and fill)
   mEnemyHpBarBg.setSize({150.f, 20.f});
   mEnemyHpBarBg.setFillColor(sf::Color(60, 60, 60));
-  mEnemyHpBarBg.setPosition({450.f, 60.f});
+  mEnemyHpBarBg.setPosition({450.f, 115.f});
   mEnemyHpBar.setSize({150.f, 20.f});
   mEnemyHpBar.setFillColor(sf::Color::Red);
-  mEnemyHpBar.setPosition({450.f, 60.f});
+  mEnemyHpBar.setPosition({450.f, 115.f});
+
+  mEnemyHpText.setString(std::to_string(mEnemies[mCurrentEnemyIdx].getHealthPoints()) + "/" +
+      std::to_string(mEnemies[mCurrentEnemyIdx].getMaxHealthPoints()));
+  mEnemyHpText.setCharacterSize(16);
+  mEnemyHpText.setFillColor(sf::Color::White);
+  mEnemyHpText.setPosition({450.f, 90.f});
+  
 
   //Weapon Text
   mWeaponNameText.setCharacterSize(18);
@@ -190,6 +209,37 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
 
   mDebuffButtons.push_back(attackDebuffButton);
   mDebuffButtons.push_back(defenseDebuffButton);
+
+
+  //WIN / DEAD
+  sf::Text winTitle{mFont};
+  winTitle.setString("VICTORY !!!");
+  winTitle.setCharacterSize(40);
+  winTitle.setFillColor(sf::Color::Green);
+  winTitle.setPosition({200.f, 60.f});
+  mWinText.push_back(winTitle);
+  Button winToShopButton(sf::Vector2f(220.f, 330.f), sf::Vector2f(200.f, 50.f),
+                         "BACK TO SHOP", mFont, sf::Color(80, 80, 200), 18);
+  mWinButtons.push_back(winToShopButton);
+
+  sf::Text deadTitle{mFont};
+  deadTitle.setString("YOU LOST !");
+  deadTitle.setCharacterSize(36);
+  deadTitle.setFillColor(sf::Color::Red);
+  deadTitle.setPosition({150.f, 150.f});
+  mDeadText.push_back(deadTitle);
+  Button deadRestartButton(sf::Vector2f(220.f, 300.f),
+                           sf::Vector2f(200.f, 50.f), "TRY AGAIN", mFont,
+                           sf::Color(150, 0, 0), 18);
+  mDeadButtons.push_back(deadRestartButton);
+
+  //Game Finished
+  sf::Text finishedTitle{mFont};
+  finishedTitle.setString("You beat every enemy");
+  finishedTitle.setCharacterSize(36);
+  finishedTitle.setFillColor(sf::Color::Yellow);
+  finishedTitle.setPosition({120.f, 200.f});
+  mFinishedText.push_back(finishedTitle);
 
   
 }
@@ -303,12 +353,13 @@ void Game::update(sf::Time elapsedTime) {
             {mCircleQte.currentRadius, mCircleQte.currentRadius});
         mCircleQte.currentRadius -= mCircleQte.closeSpeed * dt;
         if (mCircleQte.currentRadius <= 0.f) {
-          mCircleQte.circlePerf = 0.f;
+          mCircleQte.circlePerf = 0.5f;
           mFightPhase = FightPhase::RESOLUTION_PLAYER;
         }
       } else {
         mSentenceQte.remainingTime -= dt;
         if (mSentenceQte.remainingTime <= 0.f) {
+          mSentenceQte.sentencePerf = 0.5f;
           mFightPhase = FightPhase::RESOLUTION_PLAYER;
         }
       }
@@ -322,14 +373,24 @@ void Game::update(sf::Time elapsedTime) {
       mPlayer.playerAttack(enemy, perf);
 
       if (enemy.getHealthPoints() <= 0) {
-        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.1f) *
+        mPrevMoney = mPlayer.getTotalMoney();
+        mPrevNoseSize = mPlayer.getNoseSize();
+        mPrevMaxHp = mPlayer.getMaxHealthPoints();
+        mPrevBaseDefense = mPlayer.getBaseDefense();
+
+        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.3f) *
                           enemy.getEnemyLevel();
         mPlayer.addMoney(moneyGained);
         mPlayer.increaseNoseSize(enemy.getEnemyLevel());
         mPlayer.restoreHealth();
-        
-        mPlayerTurnResMessage.setString("Enemy is dead !");
-        mCurrentState = GameState::WIN;
+
+        mCurrentEnemyIdx++;
+        if (mCurrentEnemyIdx >= mEnemies.size()) {
+          mCurrentState = GameState::GAME_FINISHED;
+        } else {
+          mPlayerTurnResMessage.setString("Enemy is dead !");
+          mCurrentState = GameState::WIN;
+        }
         return;
       }
 
@@ -352,7 +413,7 @@ void Game::update(sf::Time elapsedTime) {
 
       mCircleQte.currentRadius -= mCircleQte.closeSpeed * dt;
       if (mCircleQte.currentRadius <= 0.f) {
-        mCircleQte.circlePerf = 0.f;
+        mCircleQte.circlePerf = 0.5f;
         mFightPhase = FightPhase::RESOLUTION_ENEMY;
       }
 
@@ -396,9 +457,13 @@ void Game::update(sf::Time elapsedTime) {
   mPlayerHpBar.setSize(
       {120.f * mPlayer.getHealthPoints() / mPlayer.getMaxHealthPoints(),
        16.f}); 
+  mPlayerHpText.setString(std::to_string(mPlayer.getHealthPoints()) + "/" +
+                          std::to_string(mPlayer.getMaxHealthPoints()));
   mEnemyHpBar.setSize(
       {120.f * enemy.getHealthPoints() / enemy.getMaxHealthPoints(),
-       16.f}); 
+       16.f});
+  mEnemyHpText.setString(std::to_string(enemy.getHealthPoints()) + "/" +
+                          std::to_string(enemy.getMaxHealthPoints()));
 
 }
 
@@ -430,10 +495,12 @@ void Game::render() {
         mWindow.draw(mPlayerShape);
         mWindow.draw(mPlayerHpBarBg);
         mWindow.draw(mPlayerHpBar);
+        mWindow.draw(mPlayerHpText);
 
         mWindow.draw(mEnemyShape);
         mWindow.draw(mEnemyHpBarBg);
         mWindow.draw(mEnemyHpBar);
+        mWindow.draw(mEnemyHpText);
 
         mWindow.draw(mWeaponNameText);
         mWindow.draw(mPlayerTurnResMessage);
@@ -456,6 +523,55 @@ void Game::render() {
         }
 
         break;
+
+      case GameState::WIN: {
+        int moneyGain = mPlayer.getTotalMoney() - mPrevMoney;
+        float noseGain = mPlayer.getNoseSize() - mPrevNoseSize;
+        int hpGain = mPlayer.getMaxHealthPoints() - mPrevMaxHp;
+        int defGain = mPlayer.getBaseDefense() - mPrevBaseDefense;
+
+        mPlayerStatsText.setString(
+            "Argent : " + std::to_string(mPlayer.getTotalMoney()) + " ecus (+" +
+            std::to_string(moneyGain) + ")\n" +
+            "Taille du nez : " + std::to_string(mPlayer.getNoseSize()) + " (+" +
+            std::to_string(noseGain) + ")\n" +
+            "PV max : " + std::to_string(mPlayer.getMaxHealthPoints()) + " (+" +
+            std::to_string(hpGain) + ")\n" +
+            "Defense : " + std::to_string(mPlayer.getBaseDefense()) + " (+" +
+            std::to_string(defGain) + ")");
+
+        mPlayerStatsText.setCharacterSize(20);
+        mPlayerStatsText.setFillColor(sf::Color(120, 255, 120));
+
+        sf::FloatRect bounds = mPlayerStatsText.getLocalBounds();
+        mPlayerStatsText.setOrigin(
+            {bounds.position.x + bounds.size.x / 2.f, bounds.position.y});
+        mPlayerStatsText.setPosition({320.f, 220.f});
+
+        mWindow.draw(mPlayerStatsText);
+
+        for (const auto& text : mWinText) mWindow.draw(text);
+        for (const auto& button : mWinButtons) button.draw(mWindow);
+        break;
+      }
+        
+
+      case GameState::DEAD:
+        for (const auto& text : mDeadText) mWindow.draw(text);
+        for (const auto& button : mDeadButtons) button.draw(mWindow);
+        break;
+
+      case GameState::GAME_FINISHED:
+        mPlayerStatsText.setString(
+            "Money : " + std::to_string(mPlayer.getTotalMoney()) + " ecus\n" +
+            "Nose Size : " + std::to_string(mPlayer.getNoseSize()) + "\n" +
+            "Health Points : " + std::to_string(mPlayer.getMaxHealthPoints()) +
+            "HP\n" + "Defense : " + std::to_string(mPlayer.getBaseDefense()));
+        mWindow.draw(mPlayerStatsText);
+
+        for (const auto& text : mFinishedText) mWindow.draw(text);
+        break;
+       
 
   }
 
@@ -481,17 +597,15 @@ void Game::handleMouseLeftButtonPressed() {
   }
   sf::Vector2i mousePosition = sf::Mouse::getPosition(mWindow);
 
-  if(mMenuButtons[0].isPressed(mousePosition)){
+  if(mCurrentState == GameState::MAIN_MENU && mMenuButtons[0].isPressed(mousePosition)){
     mCurrentState = GameState::SHOP;
     
-  } else if (mMenuButtons.size() > 1 &&
-             mMenuButtons[1].isPressed(mousePosition)) {
-    mCurrentState = GameState::FIGHT;
-  
   } else if (mCurrentState == GameState::SHOP) {
     if (!mShopButtons.empty() && mShopButtons.back().isPressed(mousePosition)) {
         //Le dernier bouton est le bouton fight car loadXML est appelé avant 
       mCurrentState = GameState::FIGHT;
+      mFightPhase = FightPhase::PLAYER_CHOICE;  
+      mPlayerTurnResMessage.setString("");
     } else {
         for (size_t i = 0; i < mShopWeapon.size(); ++i) {
             if (mShopButtons[i].isPressed(mousePosition)) {
@@ -536,11 +650,11 @@ void Game::handleMouseLeftButtonPressed() {
              mFightPhase == FightPhase::PLAYER_CHOICE) {
     // Strength attack
     if (mFightButtons[0].isPressed(mousePosition)) {
-      mPlayer.pickWeapon(mSwordIdx);
+      equipBestWeapon(AttackType::STRENGTH);
       mCircleQte = {150.f, 80.f, 40.f, 0.f};
       mFightPhase = FightPhase::PLAYER_QTE;
     } else if (mFightButtons[1].isPressed(mousePosition)) {
-      mPlayer.pickWeapon(mFeatherIdx);
+      equipBestWeapon(AttackType::ELOQUENCE);
       mFightPhase = FightPhase::DEBUFF_CHOICE;
     }
   } else if (mCurrentState == GameState::FIGHT && mFightPhase == FightPhase::DEBUFF_CHOICE) {
@@ -554,13 +668,21 @@ void Game::handleMouseLeftButtonPressed() {
     }
     
     if (auto* feather = dynamic_cast<Feather*>(mPlayer.getCurrentWeapon())) {
-        feather->setDebuffChoice(DebuffType::DEFENSE);
+        feather->setDebuffChoice(mPendingDebuffChoice);
     }
 
     mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
     mSentenceText.setString(mSentenceQte.sentence);
     mUserInputText.setString("");
     mFightPhase = FightPhase::PLAYER_QTE;
+  } else if (mCurrentState == GameState::WIN) {
+    if (!mWinButtons.empty() && mWinButtons[0].isPressed(mousePosition)) {
+      mCurrentState = GameState::SHOP;
+    }
+  } else if (mCurrentState == GameState::DEAD) {
+    if (!mDeadButtons.empty() && mDeadButtons[0].isPressed(mousePosition)) {
+      mCurrentState = GameState::MAIN_MENU;
+    }
   }
       
     
@@ -579,12 +701,14 @@ void Game::handleFightKeyPressed(sf::Keyboard::Key key) {
     
     // On calcule la distance entre le rayon du cercle qui r�tr�cit et le rayon du cercle vis�, plus cette distance est petite, plus la performance est proche de 1 donc les d�gats sont �lev�s
     float diff = std::abs(mCircleQte.currentRadius - mCircleQte.targetRadius);
-    mCircleQte.circlePerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
+    float rawPerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
+    mCircleQte.circlePerf = 0.5f + rawPerf * 1.5f;  //QTE manquée -> moitié des dégats infligés, QTE parfaitement réussie -> double des dégats 
     mFightPhase = FightPhase::RESOLUTION_PLAYER; //Le tour du joueur se termine apr�s la QTE d'attaque
 
   } else if (mFightPhase == FightPhase::PLAYER_DEFENSE_QTE) {
     float diff = std::abs(mCircleQte.currentRadius - mCircleQte.targetRadius);
-    mCircleQte.circlePerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
+    float rawPerf = std::max(0.f, 1.f - diff / mCircleQte.targetRadius);
+    mCircleQte.circlePerf = 0.5 + rawPerf * 1.5f;
     mFightPhase = FightPhase::RESOLUTION_ENEMY;
 
   }
@@ -609,4 +733,25 @@ void Game::handleFightTextEntred(std::uint32_t unicode) {
         mFightPhase = FightPhase::RESOLUTION_PLAYER;
       }
     }
+}
+
+void Game::equipBestWeapon(AttackType type) {
+  const auto& inventory = mPlayer.getWeaponInventory();
+  int bestEffect = -1;
+  size_t bestIdx = 0;
+  bool found = false;
+
+  for (size_t i = 0; i < inventory.size(); ++i) {
+    if (inventory[i]->getType() == type && inventory[i]->getEffect() > bestEffect) {
+      bestEffect = inventory[i]->getEffect();
+      bestIdx = i;
+      found = true;
+      
+    }
+  }
+
+  if (found) {
+    mPlayer.pickWeapon(bestIdx);
+  }
+
 }

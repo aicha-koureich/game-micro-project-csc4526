@@ -15,7 +15,8 @@ void Enemy::takeDamage(int attackRes) {
 }
 
 void Enemy::enemyAttack(Entity& target, float playerPerf) {
-  target.takeDamage(currentDamage / playerPerf);
+  int damageToApply = static_cast<int>(std::round(currentDamage / playerPerf));
+  target.takeDamage(damageToApply);
 }
 
 void Enemy::reduceStrength(int amount) {

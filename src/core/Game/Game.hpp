@@ -14,7 +14,15 @@
 #include "Item/InkFlask.hpp"
 #include "Item/RoxanneLetter.hpp"
 
-enum class GameState{MAIN_MENU, SHOP, FIGHT, WIN, DEAD, SETTING};
+enum class GameState {
+  MAIN_MENU,
+  SHOP,
+  FIGHT,
+  WIN,
+  DEAD,
+  GAME_FINISHED, 
+  SETTING
+};
 
 //FIGHT PHASE
 enum class FightPhase { 
@@ -26,6 +34,7 @@ enum class FightPhase {
 	PLAYER_DEFENSE_QTE,
 	RESOLUTION_ENEMY,
 	WAITING_AFTER_ENEMY
+	
 };
 
 struct CircleQTE {
@@ -62,6 +71,8 @@ class Game {
   void handleFightKeyPressed(sf::Keyboard::Key key);
   void handleFightTextEntred(std::uint32_t unicode);
 
+  void equipBestWeapon(AttackType type);
+
   static const sf::Time TimePerFrame;
 
   sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "Jeu Cyrano AA"};
@@ -83,6 +94,8 @@ class Game {
   std::vector<sf::Text> mFightText;
   std::vector<sf::Text> mWinText;
   std::vector<sf::Text> mDeadText;
+  std::vector<sf::Text> mFinishedText;
+
   std::vector<unique_ptr<Weapon>> mShopWeapon;
   std::vector<unique_ptr<Item>> mShopItem;
   sf::Text mMoneyText{mFont};
@@ -104,8 +117,13 @@ class Game {
   //Healthbars
   sf::RectangleShape mPlayerHpBarBg, mPlayerHpBar;
   sf::RectangleShape mEnemyHpBarBg, mEnemyHpBar;
+  sf::Text mPlayerHpText{mFont};
+  sf::Text mEnemyHpText{mFont};
+
+
 
   sf::Text mWeaponNameText{mFont};
+  sf::Text mPlayerStatsText{mFont};
 
   sf::CircleShape mQteTargetCircle;
   sf::CircleShape mQteMovingCircle;
@@ -114,8 +132,12 @@ class Game {
   sf::Text mPlayerTurnResMessage{mFont};
 
   float mResolutionTimer{0.f};
-  std::size_t mSwordIdx{0};
-  std::size_t mFeatherIdx{1};
+
+  //Pre fight stats
+  int mPrevMoney{0};
+  float mPrevNoseSize{0.f};
+  int mPrevMaxHp{0};
+  int mPrevBaseDefense{0};
 };
 
 #endif  // BOOK_GAME_HPP
