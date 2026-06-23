@@ -9,7 +9,10 @@
 
 #include "Weapons/Sword.h"
 #include "Weapons/Feather.h"
-
+#include "Item/Item.hpp"
+#include "Item/GasconeWine.hpp"
+#include "Item/InkFlask.hpp"
+#include "Item/RoxanneLetter.hpp"
 
 enum class GameState{MAIN_MENU, SHOP, FIGHT, WIN, DEAD, SETTING};
 
@@ -81,6 +84,7 @@ class Game {
   std::vector<sf::Text> mWinText;
   std::vector<sf::Text> mDeadText;
   std::vector<unique_ptr<Weapon>> mShopWeapon;
+  std::vector<unique_ptr<Item>> mShopItem;
   sf::Text mMoneyText{mFont};
 
   //Fight Phase

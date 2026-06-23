@@ -32,6 +32,10 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
     //items 
+  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(20, 0.5f);
+  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(20, 0.5f);
+  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(20, 0.5f);
+
   sf::Text items{mFont};
   items.setString("Items");
   items.setCharacterSize(30);
@@ -40,23 +44,27 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mShopText.push_back(items);
 
   sf::Text item1{mFont};
-  item1.setString("Vin de Gascogne");
+  item1.setString("Vin de Gascogne\n" + std::to_string(vin->getCost()) + " ecus");
   item1.setCharacterSize(12);
   item1.setFillColor(sf::Color::White);
   item1.setPosition(sf::Vector2f(50.0f, 350.0f));
   mShopText.push_back(item1);
   sf::Text item2{mFont};
-  item2.setString("Lettre de Roxanne");
+  item2.setString("Lettre de Roxanne\n" + std::to_string(lettre->getCost()) + "ecus");
   item2.setCharacterSize(12);
   item2.setFillColor(sf::Color::White);
   item2.setPosition(sf::Vector2f(230.0f, 350.0f));
   mShopText.push_back(item2);
   sf::Text item3{mFont};
-  item3.setString("Encre");
+  item3.setString("Encre\n" + std::to_string(lettre->getCost()) + "ecus");
   item3.setCharacterSize(12);
   item3.setFillColor(sf::Color::White);
   item3.setPosition(sf::Vector2f(410.0f, 350.0f));
   mShopText.push_back(item3);
+
+  mShopItem.push_back(std::move(vin));
+  mShopItem.push_back(std::move(lettre));
+  mShopItem.push_back(std::move(ink));
   
   float currentX = 50;
   for(int i =0; i<3; ++i){
@@ -499,9 +507,29 @@ void Game::handleMouseLeftButtonPressed() {
             } else {
             std::cout << "Fonds insuffisants !\n";
 
-            }
-        }
+              }
+           }
     
+        }
+        for (size_t j = 0; j < mShopItem.size(); ++j) {
+            // Le bouton correspondant à l'item est décalé par le nombre d'armes 
+            size_t buttonIndex = mShopWeapon.size() + j; 
+
+            if (mShopButtons[buttonIndex].isPressed(mousePosition)) {
+                if (mShopItem[j] == nullptr) {
+                    std::cout << "Item deja vendu !\n";
+                    continue;
+                }
+                bool success = mPlayer.purchaseItem(mShopItem[j]); 
+                
+                if (success) {
+                    std::cout << "Achat d'item reussi !\n";
+                    mShopButtons[buttonIndex].setText("VENDU");
+                    mShopButtons[buttonIndex].setBackColor(sf::Color{55, 55, 55, 255});
+                } else {
+                    std::cout << "Fonds insuffisants !\n";
+                }
+            }
         }
     }
   } else if (mCurrentState == GameState::FIGHT &&

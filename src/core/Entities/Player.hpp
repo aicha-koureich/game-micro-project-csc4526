@@ -5,6 +5,8 @@
 #include <vector>
 #include "Enemy.hpp"
 #include "Weapons/Weapon.h"
+#include "Item/Item.hpp"
+
 using namespace std;
 
 class Player : public Entity {
@@ -14,7 +16,7 @@ class Player : public Entity {
   int baseDefense;
   Weapon* currentWeapon;
   vector<unique_ptr<Weapon>> weaponInventory;
-  //vector<std::unique_ptr<Items>> itemInventory;
+  vector<std::unique_ptr<Item>> itemInventory;
 
  public:
   Player(int maxHp, int money, float size, int defense, Weapon* playerWeapon);
@@ -33,10 +35,6 @@ class Player : public Entity {
     return weaponInventory;
   }
 
-  /* const vector<std::unique_ptr<Item>>& getItemInventory() const {
-    return itemInventory;
-  } */
-
   //EndFight bonus
   void increaseNoseSize(int enemyLevel);
   void addMoney(int amount);
@@ -52,12 +50,11 @@ class Player : public Entity {
 
   
   //Items Methodes
-  /*void useItem(size_t idx);
-  void addItem(std::unique_ptr<Item>);
-  
-  */
-  
-
-
+  void useItem(size_t idx);
+  bool purchaseItem(std::unique_ptr<Item>&);
+  const vector<std::unique_ptr<Item>>& getItemInventory() const {
+    return itemInventory;
+  }
+  void setHealthPoints(int buffedHp){healthPoints = buffedHp;}
 };
 #endif

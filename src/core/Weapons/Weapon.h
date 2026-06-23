@@ -4,7 +4,7 @@
 #include <string>
 #include <cmath>
 #include "Entities/Enemy.hpp"
-
+#define MAX_WEAPON_EFFECT 100
 /* - les effets des armes sont sous une variable weaponEffect
    - Les getters font la meme chose pour sword et feather donc pas besoin qu'ils soient virtuels pures 
    - J'ai ajout� nom, comme ca ils pourront apparaitre dans le catalogue et le jeu en g�n�ral
@@ -38,6 +38,7 @@ class Weapon {
         AttackType getType() const { return type; }
         std::string getName() const {return name;}
         virtual void attack(Enemy& target, float performance) = 0;
+        void setEffect(int itemBuffer){effect = itemBuffer;}
 };
 
 #endif

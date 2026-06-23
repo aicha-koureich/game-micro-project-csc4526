@@ -8,6 +8,9 @@ add_library(lib_core
         "Weapons/Feather.h" "Weapons/Feather.cpp"
         "Weapons/Sword.h" "Weapons/Sword.cpp"
         "Weapons/Weapon.h"
+        "Item/GasconeWine.hpp" "Item/GasconeWine.cpp"   
+        "Item/RoxanneLetter.hpp" "Item/RoxanneLetter.cpp"
+        "Item/InkFlask.hpp" "Item/InkFlask.cpp"
 )
 
 target_include_directories(lib_core PUBLIC ./)

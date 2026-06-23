@@ -39,10 +39,18 @@ bool Player::purchaseWeapon(std::unique_ptr<Weapon>& newWeapon) {
     totalMoney -= weaponCost;
     return true;
   } else {
-    printf("Not enough money to buy this weapon !\n");
     return false;
-  }
-    
+  }   
+}
+bool Player::purchaseItem(std::unique_ptr<Item>& newItem){
+  int itemCost = newItem->getCost();
+  if (totalMoney >= itemCost) {
+    itemInventory.push_back(std::move(newItem));
+    totalMoney -= itemCost;
+    return true;
+  } else {
+    return false;
+  }   
 }
 
 
