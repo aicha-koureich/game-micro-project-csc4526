@@ -73,6 +73,9 @@ class Game {
 
   void equipBestWeapon(AttackType type);
 
+  int getBestWeaponEffect(AttackType type) const;
+
+
   static const sf::Time TimePerFrame;
 
   sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "Jeu Cyrano AA"};
@@ -100,6 +103,9 @@ class Game {
   std::vector<unique_ptr<Item>> mShopItem;
   sf::Text mMoneyText{mFont};
 
+  sf::RectangleShape mHoverInfoBg;
+  sf::Text mHoverInfoText{mFont};
+
   //Fight Phase
  
   Player mPlayer;
@@ -119,6 +125,11 @@ class Game {
   sf::RectangleShape mEnemyHpBarBg, mEnemyHpBar;
   sf::Text mPlayerHpText{mFont};
   sf::Text mEnemyHpText{mFont};
+
+  //Mana
+  const int eloquenceCost = 25;
+  sf::RectangleShape mManaBarBg, mManaBar;
+  sf::Text mManaText{mFont};
 
 
 

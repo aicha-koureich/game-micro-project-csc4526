@@ -27,6 +27,11 @@ void Button::draw(sf::RenderWindow& window) const {
   window.draw(mButtonText);
 }
 
+bool Button::isHovered(sf::Vector2i& mousePosition) const {
+  return mButtonShape.getGlobalBounds().contains(
+      static_cast<sf::Vector2f>(mousePosition));
+}
+
 bool Button::isPressed(const sf::Vector2i& mousePosition) const {
   return mButtonShape.getGlobalBounds().contains(
       static_cast<sf::Vector2f>(mousePosition));

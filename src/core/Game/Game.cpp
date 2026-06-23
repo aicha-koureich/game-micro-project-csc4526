@@ -4,7 +4,7 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
-Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
+Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
@@ -123,7 +123,18 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mPlayerHpText.setCharacterSize(16);
   mPlayerHpText.setFillColor(sf::Color::White);
   mPlayerHpText.setPosition({40.f, 90.f});
-  
+
+  //Player Mana
+  mManaBarBg.setSize({150.f, 14.f});
+  mManaBarBg.setFillColor(sf::Color(60, 60, 60));
+  mManaBarBg.setPosition({40.f, 145.f});
+  mManaBar.setSize({150.f, 14.f});
+  mManaBar.setFillColor(sf::Color::Blue);
+  mManaBar.setPosition({40.f, 145.f});
+  mManaText.setCharacterSize(14);
+  mManaText.setFillColor(sf::Color::White);
+  mManaText.setPosition({40.f, 165.f});
+
 
   //Enemy renderer
   mEnemyShape.setSize({60.f, 100.f});
@@ -149,6 +160,19 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mWeaponNameText.setCharacterSize(18);
   mWeaponNameText.setFillColor(sf::Color::White);
   mWeaponNameText.setPosition({40.f, 320.f});
+
+  //Hover Infos
+  mHoverInfoText.setCharacterSize(14);
+  mHoverInfoText.setFillColor(sf::Color(220, 220, 100));
+  mHoverInfoText.setPosition(
+      {48.f, 274.f});  
+
+  mHoverInfoBg.setFillColor(
+      sf::Color(20, 20, 20, 200));  
+  mHoverInfoBg.setOutlineColor(sf::Color(220, 220, 100));
+  mHoverInfoBg.setOutlineThickness(1.f);
+  mHoverInfoBg.setPosition({40.f, 268.f});
+  mHoverInfoBg.setSize({0.f, 0.f});
 
   //Circle QTE (strength or defense QTE)
   //Target Circle
@@ -344,6 +368,31 @@ void Game::update(sf::Time elapsedTime) {
 
   switch (mFightPhase) { 
     case FightPhase::PLAYER_CHOICE:
+      if (mPlayer.getMana() < eloquenceCost) {
+        mFightButtons[1].setBackColor(sf::Color (65, 65, 65));
+      } else {
+        mFightButtons[1].setBackColor(sf::Color(75, 0, 110));
+      }
+
+      if (mFightButtons[0].isHovered(mousePos)) {
+        mHoverInfoText.setString("Degats : " + std::to_string(bestEffect));
+      } else if (mFightButtons[1].isHovered(mousePos)) {
+        mHoverInfoText.setString("Debuff : " + std::to_string(bestEffect) +
+                                 " (cout " + std::to_string(eloquenceCost) +
+                                 " mana)");
+      } else {
+        mHoverInfoText.setString("");
+      }
+
+      // Ajuste le cadre à la taille du texte (avec un padding)
+      sf::FloatRect bounds = mHoverInfoText.getLocalBounds();
+      if (!mHoverInfoText.getString().isEmpty()) {
+        float padding = 8.f;
+        mHoverInfoBg.setPosition({mHoverInfoText.getPosition().x - padding,
+                                  mHoverInfoText.getPosition().y - padding});
+        mHoverInfoBg.setSize(
+            {bounds.size.x + padding * 2.f, bounds.size.y + padding * 2.f});
+      }
       break;
 
     case FightPhase::PLAYER_QTE:
@@ -446,6 +495,7 @@ void Game::update(sf::Time elapsedTime) {
     case FightPhase::WAITING_AFTER_ENEMY:
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
+        mPlayer.regenMana(10);
         mPlayerTurnResMessage.setString("");
         mFightPhase = FightPhase::PLAYER_CHOICE;
       }
@@ -464,6 +514,11 @@ void Game::update(sf::Time elapsedTime) {
        16.f});
   mEnemyHpText.setString(std::to_string(enemy.getHealthPoints()) + "/" +
                           std::to_string(enemy.getMaxHealthPoints()));
+
+  // Barres de mana mises � jour
+  mManaBar.setSize({150.f * mPlayer.getMana() / mPlayer.getMaxMana(), 14.f});
+  mManaText.setString(std::to_string(mPlayer.getMana()) + "/" +
+                      std::to_string(mPlayer.getMaxMana()));
 
 }
 
@@ -501,6 +556,16 @@ void Game::render() {
         mWindow.draw(mEnemyHpBarBg);
         mWindow.draw(mEnemyHpBar);
         mWindow.draw(mEnemyHpText);
+
+        mWindow.draw(mManaBarBg);
+        mWindow.draw(mManaBar);
+        mWindow.draw(mManaText);
+
+        if (!mHoverInfoText.getString().isEmpty()) {
+          mWindow.draw(mHoverInfoBg);
+          mWindow.draw(mHoverInfoText);
+        }
+
 
         mWindow.draw(mWeaponNameText);
         mWindow.draw(mPlayerTurnResMessage);
@@ -649,23 +714,53 @@ void Game::handleMouseLeftButtonPressed() {
   } else if (mCurrentState == GameState::FIGHT &&
              mFightPhase == FightPhase::PLAYER_CHOICE) {
     // Strength attack
+    if (mFightButtons[0].isHovered(mousePosition)) {
+      int effect = getBestWeaponEffect(AttackType::STRENGTH);
+      mHoverInfoText.setString(effect >= 0
+                                   ? "Degats : " + std::to_string(effect)
+                                   : "Aucune arme equipee");
+    } else if (mFightButtons[1].isHovered(mousePosition)) {
+      int effect = getBestWeaponEffect(AttackType::ELOQUENCE);
+      mHoverInfoText.setString(
+          effect >= 0 ? "Debuff : " + std::to_string(effect) + " (cout " +
+                            std::to_string(eloquenceCost) + " mana)"
+                      : "Aucune arme equipee");
+    } else {
+      mHoverInfoText.setString("");
+    }
     if (mFightButtons[0].isPressed(mousePosition)) {
       equipBestWeapon(AttackType::STRENGTH);
       mCircleQte = {150.f, 80.f, 40.f, 0.f};
       mFightPhase = FightPhase::PLAYER_QTE;
     } else if (mFightButtons[1].isPressed(mousePosition)) {
+      if (mPlayer.getMana() < eloquenceCost) {
+        mPlayerTurnResMessage.setString("Pas assez de mana !");
+        mMouseLeftButtonReleased = false;
+        return;
+      }
       equipBestWeapon(AttackType::ELOQUENCE);
       mFightPhase = FightPhase::DEBUFF_CHOICE;
     }
   } else if (mCurrentState == GameState::FIGHT && mFightPhase == FightPhase::DEBUFF_CHOICE) {
-    if (mDebuffButtons[0].isPressed(mousePosition)) {
+    if (mPlayer.getMana() >= eloquenceCost) {
+      if (mDebuffButtons[0].isPressed(mousePosition)) {
         mPendingDebuffChoice = DebuffType::STRENGTH;
-    } else if (mDebuffButtons[1].isPressed(mousePosition)) {
-      mPendingDebuffChoice = DebuffType::DEFENSE;
+        mPlayer.reduceMana(eloquenceCost);
+
+      } else if (mDebuffButtons[1].isPressed(mousePosition)) {
+        mPendingDebuffChoice = DebuffType::DEFENSE;
+        mPlayer.reduceMana(eloquenceCost);
+      } else {
+        mMouseLeftButtonReleased = false;
+        return;
+      }
     } else {
       mMouseLeftButtonReleased = false;
       return;
     }
+    
+    
+    
     
     if (auto* feather = dynamic_cast<Feather*>(mPlayer.getCurrentWeapon())) {
         feather->setDebuffChoice(mPendingDebuffChoice);
@@ -754,4 +849,15 @@ void Game::equipBestWeapon(AttackType type) {
     mPlayer.pickWeapon(bestIdx);
   }
 
+}
+
+int Game::getBestWeaponEffect(AttackType type) {
+  const auto& inventory = mPlayer.getWeaponInventory();
+  int bestEffect = -1;
+  for (const auto& weapon : inventory) {
+    if (weapon->getType() == type && weapon->getEffect() > bestEffect) {
+      bestEffect = weapon->getEffect();
+    }
+  }
+  return bestEffect;
 }

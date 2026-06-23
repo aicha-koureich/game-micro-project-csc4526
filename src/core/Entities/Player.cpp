@@ -2,10 +2,12 @@
 #include "Player.hpp"
 
 
-Player::Player(int maxHp, int money, float size, int defense, Weapon* playerWeapon)
+Player::Player(int maxHp, int money, float size, int maxMana, int defense, Weapon* playerWeapon)
     : Entity(maxHp),
       totalMoney(money),
       noseSize(size),
+      mana(maxMana),
+      maxMana(maxMana),
       baseDefense(defense),
       currentWeapon(playerWeapon) {}
 
@@ -23,6 +25,7 @@ void Player::increaseNoseSize(int enemyLevel) {
 void Player::addMoney(int amount) { totalMoney += amount; }
 
 void Player::restoreHealth() { healthPoints = maxHealthPoints; }
+
 
 
 void Player::pickWeapon(size_t idx) { 
