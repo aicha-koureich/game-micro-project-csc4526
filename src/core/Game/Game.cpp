@@ -724,9 +724,11 @@ void Game::handleMouseLeftButtonPressed() {
 
             // Si on a trouvé l'objet, on l'utilise
             if (indexToUse != -1) {
-                mPlayer.useItem(indexToUse); 
-                mPlayerTurnResMessage.setString(itemMessage);
-                
+                if(mPlayer.useItem(indexToUse)) 
+                  mPlayerTurnResMessage.setString(itemMessage);
+                else{
+                  mPlayerTurnResMessage.setString("Achetez une arme adequate !");
+                }
             } else {
                 mPlayerTurnResMessage.setString("Y'en a plus!");
             }

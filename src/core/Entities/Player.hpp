@@ -50,7 +50,7 @@ class Player : public Entity {
 
   
   //Items Methodes
-  void useItem(size_t idx);
+  bool useItem(size_t idx);
   bool purchaseItem(std::unique_ptr<Item>&);
   const vector<std::unique_ptr<Item>>& getItemInventory() const {
     return itemInventory;

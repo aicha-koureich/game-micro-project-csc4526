@@ -52,16 +52,16 @@ bool Player::purchaseItem(std::unique_ptr<Item>& newItem){
     return false;
   }   
 }
-void Player::useItem(size_t idx) {
+bool Player::useItem(size_t idx) {
   if (idx >= itemInventory.size()) {
     std::cout << "Index d'item invalide !\n";
-    return;
+    return false;
   }
 
-  // On vérifie que la case n'est pas déjà vide (item deja utilisé)
+  // On vérifie que la case n'est pas déjà vide 
   if (itemInventory[idx] == nullptr) {
     std::cout << "Aucun item a cet emplacement !\n";
-    return;
+    return false;
   }
   // appel de la méthode used de l'item
   bool hasBeenUsed = itemInventory[idx]->used(*this);
@@ -69,8 +69,10 @@ void Player::useItem(size_t idx) {
   if (hasBeenUsed) {
     std::cout << "Item utilise avec succes !\n";
     itemInventory.erase(itemInventory.begin() + idx); //suppression propre sans case vide
+    return true;
   } else {
     std::cout << "L'item n'a pas pu etre utilise !\n";
+    return false;
   }
 }
 
