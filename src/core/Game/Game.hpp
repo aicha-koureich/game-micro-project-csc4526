@@ -72,7 +72,7 @@ class Game {
   void handleFightTextEntred(std::uint32_t unicode);
 
   bool equipBestWeapon(AttackType type);
-
+  void restartCombat();
   static const sf::Time TimePerFrame;
 
   sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "Jeu Cyrano AA"};

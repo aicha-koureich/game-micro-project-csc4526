@@ -55,6 +55,5 @@ class Player : public Entity {
   const vector<std::unique_ptr<Item>>& getItemInventory() const {
     return itemInventory;
   }
-  void setHealthPoints(int buffedHp){healthPoints = buffedHp;}
 };
 #endif

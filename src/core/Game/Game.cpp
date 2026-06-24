@@ -682,7 +682,7 @@ void Game::handleMouseLeftButtonPressed() {
            }
     
         }
-        //buying items
+        //ACHAT ITEMS
         for (size_t j = 0; j < mShopItem.size(); ++j) {
             // Le bouton correspondant à l'item est décalé par le nombre d'armes 
             size_t buttonIndex = mShopWeapon.size() + j; 
@@ -707,7 +707,7 @@ void Game::handleMouseLeftButtonPressed() {
     }
   } else if (mCurrentState == GameState::FIGHT &&
              mFightPhase == FightPhase::PLAYER_CHOICE) {
-    //Using Item
+    //UTILISER ITEMS
     sf::Vector2f mousePosFloat(mousePosition.x, mousePosition.y);
     for (int i = 0; i < 3; ++i) {
         if (mItemSprites[i].getGlobalBounds().contains(mousePosFloat)) {
@@ -772,14 +772,10 @@ void Game::handleMouseLeftButtonPressed() {
     }
   } else if (mCurrentState == GameState::DEAD) {
     if (!mDeadButtons.empty() && mDeadButtons[0].isPressed(mousePosition)) {
+      restartCombat();
       mCurrentState = GameState::MAIN_MENU;
     }
-  }
-      
-    
-
-  //A ajouter : ITEM
-  
+  }  
   mMouseLeftButtonReleased = false;
 
 }
@@ -850,4 +846,13 @@ bool Game::equipBestWeapon(AttackType type) {
     mPlayerTurnResMessage.setString("Achetez une arme adaptee a l'attaque");
     return false;
   }
+}
+void Game::restartCombat(){
+  // restart hp player & ennemie qui vient de nous battre
+  mEnemies[mCurrentEnemyIdx].setHealthPoints(mEnemies[mCurrentEnemyIdx].getMaxHealthPoints());
+  mPlayer.setHealthPoints(mPlayer.getMaxHealthPoints());
+  
+  mPlayerTurnResMessage.setString("");
+  mSentenceQte.userInput = "";
+  mUserInputText.setString("");
 }

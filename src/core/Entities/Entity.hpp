@@ -13,6 +13,7 @@ class Entity {
   virtual ~Entity() = default;
   int getHealthPoints() const { return healthPoints; }
   int getMaxHealthPoints() const { return maxHealthPoints; }
+  void setHealthPoints(int newHp){healthPoints = newHp;}
 };
 
 #endif
