@@ -148,6 +148,13 @@ class Game {
   float mPrevNoseSize{0.f};
   int mPrevMaxHp{0};
   int mPrevBaseDefense{0};
+
+  //weapons placeholder
+  std::vector<sf::RectangleShape> weaponRectangles;
+  //weapon tooltips
+  sf::RectangleShape mTooltipBg;
+  sf::Text mTooltipText{mFont};
+  bool mShowTooltip = false;
 };
 
 #endif  // BOOK_GAME_HPP

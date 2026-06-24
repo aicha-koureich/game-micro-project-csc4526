@@ -54,9 +54,9 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
     //items 
-  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(20, 0.25f);
-  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(15, 0.25f);
-  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(15, 0.25f);
+  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(2, 0.25f);
+  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(1, 0.25f);
+  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(1, 0.25f);
 
   sf::Text items{mFont};
   items.setString("Items");
@@ -90,8 +90,8 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   
   float currentX = 50;
   for(int i =0; i<3; ++i){
-    Button buyItem(sf::Vector2f(currentX, 380.f), sf::Vector2f(80.f, 30.f),
-                     "ACHETER", mFont, sf::Color::Red, 15);
+    Button buyItem(sf::Vector2f(currentX + 20, 420.f), sf::Vector2f(60.f, 20.f),
+                     "BUY", mFont, sf::Color::Red, 13);
     mShopButtons.push_back(buyItem);
     currentX+= 180.f;
   }
@@ -99,7 +99,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mPlayerStatsText.setFillColor(sf::Color::White);
   mPlayerStatsText.setPosition({400.f, 350.f});
 
-  Button goFightButton(sf::Vector2f(220.f, 420.f), sf::Vector2f(200.f, 50.f),
+  Button goFightButton(sf::Vector2f(220.f, 445.f), sf::Vector2f(150.f, 30.f),
                        "GO FIGHT", mFont, sf::Color(80, 80, 200), 18);
   mShopButtons.push_back(goFightButton);
     //Money
@@ -107,7 +107,13 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mMoneyText.setFillColor(sf::Color::Yellow);
   mMoneyText.setPosition({480.f, 20.f});
 
-
+    // weapon infobulle
+  mTooltipBg.setFillColor(sf::Color(0, 0, 0, 220)); // noir transparent
+  mTooltipBg.setOutlineColor(sf::Color::White);
+  mTooltipBg.setOutlineThickness(1.f);
+  
+  mTooltipText.setCharacterSize(14);
+  mTooltipText.setFillColor(sf::Color::White);
 
   //Fight
 
@@ -117,34 +123,19 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mEnemies.push_back(Enemy{90, 0.3f, 25, 15, 3});
 
   // Graphics
-    //Items
-    float slotX = 420.f; // On s'aligne avec la gauche du bouton ITEM
-    float slotY = 320.f;
-    float spacing = 60.f; // L'espace entre chaque icône
+  //Items 
+  for (int i = 0; i < 3; ++i) {
+    // On donne la bonne image selon l'index (0=Vin, 1=Lettre, 2=Encre)
+    if (i == 0) mItemSprites.emplace_back(mWineTexture);
+    else if (i == 1) mItemSprites.emplace_back(mLetterTexture);
+    else if (i == 2) mItemSprites.emplace_back(mInkTexture);
 
-    for (int i = 0; i < 3; ++i) {
-        
-        // On donne la bonne image selon l'index (0=Vin, 1=Lettre, 2=Encre)
-        if (i == 0) mItemSprites.emplace_back(mWineTexture);
-        else if (i == 1) mItemSprites.emplace_back(mLetterTexture);
-        else if (i == 2) mItemSprites.emplace_back(mInkTexture);
-
-        // On récupère ce sprite qu'on vient tout juste de créer
-        sf::Sprite& currentSprite = mItemSprites.back();
-
-        // On récupère la vraie taille de l'image (ex: 500x500)
-        sf::Vector2u texSize = currentSprite.getTexture().getSize();
-        // On divise la taille voulue (45) par la vraie taille pour obtenir le bon pourcentage de réduction !
-        currentSprite.setScale({75.f / texSize.x, 75.f / texSize.y});        
-        currentSprite.setPosition({slotX + (i * spacing), slotY});
-
-        // Le texte pour afficher la quantité 
-        sf::Text qtyText{mFont};
-        qtyText.setCharacterSize(14);
-        qtyText.setFillColor(sf::Color::Yellow);
-        qtyText.setPosition({slotX + (i * spacing) + 30.f, slotY + 30.f}); 
-        mItemQtyTxt.push_back(qtyText);
-    }
+    // Le texte pour afficher la quantité 
+    sf::Text qtyText{mFont};
+    qtyText.setCharacterSize(14);
+    qtyText.setFillColor(sf::Color::Yellow);
+    mItemQtyTxt.push_back(qtyText);
+}
   //Title Fight
   sf::Text titleFight{mFont};
   titleFight.setString(" FIGHT ");
@@ -291,6 +282,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
 
   
 }
+
 void Game::loadXML(){
   pugi::xml_document doc;
   pugi::xml_parse_result res = doc.load_file("res/Weapons.xml");
@@ -307,7 +299,7 @@ void Game::loadXML(){
     if (weapon != nullptr) {
       if (category != node.name()) {
         if (!category.empty()) { 
-          currentY += 100.f; 
+          currentY += 110.f; 
         }  
         category = node.name();
         //titre
@@ -317,8 +309,8 @@ void Game::loadXML(){
         title.setFillColor(sf::Color::Green);
         title.setPosition(sf::Vector2f(0.f, currentY));
         mShopText.push_back(title);
-        
-        currentY += 50.f; 
+          
+        currentY += 35.f; 
         currentX = 5.f;
       }
     //titre et prix des armes
@@ -328,8 +320,15 @@ void Game::loadXML(){
     weaponText.setFillColor(sf::Color::White);
     weaponText.setPosition(sf::Vector2f(currentX, currentY));
     mShopText.push_back(weaponText);
+
+    // Création du carré gris (Placeholder de l'icône)
+    sf::RectangleShape box(sf::Vector2f(50.f, 50.f)); 
+    box.setFillColor(sf::Color(100, 100, 100)); // Gris
+    box.setPosition(sf::Vector2f(currentX + 25.f, currentY + 32.f)); 
+    weaponRectangles.push_back(box);
+
     //bouton achat
-    Button buyBtn(sf::Vector2f(currentX, currentY + 50.f), sf::Vector2f(80.f, 30.f), "ACHETER", mFont, sf::Color::Red, 15);
+    Button buyBtn(sf::Vector2f(currentX +20.f, currentY + 85.f), sf::Vector2f(60.f, 20.f), "BUY", mFont, sf::Color::Red, 13);
     mShopButtons.push_back(buyBtn);
     currentX += 130.f; 
     
@@ -386,31 +385,98 @@ void Game::processEvents() {
 
 void Game::update(sf::Time elapsedTime) {
   mMoneyText.setString("Solde : " + std::to_string(mPlayer.getTotalMoney()) + " ecus"); //update le solde
+  if (mCurrentState == GameState::SHOP) {
+    //SPRITES ITEM
+    for (int i = 0; i < 3; ++i) {
+          sf::Vector2u texSize = mItemSprites[i].getTexture().getSize();
+          mItemSprites[i].setScale({50.f / texSize.x, 50.f / texSize.y});
+          mItemSprites[i].setPosition({70.f + (i * 180.f), 370.f});
+          mItemSprites[i].setColor(sf::Color::White);
+      }
+
+    //INFO-BULLES
+    mShowTooltip = false;  //  cache l'infobulle (default)
+
+    sf::Vector2i mousePos = sf::Mouse::getPosition(mWindow);
+    sf::Vector2f mousePosF(static_cast<float>(mousePos.x),
+                           static_cast<float>(mousePos.y));
+
+    std::string specs = ""; //memoire pour le txt de l'infobulle
+      //INFOBULLES ARMES
+    for (size_t i = 0; i < mShopWeapon.size(); ++i) {
+      if (mShopWeapon[i] != nullptr && weaponRectangles[i].getGlobalBounds().contains(mousePosF)) {
+        specs = mShopWeapon[i]->getName() + "\nEffet : " + std::to_string(mShopWeapon[i]->getEffect());
+        break;
+      }
+    }
+    if (specs == ""){
+      for(size_t i = 0; i< mItemSprites.size(); ++i){
+        if(mItemSprites[i].getGlobalBounds().contains(mousePosF)){
+          switch (i)
+          {
+          case 0:
+            specs = "Un bon vin de Gascogne \n qui redonne la sante\n +25% de PV au joueur";
+            break;
+          
+          case 1:
+            specs = "Les mots de Roxanne boost\n les skills d'epeiste de Cyrano\n +25% Force";
+            break;
+          case 2:
+            specs = "La meilleure encre de Chine\n pour les meilleurs tirades +25% Eloquence appliquee a la plume";
+            break;
+          }
+        }
+      }
+    }
+    if(specs != ""){
+      mShowTooltip =  true;
+      mTooltipText.setString(specs);
+      // On positionne le texte juste à côté de la souris 
+      mTooltipText.setPosition({mousePosF.x + 20.f, mousePosF.y +5.f});
+      //ajuste le rectangle de fond selon la taille du texte
+      sf::FloatRect bounds = mTooltipText.getGlobalBounds();
+      mTooltipBg.setSize({bounds.size.x + 10.f, bounds.size.y + 10.f});
+      mTooltipBg.setPosition(
+          {bounds.position.x - 5.f, bounds.position.y - 5.f});
+    }
+  }
   if (mCurrentState != GameState::FIGHT) return;
   float dt = elapsedTime.asSeconds();
   Enemy& enemy = mEnemies[mCurrentEnemyIdx];
+
+  //REPOSITION DES SPRITES ITEMS POUR COMBAT & QUANTITES
+
+  float X = 420.f;
+  float Y = 320.f;
+  float spacing = 60.f;
   //potions'quantities
   int wineQty = 0, letterQty = 0, inkQty = 0;
   
-  // 1. On compte les objets présents dans l'inventaire
+  // On compte les objets présents dans l'inventaire
   for (const auto& item : mPlayer.getItemInventory()) {
       if (dynamic_cast<GasconeWine*>(item.get())) wineQty++;
       else if (dynamic_cast<RoxanneLetter*>(item.get())) letterQty++;
       else if (dynamic_cast<InkFlask*>(item.get())) inkQty++;
   }
 
-  // 2. On met les résultats dans un tableau pour correspondre à nos 3 icônes
+  // On met les résultats dans un tableau pour correspondre à nos 3 icônes
   int quantities[3] = {wineQty, letterQty, inkQty};
 
-  // 3. On met à jour l'affichage
+  // On met à jour l'affichage des sprites et les qtés
   for (int i = 0; i < 3; ++i) {
-      mItemQtyTxt[i].setString("x" + std::to_string(quantities[i]));
-      
-      if (quantities[i] <= 0) {
-          mItemSprites[i].setColor(sf::Color(100, 100, 100, 150)); // Gris si vide
-      } else {
-          mItemSprites[i].setColor(sf::Color::White); 
-      }
+    sf::Vector2u texSize = mItemSprites[i].getTexture().getSize();
+    mItemSprites[i].setScale({75.f / texSize.x, 75.f / texSize.y});
+    mItemSprites[i].setPosition(sf::Vector2f(X + (i * spacing), Y));
+
+    mItemQtyTxt[i].setString("x" + std::to_string(quantities[i]));
+    mItemQtyTxt[i].setPosition({X + (i * spacing) + 30.f, Y + 30.f});
+
+    if (quantities[i] <= 0) {
+      // noir si qté nulle
+        mItemSprites[i].setColor(sf::Color(100, 100, 100, 150)); 
+    } else {
+        mItemSprites[i].setColor(sf::Color::White); 
+    }
   }
   switch (mFightPhase) { 
     case FightPhase::PLAYER_CHOICE:
@@ -551,13 +617,25 @@ void Game::render() {
     }
       break;
     case GameState::SHOP:
+    for(const auto& shape : weaponRectangles){
+      mWindow.draw(shape);
+    }
     for(const auto& text : mShopText){
       mWindow.draw(text);
     }
     for(const auto& button : mShopButtons){
        button.draw(mWindow);
     }
+    for(const auto& sprite: mItemSprites){
+      mWindow.draw(sprite);
+    }
     mWindow.draw(mMoneyText);
+    mWindow.draw(mPlayerTurnResMessage);
+
+    if (mShowTooltip) {
+        mWindow.draw(mTooltipBg);
+        mWindow.draw(mTooltipText);
+    }
       break;
 
       case GameState::FIGHT:
@@ -713,20 +791,21 @@ void Game::handleMouseLeftButtonPressed() {
         for (size_t i = 0; i < mShopWeapon.size(); ++i) {
             if (mShopButtons[i].isPressed(mousePosition)) {
             if (mShopWeapon[i] == nullptr) {
-                std::cout << "Deja vendu !\n";
+              mPlayerTurnResMessage.setString("Deja vendu!");
                 continue; 
             }
             bool success = mPlayer.purchaseWeapon(mShopWeapon[i]);
             if (success) {
-            std::cout << "Achat reussi !\n";
-            mShopButtons[i].setText("VENDU");
+            mPlayerTurnResMessage.setString("Achat reussi!");
+            mShopButtons[i].setText("SOLD");
             mShopButtons[i].setBackColor(sf::Color{55, 55, 55, 255});
             } else {
             mPlayerTurnResMessage.setString("Fonds insuffisants !");
 
-              }
            }
-    
+           mMouseLeftButtonReleased = false;
+              return;
+          }
         }
         //ACHAT ITEMS
         for (size_t j = 0; j < mShopItem.size(); ++j) {
@@ -747,7 +826,9 @@ void Game::handleMouseLeftButtonPressed() {
                   std::cout << "Achat d'item reussi !\n";
               } else {
                   mPlayerTurnResMessage.setString("Fonds insuffisants !");
-              } return;
+              } 
+              mMouseLeftButtonReleased = false;
+              return;
             }
         }
     }
@@ -773,7 +854,7 @@ void Game::handleMouseLeftButtonPressed() {
                 if(mPlayer.useItem(indexToUse)) 
                   mPlayerTurnResMessage.setString(itemMessage);
                 else{
-                  mPlayerTurnResMessage.setString("Achetez une arme adequate !");
+                  mPlayerTurnResMessage.setString("Item non utilisable !");
                 }
             } else {
                 mPlayerTurnResMessage.setString("Y'en a plus!");
