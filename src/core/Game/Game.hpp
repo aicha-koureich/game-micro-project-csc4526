@@ -21,7 +21,8 @@ enum class GameState {
   WIN,
   DEAD,
   GAME_FINISHED, 
-  SETTING
+  SETTING,
+  PAUSE
 };
 
 //FIGHT PHASE
@@ -75,6 +76,8 @@ class Game {
   void restartCombat();
   static const sf::Time TimePerFrame;
 
+  GameState mPreviousState;
+
   sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "Jeu Cyrano AA"};
   sf::Texture mTexture;
   sf::Font mFont;
@@ -89,17 +92,19 @@ class Game {
   std::vector<Button> mDebuffButtons;
   std::vector<Button> mWinButtons;
   std::vector<Button> mDeadButtons;
+  std::vector<Button> mPauseButtons;
   std::vector<sf::Text> mMenuText;
   std::vector<sf::Text> mShopText;
   std::vector<sf::Text> mFightText;
   std::vector<sf::Text> mWinText;
   std::vector<sf::Text> mDeadText;
   std::vector<sf::Text> mFinishedText;
+  std::vector<sf::Text> mPauseText;
 
   std::vector<unique_ptr<Weapon>> mShopWeapon;
   std::vector<unique_ptr<Item>> mShopItem;
   sf::Text mMoneyText{mFont};
-
+  std::unique_ptr<Button> mPauseButton;
   //Fight Phase
  
   Player mPlayer;

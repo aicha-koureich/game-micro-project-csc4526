@@ -14,6 +14,21 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mStatisticsText.setCharacterSize(10);
 
   loadXML(); //ici
+  //Pause
+  mPauseButton = std::make_unique<Button>(sf::Vector2f(615.f, 0.f), sf::Vector2f(25.f, 25.f), "| |", mFont, sf::Color{55, 55, 55, 255}, 18);
+  sf::Text titlePause{mFont};
+  titlePause.setString(" Pause ");
+  titlePause.setCharacterSize(50);
+  titlePause.setFillColor(sf::Color::White);
+  titlePause.setPosition(sf::Vector2f(220.0f, 10.0f));
+  mPauseText.push_back(titlePause);
+
+  Button mSettingButton(sf::Vector2f(250.0f, 150.f), sf::Vector2f(120.f, 40.f), "Settings", mFont, sf::Color{55, 55, 55, 255}, 18);
+  mPauseButtons.push_back(mSettingButton);
+  Button mSave(sf::Vector2f(250.0f, 250.f), sf::Vector2f(120.f, 40.f), "Save and Quit", mFont, sf::Color{55, 55, 55, 255}, 18);
+  mPauseButtons.push_back(mSave);
+  Button mReturnMenu(sf::Vector2f(250.0f, 350.f), sf::Vector2f(120.f, 40.f), "Quit", mFont, sf::Color{55, 55, 55, 255}, 18);
+  mPauseButtons.push_back(mReturnMenu);
 
   //Start Menu
   mCurrentState = GameState::MAIN_MENU;
@@ -87,6 +102,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   Button goFightButton(sf::Vector2f(220.f, 420.f), sf::Vector2f(200.f, 50.f),
                        "GO FIGHT", mFont, sf::Color(80, 80, 200), 18);
   mShopButtons.push_back(goFightButton);
+    //Money
   mMoneyText.setCharacterSize(18);
   mMoneyText.setFillColor(sf::Color::Yellow);
   mMoneyText.setPosition({480.f, 20.f});
@@ -524,6 +540,7 @@ void Game::update(sf::Time elapsedTime) {
 void Game::render() {
   mWindow.clear();
   mWindow.draw(mStatisticsText);
+  if(mPauseButton != nullptr) mPauseButton->draw(mWindow);
   switch(mCurrentState){
     case GameState::MAIN_MENU:
     for(const auto& text : mMenuText){
@@ -628,9 +645,11 @@ void Game::render() {
 
         for (const auto& text : mFinishedText) mWindow.draw(text);
         break;
-       
 
-  }
+      case GameState::PAUSE:
+      for(const auto& text : mPauseText) mWindow.draw(text);
+      for(const auto& button : mPauseButtons) button.draw(mWindow);
+    }
 
   mWindow.display();
 }
@@ -653,7 +672,34 @@ void Game::handleMouseLeftButtonPressed() {
     return;
   }
   sf::Vector2i mousePosition = sf::Mouse::getPosition(mWindow);
+ if (mPauseButton != nullptr && mPauseButton->isPressed(mousePosition)) {
+      if (mCurrentState == GameState::PAUSE) {
+          mCurrentState = mPreviousState; 
+      } else {
+          mPreviousState = mCurrentState; //on save pour y retourner
+          mCurrentState = GameState::PAUSE;
+      }
+      mMouseLeftButtonReleased = false;
+      return; 
+  }
 
+  // Dans Pause
+  if (mCurrentState == GameState::PAUSE) {
+      if (mPauseButtons[0].isPressed(mousePosition)) {
+          mCurrentState = GameState::SETTING;
+      } 
+      else if (mPauseButtons[1].isPressed(mousePosition)) {
+          mCurrentState = GameState::MAIN_MENU; // Save
+      } 
+      else if (mPauseButtons[2].isPressed(mousePosition)) {
+          restartCombat();
+          mCurrentState = GameState::MAIN_MENU;
+      }
+      mMouseLeftButtonReleased = false;
+      return; 
+  }
+  
+  //SHOP
   if(mCurrentState == GameState::MAIN_MENU && mMenuButtons[0].isPressed(mousePosition)){
     mCurrentState = GameState::SHOP;
     
@@ -773,7 +819,7 @@ void Game::handleMouseLeftButtonPressed() {
   } else if (mCurrentState == GameState::DEAD) {
     if (!mDeadButtons.empty() && mDeadButtons[0].isPressed(mousePosition)) {
       restartCombat();
-      mCurrentState = GameState::MAIN_MENU;
+      mCurrentState = GameState::SHOP;
     }
   }  
   mMouseLeftButtonReleased = false;
