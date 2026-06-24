@@ -25,7 +25,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
 
   Button mSettingButton(sf::Vector2f(250.0f, 150.f), sf::Vector2f(120.f, 40.f), "Settings", mFont, sf::Color{55, 55, 55, 255}, 18);
   mPauseButtons.push_back(mSettingButton);
-  Button mSave(sf::Vector2f(250.0f, 250.f), sf::Vector2f(120.f, 40.f), "Save and Quit", mFont, sf::Color{55, 55, 55, 255}, 18);
+  Button mSave(sf::Vector2f(250.0f, 250.f), sf::Vector2f(120.f, 40.f), "Quit and Save", mFont, sf::Color{55, 55, 55, 255}, 18);
   mPauseButtons.push_back(mSave);
   Button mReturnMenu(sf::Vector2f(250.0f, 350.f), sf::Vector2f(120.f, 40.f), "Quit", mFont, sf::Color{55, 55, 55, 255}, 18);
   mPauseButtons.push_back(mReturnMenu);
@@ -54,9 +54,9 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
     //items 
-  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(1, 0.25f);
-  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(1, 0.25f);
-  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(2, 0.25f);
+  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(20, 0.25f);
+  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(15, 0.25f);
+  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(15, 0.25f);
 
   sf::Text items{mFont};
   items.setString("Items");
@@ -72,13 +72,13 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   item1.setPosition(sf::Vector2f(50.0f, 350.0f));
   mShopText.push_back(item1);
   sf::Text item2{mFont};
-  item2.setString("Lettre de Roxanne\n" + std::to_string(lettre->getCost()) + "ecus");
+  item2.setString("Lettre de Roxanne\n" + std::to_string(lettre->getCost()) + " ecus");
   item2.setCharacterSize(12);
   item2.setFillColor(sf::Color::White);
   item2.setPosition(sf::Vector2f(230.0f, 350.0f));
   mShopText.push_back(item2);
   sf::Text item3{mFont};
-  item3.setString("Encre\n" + std::to_string(lettre->getCost()) + "ecus");
+  item3.setString("Encre\n" + std::to_string(lettre->getCost()) + " ecus");
   item3.setCharacterSize(12);
   item3.setFillColor(sf::Color::White);
   item3.setPosition(sf::Vector2f(410.0f, 350.0f));
@@ -698,7 +698,7 @@ void Game::handleMouseLeftButtonPressed() {
       mMouseLeftButtonReleased = false;
       return; 
   }
-  
+
   //SHOP
   if(mCurrentState == GameState::MAIN_MENU && mMenuButtons[0].isPressed(mousePosition)){
     mCurrentState = GameState::SHOP;
