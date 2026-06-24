@@ -8,7 +8,8 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
-  loadXML(); //ici
+  loadWeaponsXML(); //ici
+  loadTiradesXML();
 
   //Start Menu
   mCurrentState = GameState::MAIN_MENU;
@@ -119,9 +120,20 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mPlayerPortraitBg.setPosition({40.f, 49.f});
 
   //Player renderer
+  
   mPlayerShape.setSize({60.f, 100.f});
   mPlayerShape.setFillColor(sf::Color::Blue);
   mPlayerShape.setPosition({130.f, 145.f});
+  
+
+  /*
+  if (!mPlayerTexture.loadFromFile("res/player.png")) {
+    std::cerr << "Erreur res/player.png introuvable\n";
+  }
+  mPlayerSprite.setTexture(mPlayerTexture, true);
+  mPlayerSprite.setPosition({130.f, 145.f});
+  */
+
 
   // Player Healthbar (background and fill)
   mPlayerHpBarBg.setSize({150.f, 20.f});
@@ -167,9 +179,21 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mEnemyPortraitBg.setPosition({540.f, 49.f});
 
   //Enemy renderer
+  
   mEnemyShape.setSize({60.f, 100.f});
   mEnemyShape.setFillColor(sf::Color::Magenta);
   mEnemyShape.setPosition({450.f, 145.f});
+ 
+
+  /*
+  if (!mEnemyTextures[0].loadFromFile("res/enemy1.png")) {
+    std::cerr << "Erreur res/enemy1.png introuvable\n";
+  }
+
+  mEnemySprite.setTexture(mEnemyTextures[0], true);
+  mEnemySprite.setPosition({450.f, 145.f});
+  */
+  
 
   //Enemy HealthBar (background and fill)
   mEnemyHpBarBg.setSize({150.f, 20.f});
@@ -317,7 +341,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
 
   
 }
-void Game::loadXML(){
+void Game::loadWeaponsXML(){
   pugi::xml_document doc;
   pugi::xml_parse_result res = doc.load_file("res/Weapons.xml");
   if(!res){
@@ -364,6 +388,25 @@ void Game::loadXML(){
     std::cerr << "Type d'arme: " << node.name() << " non reconnu par la factory\n";
   }
 }
+
+}
+
+void Game::loadTiradesXML() {
+  pugi::xml_document doc;
+  pugi::xml_parse_result res = doc.load_file("res/Tirades.xml");
+
+  if (!res) {
+    std::cerr << "Erreur chargement xml\n";
+    return;
+  }
+
+  pugi::xml_node tiradesNode = doc.child("Tirades");
+
+  for (pugi::xml_node node = tiradesNode.first_child(); node;
+       node = node.next_sibling()) {
+    std::string tirade = node.child_value();
+    mTirades.push_back(tirade);
+  }
 
 }
 
@@ -471,6 +514,15 @@ void Game::update(sf::Time elapsedTime) {
         if (mCurrentEnemyIdx >= mEnemies.size()) {
           mCurrentState = GameState::GAME_FINISHED;
         } else {
+          /*
+          * if (!mEnemyTextures[mCurrentEnemyIdx].loadFromFile(
+                  "res/enemy" + std::to_string(mCurrentEnemyIdx + 1) +
+                  ".png")) {
+            std::cerr << "Erreur chargement sprite ennemi " << mCurrentEnemyIdx
+                      << "\n";
+          }
+          mEnemySprite.setTexture(mEnemyTextures[mCurrentEnemyIdx], true);
+          */ 
           mPlayerTurnResMessage.setString("L'ENNEMI EST MORT !");
           mCurrentState = GameState::WIN;
         }
@@ -584,12 +636,14 @@ void Game::render() {
 
         mWindow.draw(mPlayerPortraitBg);
         mWindow.draw(mPlayerShape);
+        //mWindow.draw(mPlayerSprite);
         mWindow.draw(mPlayerHpBarBg);
         mWindow.draw(mPlayerHpBar);
         mWindow.draw(mPlayerHpText);
 
         mWindow.draw(mEnemyPortraitBg);
         mWindow.draw(mEnemyShape);
+        //mWindow.draw(mEnemySprite);
         mWindow.draw(mEnemyHpBarBg);
         mWindow.draw(mEnemyHpBar);
         mWindow.draw(mEnemyHpText);
@@ -820,9 +874,8 @@ void Game::handleMouseLeftButtonPressed() {
     
     if (mFightButtons[0].isPressed(mousePosition)) {
       equipBestWeapon(AttackType::STRENGTH);
-      mPlayerTurnResMessage.setString("");
-      mCircleQte = {150.f, 80.f, 40.f, 0.f};
-      mFightPhase = FightPhase::PLAYER_QTE;
+      mPlayerTurnResMessage.setString("ESPACE : ATTAQUER   ECHAP : ANNULER");
+      mFightPhase = FightPhase::PRE_QTE;
     } else if (mFightButtons[1].isPressed(mousePosition)) {
       if (mPlayer.getMana() < eloquenceCost) {
         mPlayerTurnResMessage.setString("PAS ASSEZ DE MANA !");
@@ -833,22 +886,22 @@ void Game::handleMouseLeftButtonPressed() {
       mFightPhase = FightPhase::DEBUFF_CHOICE;
     }
   } else if (mCurrentState == GameState::FIGHT && mFightPhase == FightPhase::DEBUFF_CHOICE) {
-    if (mPlayer.getMana() >= eloquenceCost) {
-      if (mDebuffButtons[0].isPressed(mousePosition)) {
-        mPendingDebuffChoice = DebuffType::STRENGTH;
-        mPlayer.reduceMana(eloquenceCost);
+    //if (mPlayer.getMana() >= eloquenceCost) {
+    if (mDebuffButtons[0].isPressed(mousePosition)) {
+      mPendingDebuffChoice = DebuffType::STRENGTH;
 
-      } else if (mDebuffButtons[1].isPressed(mousePosition)) {
-        mPendingDebuffChoice = DebuffType::DEFENSE;
-        mPlayer.reduceMana(eloquenceCost);
-      } else {
-        mMouseLeftButtonReleased = false;
-        return;
-      }
+    } else if (mDebuffButtons[1].isPressed(mousePosition)) {
+      mPendingDebuffChoice = DebuffType::DEFENSE;
     } else {
       mMouseLeftButtonReleased = false;
       return;
     }
+    /*
+    * else {
+      mMouseLeftButtonReleased = false;
+      return;
+    }
+    */ 
     
     
     
@@ -857,10 +910,18 @@ void Game::handleMouseLeftButtonPressed() {
         feather->setDebuffChoice(mPendingDebuffChoice);
     }
 
-    mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
+    if (!mTirades.empty()) {
+      int randomIdx = rand() % mTirades.size();
+      mSentenceQte = {mTirades[randomIdx], "", 8.f, 0.f};
+    } else {
+      mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
+    }
+
     mSentenceText.setString(mSentenceQte.sentence);
     mUserInputText.setString("");
-    mFightPhase = FightPhase::PLAYER_QTE;
+    mPlayerTurnResMessage.setString("ESPACE : COMMENCER   ECHAP : ANNULER");
+    mFightPhase = FightPhase::PRE_QTE;
+
   } else if (mCurrentState == GameState::WIN) {
     if (!mWinButtons.empty() && mWinButtons[0].isPressed(mousePosition)) {
       mCurrentState = GameState::SHOP;
@@ -882,7 +943,24 @@ void Game::handleMouseLeftButtonPressed() {
 
 // Cette m�thode est appel� lorsque le joueur va devoir executer une QTE avec un cercle: cela peut �tre pour son tour lors d'une attaque � l'�p�e ou lorsqu'il doit d�fendre pendant le tour de l'ennemi
 void Game::handleFightKeyPressed(sf::Keyboard::Key key) {
+  if (key == sf::Keyboard::Key::Escape) {
+    handleCancelAction();
+    return;
+  }
+
   if (key != sf::Keyboard::Key::Space) return;
+
+  if (mFightPhase == FightPhase::PRE_QTE) {
+    mPlayerTurnResMessage.setString("");
+    if (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
+      mCircleQte = {150.f, 80.f, 40.f, 0.f};
+    } else {
+      mPlayer.reduceMana(eloquenceCost);
+    }
+    mFightPhase = FightPhase::PLAYER_QTE;
+    return;
+  }
+
   if (mFightPhase == FightPhase::PLAYER_QTE && mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
     
     // On calcule la distance entre le rayon du cercle qui r�tr�cit et le rayon du cercle vis�, plus cette distance est petite, plus la performance est proche de 1 donc les d�gats sont �lev�s
@@ -900,10 +978,11 @@ void Game::handleFightKeyPressed(sf::Keyboard::Key key) {
   }
 }
 
-void Game::handleFightTextEntred(std::uint32_t unicode) { 
-    if (unicode == 8) { //backspace
-        if (!mSentenceQte.userInput.empty()) mSentenceQte.userInput.pop_back();
-        return;
+void Game::handleFightTextEntred(std::uint32_t unicode) {
+  if (mPlayer.getCurrentWeapon()->getType() != AttackType::STRENGTH) {
+    if (unicode == 8) {  // backspace
+      if (!mSentenceQte.userInput.empty()) mSentenceQte.userInput.pop_back();
+      return;
     }
     if (unicode < 128) {
       mSentenceQte.userInput += static_cast<char>(unicode);
@@ -911,7 +990,9 @@ void Game::handleFightTextEntred(std::uint32_t unicode) {
       if (mSentenceQte.userInput.size() >= mSentenceQte.sentence.size()) {
         int correct = 0;
         for (std::size_t i = 0; i < mSentenceQte.sentence.size(); ++i) {
-          if (i < mSentenceQte.userInput.size() && mSentenceQte.userInput[i] == mSentenceQte.sentence[i]) correct++;
+          if (i < mSentenceQte.userInput.size() &&
+              mSentenceQte.userInput[i] == mSentenceQte.sentence[i])
+            correct++;
         }
 
         mSentenceQte.sentencePerf =
@@ -919,6 +1000,25 @@ void Game::handleFightTextEntred(std::uint32_t unicode) {
         mFightPhase = FightPhase::RESOLUTION_PLAYER;
       }
     }
+  }
+    
+}
+
+void Game::handleCancelAction() {
+    switch (mFightPhase) { 
+      case FightPhase::DEBUFF_CHOICE:
+      case FightPhase::PRE_QTE:
+        mPlayerTurnResMessage.setString("");
+        if (mPlayer.getCurrentWeapon()->getType() == AttackType::ELOQUENCE) {
+          mPlayer.regenMana(eloquenceCost);
+        }
+        mFightPhase = FightPhase::PLAYER_CHOICE;
+        break;
+
+      default:
+        break;
+    }
+
 }
 
 void Game::equipBestWeapon(AttackType type) {

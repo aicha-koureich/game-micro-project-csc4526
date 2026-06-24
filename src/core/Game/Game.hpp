@@ -28,6 +28,7 @@ enum class GameState {
 enum class FightPhase { 
 	PLAYER_CHOICE, 
 	DEBUFF_CHOICE,
+	PRE_QTE,
 	PLAYER_QTE, 
 	RESOLUTION_PLAYER,
 	WAITING_AFTER_PLAYER,
@@ -58,11 +59,14 @@ class Game {
   Game(const Game &) = delete;
   Game &operator=(const Game &) = delete;
   void run();
-  void loadXML();
+  void loadWeaponsXML();
+  void loadTiradesXML();
 
  private:
   void handleHover();
   void handleMouseLeftButtonPressed();
+  void handleCancelAction();
+
   void processEvents();
   void update(sf::Time elapsedTime);
   void render();
@@ -104,6 +108,8 @@ class Game {
   std::vector<unique_ptr<Item>> mShopItem;
   sf::Text mMoneyText{mFont};
 
+  std::vector<std::string> mTirades;
+
   sf::RectangleShape mHoverInfoBg;
   sf::Text mHoverInfoText{mFont};
 
@@ -116,12 +122,14 @@ class Game {
   sf::RectangleShape mPlayerShape;
   sf::RectangleShape mEnemyShape;
 
-  /* //Sprites
-  * sf::Texture mPlayerTexture;
-  * sf::Texture mEnemyTextures[3];
-  * sf::Sprite mPlayerSprite{mPlayerTexture};
-  * sf::Sprite mEnemySprite{mEnemyTexture[0]};
+  //Sprites
+  /*
+  sf::Texture mPlayerTexture;
+  std::vector<sf::Texture> mEnemyTextures;
+  sf::Sprite mPlayerSprite{mPlayerTexture};
+  sf::Sprite mEnemySprite;
   */
+ 
 
   // UI Portraits
   sf::RectangleShape mPlayerPortraitBg;
