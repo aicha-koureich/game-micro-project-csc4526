@@ -738,13 +738,15 @@ void Game::handleMouseLeftButtonPressed() {
         }
     }
     // Strength attack
+      //Fix bug crash si pas l'arme adaptée
     if (mFightButtons[0].isPressed(mousePosition)) {
-      equipBestWeapon(AttackType::STRENGTH);
-      mCircleQte = {150.f, 80.f, 40.f, 0.f};
-      mFightPhase = FightPhase::PLAYER_QTE;
+      if (equipBestWeapon(AttackType::STRENGTH)){
+        mCircleQte = {150.f, 80.f, 40.f, 0.f};
+        mFightPhase = FightPhase::PLAYER_QTE;
+      }
     } else if (mFightButtons[1].isPressed(mousePosition)) {
-      equipBestWeapon(AttackType::ELOQUENCE);
-      mFightPhase = FightPhase::DEBUFF_CHOICE;
+      if(equipBestWeapon(AttackType::ELOQUENCE))
+        mFightPhase = FightPhase::DEBUFF_CHOICE;
     }
   } else if (mCurrentState == GameState::FIGHT && mFightPhase == FightPhase::DEBUFF_CHOICE) {
     if (mDebuffButtons[0].isPressed(mousePosition)) {
@@ -824,7 +826,8 @@ void Game::handleFightTextEntred(std::uint32_t unicode) {
     }
 }
 
-void Game::equipBestWeapon(AttackType type) {
+/* MOdifs: devenu un bool pour fixer le bug : si t'as pas l'arme correspondant a l'attaque ca crash*/
+bool Game::equipBestWeapon(AttackType type) {
   const auto& inventory = mPlayer.getWeaponInventory();
   int bestEffect = -1;
   size_t bestIdx = 0;
@@ -841,6 +844,10 @@ void Game::equipBestWeapon(AttackType type) {
 
   if (found) {
     mPlayer.pickWeapon(bestIdx);
+    mPlayerTurnResMessage.setString("");
+    return true;
+  } else{
+    mPlayerTurnResMessage.setString("Achetez une arme adaptee a l'attaque");
+    return false;
   }
-
 }

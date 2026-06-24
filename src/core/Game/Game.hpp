@@ -71,7 +71,7 @@ class Game {
   void handleFightKeyPressed(sf::Keyboard::Key key);
   void handleFightTextEntred(std::uint32_t unicode);
 
-  void equipBestWeapon(AttackType type);
+  bool equipBestWeapon(AttackType type);
 
   static const sf::Time TimePerFrame;
 
