@@ -155,7 +155,7 @@ class Game {
   sf::Text mEnemyLevelText{mFont};
 
   //Mana
-  const int eloquenceCost = 25;
+  const int eloquenceCost = 15;
   sf::RectangleShape mManaBarBg, mManaBar;
   sf::Text mManaText{mFont};
 

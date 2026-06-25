@@ -119,10 +119,28 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
 
   //Fight
 
-  //Ennemies
-  mEnemies.push_back(Enemy{50, 0.5f, 15, 2, 1});
-  mEnemies.push_back(Enemy{70, 0.4f, 20, 12, 2});
-  mEnemies.push_back(Enemy{90, 0.3f, 25, 15, 3});
+  //Ennemis
+  mEnemies.clear();
+
+  // 1. Le Cosplayer Novice (Le Tuto)
+  // HP: 50 | Sensibilité: 1.0f | Atk: 10 | Def: 5 | Lvl: 1
+  mEnemies.push_back(Enemy{50, 1.0f, 10, 5, 1});
+
+  // 2. Le Fan en Armure (Force le debuff de Défense)
+  // HP: 70 | Sensibilité: 1.2f | Atk: 8 | Def: 20 | Lvl: 2
+  mEnemies.push_back(Enemy{70, 1.2f, 8, 20, 2});
+
+  // 3. La Brute Sanguinaire (Force le debuff d'Attaque)
+  // HP: 60 | Sensibilité: 0.8f | Atk: 35 | Def: 5 | Lvl: 3
+  mEnemies.push_back(Enemy{60, 0.8f, 35, 5, 3});
+
+  // 4. Le Snob Susceptible (Sensibilité extrême à l'Éloquence)
+  // HP: 90 | Sensibilité: 2.0f | Atk: 25 | Def: 25 | Lvl: 4
+  mEnemies.push_back(Enemy{90, 2.0f, 25, 25, 4});
+
+  // 5. Le Faux De Guiche (Le Boss - Endurance)
+  // HP: 150 | Sensibilité: 0.5f | Atk: 25 | Def: 15 | Lvl: 5
+  mEnemies.push_back(Enemy{150, 0.5f, 25, 15, 5});
 
   // Graphics
   //Items 
@@ -718,7 +736,7 @@ void Game::update(sf::Time elapsedTime) {
     case FightPhase::WAITING_AFTER_ENEMY:
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
-        mPlayer.regenMana(5);
+        mPlayer.regenMana(10);
         mPlayerTurnResMessage.setString("");
         mFightPhase = FightPhase::PLAYER_CHOICE;
       }

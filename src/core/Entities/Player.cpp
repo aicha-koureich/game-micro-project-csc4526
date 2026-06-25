@@ -17,8 +17,11 @@ void Player::increaseNoseSize(int enemyLevel) {
     float noseScore = healthPoints * 0.1f; 
     noseSize += noseScore;
 
-    maxHealthPoints += 10;
-    baseDefense += (2 * enemyLevel);
+    maxHealthPoints += 15;
+    baseDefense += 3;
+
+    maxMana += 10;
+    mana = maxMana;
 
 }
 
