@@ -5,7 +5,7 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
-Game::Game() : mPlayer(100, 10000, 0, 50, 5, nullptr) {
+Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   assert(mWineTexture.loadFromFile("res/vin.png"));
   assert(mLetterTexture.loadFromFile("res/lettre.png"));
