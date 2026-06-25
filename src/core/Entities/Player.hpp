@@ -16,6 +16,9 @@ class Player : public Entity {
   int mana;
   int maxMana;
   int baseDefense;
+  float strengthMultiplier = 1.0f;
+  float eloquenceMultiplier = 1.0f;
+
   Weapon* currentWeapon;
   vector<unique_ptr<Weapon>> weaponInventory;
   vector<std::unique_ptr<Item>> itemInventory;
@@ -52,7 +55,7 @@ class Player : public Entity {
 
   //Attack Methods
   void takeDamage(int attackRes) override;
-  void playerAttack(Enemy& target, float performance);
+  void playerAttack(Enemy& target, float performance, AttackType type);
 
   //Mana Methods
   void reduceMana(int cost) { mana = std::max(0, mana - cost); }
@@ -64,6 +67,16 @@ class Player : public Entity {
   bool purchaseItem(std::unique_ptr<Item>&);
   const vector<std::unique_ptr<Item>>& getItemInventory() const {
     return itemInventory;
+  }
+  void setStrengthMultiplier(float mult) { strengthMultiplier = mult; }
+  void setEloquenceMultiplier(float mult) { eloquenceMultiplier = mult; }
+
+  float getStrengthMultiplier() const { return strengthMultiplier; }
+  float getEloquenceMultiplier() const { return eloquenceMultiplier; }
+
+  void resetMultipliers() {
+    strengthMultiplier = 1.0f;
+    eloquenceMultiplier = 1.0f;
   }
 };
 #endif

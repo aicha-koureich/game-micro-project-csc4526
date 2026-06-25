@@ -87,6 +87,8 @@ void Player::takeDamage(int attackRes){
   healthPoints = std::max(0, healthPoints - finalDamage);
 }
 
-void Player::playerAttack(Enemy& target, float performance) {
-    currentWeapon->attack(target, performance);
+void Player::playerAttack(Enemy& target, float performance, AttackType type) {
+  float mult =
+      (type == AttackType::STRENGTH) ? strengthMultiplier : eloquenceMultiplier;
+    currentWeapon->attack(target, performance, mult);
 }

@@ -619,6 +619,8 @@ void Game::update(sf::Time elapsedTime) {
   }
   switch (mFightPhase) { 
     case FightPhase::PLAYER_CHOICE: {
+
+      mItemUsedThisTurn = false;
       
       if (mPlayer.getMana() < eloquenceCost) {
         mFightButtons[1].setBackColor(sf::Color(65, 65, 65));
@@ -653,7 +655,9 @@ void Game::update(sf::Time elapsedTime) {
           (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH)
                ? mCircleQte.circlePerf
                : mSentenceQte.sentencePerf;
-      mPlayer.playerAttack(enemy, perf);
+      AttackType type = mPlayer.getCurrentWeapon()->getType();
+
+      mPlayer.playerAttack(enemy, perf, type);
 
       if (enemy.getHealthPoints() <= 0) {
         mPrevMoney = mPlayer.getTotalMoney();
@@ -728,6 +732,7 @@ void Game::update(sf::Time elapsedTime) {
       break;
 
     case FightPhase::WAITING_AFTER_PLAYER:
+      mPlayer.resetMultipliers();
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
         mCircleQte = {150.f, 80.f, 40.f, 0.f};
@@ -739,7 +744,7 @@ void Game::update(sf::Time elapsedTime) {
     case FightPhase::WAITING_AFTER_ENEMY:
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
-        mPlayer.regenMana(10);
+        mPlayer.regenMana(5);
         mPlayerTurnResMessage.setString("");
         mFightPhase = FightPhase::PLAYER_CHOICE;
       }
@@ -1090,11 +1095,16 @@ void Game::handleMouseLeftButtonPressed() {
 
             // Si on a trouvé l'objet, on l'utilise
             if (indexToUse != -1) {
-                if(mPlayer.useItem(indexToUse)) 
+              if (!mItemUsedThisTurn) {
+                if (mPlayer.useItem(indexToUse)) {
                   mPlayerTurnResMessage.setString(itemMessage);
-                else{
+                  mItemUsedThisTurn = true;
+                } else {
                   mPlayerTurnResMessage.setString("Non usable Item !");
                 }
+              } else {
+                mPlayerTurnResMessage.setString("Only one item per turn !");
+              }        
             } else {
                 mPlayerTurnResMessage.setString("Out of stock !");
             }
