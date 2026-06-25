@@ -79,7 +79,6 @@ class Game {
 
   bool equipBestWeapon(AttackType type);
   void restartCombat();
-  void equipBestWeapon(AttackType type);
 
   int getBestWeaponEffect(AttackType type) const;
 

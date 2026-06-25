@@ -1,6 +1,7 @@
 #include "Game.hpp"
 
 #include <ranges>
+#include <random>
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
@@ -18,7 +19,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   //Pause
   mPauseButton = std::make_unique<Button>(sf::Vector2f(615.f, 0.f), sf::Vector2f(25.f, 25.f), "| |", mFont, sf::Color{55, 55, 55, 255}, 18);
   sf::Text titlePause{mFont};
-  titlePause.setString(" Pause ");
+  titlePause.setString(" PAUSE ");
   titlePause.setCharacterSize(50);
   titlePause.setFillColor(sf::Color::White);
   titlePause.setPosition(sf::Vector2f(220.0f, 10.0f));
@@ -49,7 +50,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
  
   //Shop
   sf::Text titleShop{mFont};
-  titleShop.setString(" MAGASIN");
+  titleShop.setString("SHOP");
   titleShop.setCharacterSize(35);
   titleShop.setFillColor(sf::Color::White);
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
@@ -60,7 +61,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   std::unique_ptr<Item> ink = std::make_unique<InkFlask>(1, 0.25f);
 
   sf::Text items{mFont};
-  items.setString("OBJETS");
+  items.setString("ITEMS");
   items.setCharacterSize(30);
   items.setFillColor(sf::Color::Green);
   items.setPosition(sf::Vector2f(0.0f, 315.0f));
@@ -109,7 +110,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mMoneyText.setPosition({480.f, 20.f});
 
     // weapon infobulle
-  mTooltipBg.setFillColor(sf::Color(0, 0, 0, 220)); // noir transparent
+  mTooltipBg.setFillColor(sf::Color(0, 0, 0, 220)); 
   mTooltipBg.setOutlineColor(sf::Color::White);
   mTooltipBg.setOutlineThickness(1.f);
   
@@ -500,7 +501,7 @@ void Game::processEvents() {
 }
 
 void Game::update(sf::Time elapsedTime) {
-  mMoneyText.setString("Solde : " + std::to_string(mPlayer.getTotalMoney()) + " ecus"); //update le solde
+  mMoneyText.setString("WALLET : " + std::to_string(mPlayer.getTotalMoney()) + " ecus"); //update le solde
   if (mCurrentState == GameState::SHOP) {
     //SPRITES ITEM
     for (int i = 0; i < 3; ++i) {
@@ -521,7 +522,7 @@ void Game::update(sf::Time elapsedTime) {
       //INFOBULLES ARMES
     for (size_t i = 0; i < mShopWeapon.size(); ++i) {
       if (mShopWeapon[i] != nullptr && weaponRectangles[i].getGlobalBounds().contains(mousePosF)) {
-        specs = mShopWeapon[i]->getName() + "\nEffet : " + std::to_string(mShopWeapon[i]->getEffect());
+        specs = mShopWeapon[i]->getName() + "\nEffect : " + std::to_string(mShopWeapon[i]->getEffect());
         break;
       }
     }
@@ -531,14 +532,14 @@ void Game::update(sf::Time elapsedTime) {
           switch (i)
           {
           case 0:
-            specs = "Un bon vin de Gascogne \n qui redonne la sante\n +25% de PV au joueur";
+            specs = "A fine Gascogne Wine\nthat restores health\n+25% Player HP";
             break;
           
           case 1:
-            specs = "Les mots de Roxanne boost\n les skills d'epeiste de Cyrano\n +25% Force";
+            specs = "Roxanne's words boost\n your fencing skills\n +25% Strength";
             break;
           case 2:
-            specs = "La meilleure encre de Chine\n pour les meilleurs tirades +25% Eloquence appliquee a la plume";
+            specs = "The finest China ink\nfor the best tirades\n+25% Eloquence applied to Feather";
             break;
           }
         }
@@ -658,7 +659,7 @@ void Game::update(sf::Time elapsedTime) {
           }
           mEnemySprite.setTexture(mEnemyTextures[mCurrentEnemyIdx], true);
           */ 
-          mPlayerTurnResMessage.setString("L'ENNEMI EST MORT !");
+          mPlayerTurnResMessage.setString("ENEMY IS DEAD !");
           mCurrentState = GameState::WIN;
         }
         return;
@@ -666,9 +667,9 @@ void Game::update(sf::Time elapsedTime) {
 
       if (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
         enemy.resetDefenseDebuff();
-        mPlayerTurnResMessage.setString("COUP D'EPEE !");
+        mPlayerTurnResMessage.setString("SWORD STRIKE !");
       } else {
-        mPlayerTurnResMessage.setString("L'ENNEMI EST AFFAIBLI PAR VOTRE ELOQUENCE !");
+        mPlayerTurnResMessage.setString("ENEMY AFFECTED BY YOUR ELOQUENCE !");
       }
 
       mResolutionTimer = 1.5f;
@@ -693,13 +694,13 @@ void Game::update(sf::Time elapsedTime) {
       enemy.enemyAttack(mPlayer, mCircleQte.circlePerf);
 
       if (mPlayer.getHealthPoints() <= 0) {
-        mPlayerTurnResMessage.setString("VOUS AVEZ PERDU !");
+        mPlayerTurnResMessage.setString("YOU LOST !");
         mCurrentState = GameState::DEAD;
         return;
       }
 
       enemy.resetAttackDebuff();
-      mPlayerTurnResMessage.setString("ATTAQUE DE L'ENNEMI !");
+      mPlayerTurnResMessage.setString("ATTACK RECEIVED !");
 
       mResolutionTimer = 1.5f;
       mFightPhase = FightPhase::WAITING_AFTER_ENEMY;
@@ -841,13 +842,13 @@ void Game::render() {
         int defGain = mPlayer.getBaseDefense() - mPrevBaseDefense;
 
         mPlayerStatsText.setString(
-            "Argent : " + std::to_string(mPlayer.getTotalMoney()) + " ecus (+" +
+            "WALLET : " + std::to_string(mPlayer.getTotalMoney()) + " ecus (+" +
             std::to_string(moneyGain) + ")\n" +
-            "Taille du nez : " + std::to_string(mPlayer.getNoseSize()) + " (+" +
+            "NOSE SIZE : " + std::to_string(mPlayer.getNoseSize()) + " (+" +
             std::to_string(noseGain) + ")\n" +
-            "PV max : " + std::to_string(mPlayer.getMaxHealthPoints()) + " (+" +
+            "MAX HP : " + std::to_string(mPlayer.getMaxHealthPoints()) + " (+" +
             std::to_string(hpGain) + ")\n" +
-            "Defense : " + std::to_string(mPlayer.getBaseDefense()) + " (+" +
+            "DEFENSE : " + std::to_string(mPlayer.getBaseDefense()) + " (+" +
             std::to_string(defGain) + ")");
 
         mPlayerStatsText.setCharacterSize(20);
@@ -873,10 +874,10 @@ void Game::render() {
 
       case GameState::GAME_FINISHED:
         mPlayerStatsText.setString(
-            "Money : " + std::to_string(mPlayer.getTotalMoney()) + " ecus\n" +
-            "Nose Size : " + std::to_string(mPlayer.getNoseSize()) + "\n" +
-            "Health Points : " + std::to_string(mPlayer.getMaxHealthPoints()) +
-            "HP\n" + "Defense : " + std::to_string(mPlayer.getBaseDefense()));
+            "WALLET : " + std::to_string(mPlayer.getTotalMoney()) + " ecus\n" +
+            "NOSE SIZE : " + std::to_string(mPlayer.getNoseSize()) + "\n" +
+            "HEALTH POINTS : " + std::to_string(mPlayer.getMaxHealthPoints()) +
+            "HP\n" + "DEFENSE : " + std::to_string(mPlayer.getBaseDefense()));
         mWindow.draw(mPlayerStatsText);
 
         for (const auto& text : mFinishedText) mWindow.draw(text);
@@ -911,14 +912,14 @@ void Game::handleHover() {
     if (mFightButtons[0].isHovered(mousePosition)) {
       int effect = getBestWeaponEffect(AttackType::STRENGTH);
       mHoverInfoText.setString(effect >= 0
-                                   ? "Degats bruts : " + std::to_string(effect)
-                                   : "Aucune epee equipee");
+                                   ? "Raw damage : " + std::to_string(effect)
+                                   : "No sword equipped");
     } else if (mFightButtons[1].isHovered(mousePosition)) {
       int effect = getBestWeaponEffect(AttackType::ELOQUENCE);
       mHoverInfoText.setString(
-          effect >= 0 ? "Cout : " +
+          effect >= 0 ? "Cost : " +
                             std::to_string(eloquenceCost) + " mana"
-                      : "Aucune plume equipee");
+                      : "No quill equipped");
     } else {
       mHoverInfoText.setString("");
     }   
@@ -932,8 +933,8 @@ void Game::handleHover() {
       int reelDebuff = std::max(
           1, mEnemies[mCurrentEnemyIdx].getCurrentDamage() - reduction);
       mHoverInfoText.setString(
-          "Reduit l'attaque de l'ennemi\n Reduction max : " +
-                               std::to_string(reelDebuff) + " points d'attaque"
+          "Reduce enemy attack\n Max debuff : " +
+                               std::to_string(reelDebuff) + " attack points"
              );
     } else if (mDebuffButtons[1].isHovered(mousePosition)) {
       int playerRawDebuff =
@@ -945,8 +946,8 @@ void Game::handleHover() {
       int reelDebuff = std::max(
           1, mEnemies[mCurrentEnemyIdx].getCurrentDefense() - reduction);
       mHoverInfoText.setString(
-          "Reduit la defense de l'ennemi\n Reduction max : " +
-                               std::to_string(reelDebuff) + " points de defense");
+          "Reduce enemy defense\n Max debuff : " +
+                               std::to_string(reelDebuff) + " defense points");
     } else {
       mHoverInfoText.setString("");
     }
@@ -1012,16 +1013,16 @@ void Game::handleMouseLeftButtonPressed() {
         for (size_t i = 0; i < mShopWeapon.size(); ++i) {
             if (mShopButtons[i].isPressed(mousePosition)) {
             if (mShopWeapon[i] == nullptr) {
-              mPlayerTurnResMessage.setString("Deja vendu!");
+              mPlayerTurnResMessage.setString("Already sold !");
                 continue; 
             }
             bool success = mPlayer.purchaseWeapon(mShopWeapon[i]);
             if (success) {
-            mPlayerTurnResMessage.setString("Achat reussi!");
+            mPlayerTurnResMessage.setString("Purchase successful!");
             mShopButtons[i].setText("SOLD");
             mShopButtons[i].setBackColor(sf::Color{55, 55, 55, 255});
             } else {
-            mPlayerTurnResMessage.setString("Fonds insuffisants !");
+            mPlayerTurnResMessage.setString("Not enough money !");
 
            }
            mMouseLeftButtonReleased = false;
@@ -1035,7 +1036,7 @@ void Game::handleMouseLeftButtonPressed() {
 
             if (mShopButtons[buttonIndex].isPressed(mousePosition)) {
               if (mShopItem[j] == nullptr) {
-                    std::cerr << "ERREUR : mShopItem[" << j << "] est nul !" << std::endl;
+                    std::cerr << "ERROR : mShopItem[" << j << "] is null !" << std::endl;
                     return; 
                 }
               //on les crée à la volée et on clone l'item dans le catalogue
@@ -1044,9 +1045,9 @@ void Game::handleMouseLeftButtonPressed() {
               bool success = mPlayer.purchaseItem(newItem); 
               
               if (success) {
-                  std::cout << "Achat d'item reussi !\n";
+                  mPlayerTurnResMessage.setString("Item purchased successfully !\n");
               } else {
-                  mPlayerTurnResMessage.setString("Fonds insuffisants !");
+                  mPlayerTurnResMessage.setString("Not enough money !");
               } 
               mMouseLeftButtonReleased = false;
               return;
@@ -1075,10 +1076,10 @@ void Game::handleMouseLeftButtonPressed() {
                 if(mPlayer.useItem(indexToUse)) 
                   mPlayerTurnResMessage.setString(itemMessage);
                 else{
-                  mPlayerTurnResMessage.setString("Item non utilisable !");
+                  mPlayerTurnResMessage.setString("Non usable Item !");
                 }
             } else {
-                mPlayerTurnResMessage.setString("Y'en a plus!");
+                mPlayerTurnResMessage.setString("Out of stock !");
             }
             
             mMouseLeftButtonReleased = false;
@@ -1088,17 +1089,21 @@ void Game::handleMouseLeftButtonPressed() {
     // Strength attack
       //Fix bug crash si pas l'arme adaptée
     if (mFightButtons[0].isPressed(mousePosition)) {
-      equipBestWeapon(AttackType::STRENGTH);
-      mPlayerTurnResMessage.setString("ESPACE : ATTAQUER   ECHAP : ANNULER");
-      mFightPhase = FightPhase::PRE_QTE;
+      if (equipBestWeapon(AttackType::STRENGTH)) {
+        mPlayerTurnResMessage.setString("SPACE : ATTACK   ESC : CANCEL");
+        mFightPhase = FightPhase::PRE_QTE;
+      }
+
     } else if (mFightButtons[1].isPressed(mousePosition)) {
       if (mPlayer.getMana() < eloquenceCost) {
-        mPlayerTurnResMessage.setString("PAS ASSEZ DE MANA !");
+        mPlayerTurnResMessage.setString("NOT ENOUGH MANA !");
         mMouseLeftButtonReleased = false;
         return;
       }
-      equipBestWeapon(AttackType::ELOQUENCE);
-      mFightPhase = FightPhase::DEBUFF_CHOICE;
+      if (equipBestWeapon(AttackType::ELOQUENCE)) {
+        mFightPhase = FightPhase::DEBUFF_CHOICE;
+      }
+
     }
   } else if (mCurrentState == GameState::FIGHT && mFightPhase == FightPhase::DEBUFF_CHOICE) {
     //if (mPlayer.getMana() >= eloquenceCost) {
@@ -1126,15 +1131,17 @@ void Game::handleMouseLeftButtonPressed() {
     }
 
     if (!mTirades.empty()) {
-      int randomIdx = rand() % mTirades.size();
+      static std::mt19937 gen(std::random_device{}());
+      std::uniform_int_distribution<std::size_t> dist(0, mTirades.size() - 1);
+      int randomIdx = dist(gen);
       mSentenceQte = {mTirades[randomIdx], "", 8.f, 0.f};
     } else {
-      mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
+      mSentenceQte = {"I'm Cyrano de Bergerac", "", 8.f, 0.f};
     }
 
     mSentenceText.setString(mSentenceQte.sentence);
     mUserInputText.setString("");
-    mPlayerTurnResMessage.setString("ESPACE : COMMENCER   ECHAP : ANNULER");
+    mPlayerTurnResMessage.setString("SPACE : WRITE   ESC : CANCEL");
     mFightPhase = FightPhase::PRE_QTE;
 
   } else if (mCurrentState == GameState::WIN) {
@@ -1253,7 +1260,7 @@ bool Game::equipBestWeapon(AttackType type) {
     mPlayerTurnResMessage.setString("");
     return true;
   } else{
-    mPlayerTurnResMessage.setString("Achetez une arme adaptee a l'attaque");
+    mPlayerTurnResMessage.setString("Buy the correct weapon to attack");
     return false;
   }
 }
@@ -1265,8 +1272,10 @@ void Game::restartCombat(){
   mPlayerTurnResMessage.setString("");
   mSentenceQte.userInput = "";
   mUserInputText.setString("");
-
 }
+ 
+
+
 
 int Game::getBestWeaponEffect(AttackType type) const {
   const auto& inventory = mPlayer.getWeaponInventory();
