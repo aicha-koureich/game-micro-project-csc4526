@@ -47,19 +47,19 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mShopText.push_back(items);
 
   sf::Text item1{mFont};
-  item1.setString("Vin de Gascogne\n" + std::to_string(vin->getCost()) + " ecus");
+  item1.setString("Gascogne Wine\n" + std::to_string(vin->getCost()) + " ecus");
   item1.setCharacterSize(12);
   item1.setFillColor(sf::Color::White);
   item1.setPosition(sf::Vector2f(50.0f, 350.0f));
   mShopText.push_back(item1);
   sf::Text item2{mFont};
-  item2.setString("Lettre de Roxanne\n" + std::to_string(lettre->getCost()) + "ecus");
+  item2.setString("Roxanne Letter\n" + std::to_string(lettre->getCost()) + "ecus");
   item2.setCharacterSize(12);
   item2.setFillColor(sf::Color::White);
   item2.setPosition(sf::Vector2f(230.0f, 350.0f));
   mShopText.push_back(item2);
   sf::Text item3{mFont};
-  item3.setString("Encre\n" + std::to_string(lettre->getCost()) + "ecus");
+  item3.setString("Ink\n" + std::to_string(lettre->getCost()) + "ecus");
   item3.setCharacterSize(12);
   item3.setFillColor(sf::Color::White);
   item3.setPosition(sf::Vector2f(410.0f, 350.0f));
@@ -72,7 +72,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   float currentX = 50;
   for(int i =0; i<3; ++i){
     Button buyItem(sf::Vector2f(currentX, 380.f), sf::Vector2f(80.f, 30.f),
-                     "ACHETER", mFont, sf::Color::Red, 15);
+                     "BUY", mFont, sf::Color::Red, 15);
     mShopButtons.push_back(buyItem);
     currentX+= 180.f;
   }
@@ -247,7 +247,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mQteText.setCharacterSize(22);
   mQteText.setFillColor(sf::Color::Yellow);
   mQteText.setPosition({180.f, 300.f});
-  mQteText.setString("APPUYEZ SUR ESPACE !");
+  mQteText.setString("PRESS SPACE !");
 
   //Target Circle
   mQteTargetCircle.setRadius(40.f);
@@ -290,7 +290,7 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
                         "ELOQUENCE", mFont, sf::Color(75, 0, 110), 18);
 
   Button itemButton(sf::Vector2f(440.f, 400.f), sf::Vector2f(150.f, 50.f),
-                        "ITEM", mFont, sf::Color(0, 103, 79), 18);
+                        "ITEMS", mFont, sf::Color(0, 103, 79), 18);
 
   mFightButtons.push_back(strengthButton);
   mFightButtons.push_back(eloquenceButton);
