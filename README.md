@@ -8,9 +8,9 @@
 Le système de combat repose sur un "Chifoumi" tactique où il faut affaiblir les faiblesses psychologiques ou physiques de vos ennemis grâce à des mécaniques d'escrime verbale (Éloquence/Debuff) et de maîtrise de l'épée (Force), tout en gérant votre jauge d'inspiration. Vous pouvez également acheter des items qui boostent vos capacités.
 
 ### Aperçu du jeu
-*Les ennemis sont encore représentés par un rectangle rose. Patience, ils apparaitront dans une prochaine mise à jour.*
+*Les ennemis et les armes sont encore représentés par des rectangles. Patience, ils apparaîtront dans une prochaine mise à jour.*
 
-![Écran principale](doc/Capture d’écran du 2026-06-25 21-56-05.png)
+![Écran principale](doc/2.png)
 
 ![Shop](doc/3.png)
 
