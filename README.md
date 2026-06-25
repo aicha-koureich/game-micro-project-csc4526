@@ -76,26 +76,29 @@ Avant de compiler, assurez-vous d'avoir installé sur votre machine :
    cmake --build .
    ```
 
-4. Une fois la compilation terminée, lancez l'exécutable généré. 
-   *(Note : Assurez-vous que le dossier de ressources `res/` se trouve bien dans le répertoire depuis lequel vous lancez le jeu, afin que les images et polices chargent correctement).*
-
+4. Une fois la compilation terminée, **revenez à la racine du projet** pour lancer le programme. C'est indispensable pour que l'exécutable trouve le dossier de ressources (res/) et charge les images/polices correctement.
+   
    **Sur Linux / macOS :**
    ```bash
-   ./src/main/main
+   cd ..
+   ./build/src/main/main
    ```
 
    **Sur Windows (Powershell/CMD) :**
    ```cmd
-   .\src\main\Debug\main.exe
+   .cd ..
+   .\build\src\main\Debug\main.exe
    `
-5. Pour lancer les tests unitaires.
+6. Pour lancer les tests unitaires.
 
    **Sur Linux / macOS :**
    ```bash
-   ./src/test/unitTests
+   cd ..
+   ./build/src/test/unitTests
    ```
 
    **Sur Windows (Powershell/CMD) :**
    ```cmd
-   .\src\test\Debug\unitTests.exe
+   .cd ..
+   .\build\src\test\Debug\unitTests.exe
    `
