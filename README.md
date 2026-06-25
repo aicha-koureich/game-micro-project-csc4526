@@ -10,7 +10,7 @@ Le système de combat repose sur un "Chifoumi" tactique où il faut affaiblir le
 ### Aperçu du jeu
 *Les ennemis sont encore représentés par un rectangle rose. Patience, ils apparaitront dans une prochaine mise à jour.*
 
-![Écran principale](doc/2.png)
+![Écran principale](doc/Capture d’écran du 2026-06-25 21-56-05.png)
 
 ![Shop](doc/3.png)
 
