@@ -661,7 +661,7 @@ void Game::update(sf::Time elapsedTime) {
         mPrevMaxHp = mPlayer.getMaxHealthPoints();
         mPrevBaseDefense = mPlayer.getBaseDefense();
 
-        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.3f) *
+        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.15f) *
                           enemy.getEnemyLevel();
         mPlayer.addMoney(moneyGained);
         mPlayer.increaseNoseSize(enemy.getEnemyLevel());
@@ -949,26 +949,22 @@ void Game::handleHover() {
       int playerRawDebuff =
           getBestWeaponEffect(AttackType::ELOQUENCE) *
           2.f;    // On montre le debuff max que l'on peut appliqué à l'ennemi
-        int reduction =  (playerRawDebuff * mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()) /
-              mEnemies[mCurrentEnemyIdx].getEnemyLevel();
-      int reelDebuff = std::max(
-          1, mEnemies[mCurrentEnemyIdx].getCurrentDamage() - reduction);
+        int reduction =  static_cast<int>(std::round(playerRawDebuff * mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()));
+
       mHoverInfoText.setString(
-          "Reduce enemy attack\n Max debuff : " +
-                               std::to_string(reelDebuff) + " attack points"
+          "Reduce enemy attack\nDebuff amount : " +
+                               std::to_string(reduction) + " attack points"
              );
     } else if (mDebuffButtons[1].isHovered(mousePosition)) {
       int playerRawDebuff =
           getBestWeaponEffect(AttackType::ELOQUENCE) *
           2.f;  // On montre le debuff max que l'on peut appliqué à l'ennemi
-      int reduction = (playerRawDebuff *
-                       mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()) /
-                      mEnemies[mCurrentEnemyIdx].getEnemyLevel();
-      int reelDebuff = std::max(
-          1, mEnemies[mCurrentEnemyIdx].getCurrentDefense() - reduction);
+      int reduction = static_cast<int>(std::round(playerRawDebuff *
+                       mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()));
+  
       mHoverInfoText.setString(
-          "Reduce enemy defense\n Max debuff : " +
-                               std::to_string(reelDebuff) + " defense points");
+          "Reduce enemy defense\nDebuff amount : " +
+                               std::to_string(reduction) + " defense points");
     } else {
       mHoverInfoText.setString("");
     }
