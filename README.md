@@ -8,8 +8,11 @@
 Le système de combat repose sur un "Chifoumi" tactique où il faut affaiblir les faiblesses psychologiques ou physiques de vos ennemis grâce à des mécaniques d'escrime verbale (Éloquence/Debuff) et de maîtrise de l'épée (Force), tout en gérant votre jauge d'inspiration.
 
 ### Aperçu du jeu
+**Ecran Principale**
 ![Écran principale](doc/2.png)
+**Shop**
 ![Shop](doc/3.png)
+**Fight Scenes**
 ![Fight scene](doc/4.png)
 ![Fight scene](doc/5.png)
 ![Fight scene](doc/6.png)
@@ -17,6 +20,7 @@ Le système de combat repose sur un "Chifoumi" tactique où il faut affaiblir le
 ![Fight scene](doc/8.png)
 ![Fight scene](doc/9.png)
 ![Fight scene](doc/10.png)
+**Cyrano final Nose**
 ![CyraNose](doc/1.png)
 
 ---
