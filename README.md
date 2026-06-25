@@ -1,13 +1,14 @@
 # Micro-projet, réalisé en binôme (charge totale de travail estimée à xxx heures)
 
-# Cyrano de A&A - Le Jeu
+# CyraNose- Le Jeu
 
 ## Description du Jeu
-**Cyrano de A&A** est un jeu de rôle tactique inspiré de la vie et de l'œuvre de *Cyrano de Bergerac*. Oubliez les combats de RPG classiques où l'épée est la seule solution : ici, le verbe est tout aussi tranchant que l'acier. Vous incarnez Cyrano et devez terrasser divers adversaires en combinant passes d'armes et joutes verbales.
+**CyraNose** est un jeu de rôle tactique inspiré de la vie et de l'œuvre de *Cyrano de Bergerac*. Oubliez les combats de RPG classiques où l'épée est la seule solution : ici, le verbe est tout aussi tranchant que l'acier. Vous incarnez un fan de Cyrano et devez terrasser divers adversaires en combinant passes d'armes et joutes verbales. Après chaque victoire, votre nez s'allonge de plus en plus et vous ressemblez ainsi davantage à votre idole !
 
-Le système de combat repose sur un "Chifoumi" tactique où il faut affaiblir les faiblesses psychologiques ou physiques de vos ennemis grâce à des mécaniques d'escrime verbale (Éloquence/Debuff) et de maîtrise de l'épée (Force), tout en gérant votre jauge d'inspiration.
+Le système de combat repose sur un "Chifoumi" tactique où il faut affaiblir les faiblesses psychologiques ou physiques de vos ennemis grâce à des mécaniques d'escrime verbale (Éloquence/Debuff) et de maîtrise de l'épée (Force), tout en gérant votre jauge d'inspiration. Vous pouvez également acheter des items qui boostent vos capacités.
 
 ### Aperçu du jeu
+*Les ennemis sont encore représentés par un rectangle rose. Patience, ils apparaitront dans une prochaine mise à jour.*
 
 ![Écran principale](doc/2.png)
 
@@ -55,7 +56,7 @@ Avant de compiler, assurez-vous d'avoir installé sur votre machine :
 * Un compilateur C++ récent (supportant au moins **C++17**).
 * **CMake** (version 3.15 minimum recommandée).
 * La bibliothèque **SFML** (version 3.x).
-* La bibliothèque **PugiXML** (utilisée pour la lecture des données du magasin et des tirades).
+* La bibliothèque **PugiXML**.
 
 ### Étapes rapides (Ligne de commande)
 
