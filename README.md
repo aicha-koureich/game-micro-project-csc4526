@@ -1,11 +1,6 @@
+# Micro-projet, réalisé en binôme (charge totale de travail estimée à xxx heures)
+
 # Cyrano de A&A - Le Jeu
-
-Certains projets sont concernés par les présentes remarques générales, d'autres non : SVP, vérifiez chacune des remarques pour votre projet.
-
-## Remarques générales
-> Certains projets sont concernés par les présentes remarques générales, d'autres non : SVP, vérifiez chacune des remarques pour votre projet.
-
----
 
 ## Description du Jeu
 **Cyrano de A&A** est un jeu de rôle tactique inspiré de la vie et de l'œuvre de *Cyrano de Bergerac*. Oubliez les combats de RPG classiques où l'épée est la seule solution : ici, le verbe est tout aussi tranchant que l'acier. Vous incarnez Cyrano et devez terrasser divers adversaires en combinant passes d'armes et joutes verbales.
