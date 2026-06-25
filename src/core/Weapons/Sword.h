@@ -10,7 +10,7 @@ class Sword : public Weapon {
 
 	public:
         Sword(int damage, std::string swordName, int swordCost);
-        void attack(Enemy& target, float performance) override;
+        void attack(Enemy& target, float performance, float playerMult) override;
 };
 
 #endif

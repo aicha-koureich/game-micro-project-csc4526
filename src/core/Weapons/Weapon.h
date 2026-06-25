@@ -37,7 +37,7 @@ class Weapon {
         int getCost() const{ return cost; }
         AttackType getType() const { return type; }
         std::string getName() const {return name;}
-        virtual void attack(Enemy& target, float performance) = 0;
+        virtual void attack(Enemy& target, float performance, float playerMult) = 0;
         void setEffect(int itemBuffer){effect = itemBuffer;}
 };
 

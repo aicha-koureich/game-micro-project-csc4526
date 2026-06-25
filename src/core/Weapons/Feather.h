@@ -13,7 +13,7 @@ class Feather : public Weapon {
 
  public:
   Feather(int eloquencePower, std::string featherName, int featherCost);
-  void attack(Enemy& target, float performance) override;
+  void attack(Enemy& target, float performance, float playerMult) override;
   void setDebuffChoice(DebuffType choice);
 };
 

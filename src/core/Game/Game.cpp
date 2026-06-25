@@ -5,7 +5,7 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
-Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
+Game::Game() : mPlayer(100, 10000, 0, 50, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   assert(mWineTexture.loadFromFile("res/vin.png"));
   assert(mLetterTexture.loadFromFile("res/lettre.png"));
@@ -59,9 +59,9 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
     //items 
-  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(2, 0.25f);
-  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(1, 0.25f);
-  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(1, 0.25f);
+  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(15, 0.25f);
+  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(30, 0.25f);
+  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(25, 0.25f);
 
   sf::Text items{mFont};
   items.setString("ITEMS");
@@ -122,10 +122,28 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
 
   //Fight
 
-  //Ennemies
-  mEnemies.push_back(Enemy{50, 0.5f, 15, 2, 1});
-  mEnemies.push_back(Enemy{70, 0.4f, 20, 12, 2});
-  mEnemies.push_back(Enemy{90, 0.3f, 25, 15, 3});
+  //Ennemis
+  mEnemies.clear();
+
+  // 1. Le Cosplayer Novice (Le Tuto)
+  // HP: 50 | Sensibilité: 1.0f | Atk: 10 | Def: 5 | Lvl: 1
+  mEnemies.push_back(Enemy{50, 1.0f, 10, 5, 1});
+
+  // 2. Le Fan en Armure (Force le debuff de Défense)
+  // HP: 70 | Sensibilité: 1.2f | Atk: 8 | Def: 20 | Lvl: 2
+  mEnemies.push_back(Enemy{70, 1.2f, 8, 20, 2});
+
+  // 3. La Brute Sanguinaire (Force le debuff d'Attaque)
+  // HP: 60 | Sensibilité: 0.8f | Atk: 35 | Def: 5 | Lvl: 3
+  mEnemies.push_back(Enemy{60, 0.8f, 35, 5, 3});
+
+  // 4. Le Snob Susceptible (Sensibilité extrême à l'Éloquence)
+  // HP: 90 | Sensibilité: 2.0f | Atk: 25 | Def: 25 | Lvl: 4
+  mEnemies.push_back(Enemy{90, 2.0f, 25, 25, 4});
+
+  // 5. Le Faux De Guiche (Le Boss - Endurance)
+  // HP: 150 | Sensibilité: 0.5f | Atk: 25 | Def: 15 | Lvl: 5
+  mEnemies.push_back(Enemy{150, 0.5f, 25, 15, 5});
 
   // Graphics
   //Items 
@@ -640,7 +658,9 @@ void Game::update(sf::Time elapsedTime) {
           (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH)
                ? mCircleQte.circlePerf
                : mSentenceQte.sentencePerf;
-      mPlayer.playerAttack(enemy, perf);
+      AttackType type = mPlayer.getCurrentWeapon()->getType();
+
+      mPlayer.playerAttack(enemy, perf, type);
 
       if (enemy.getHealthPoints() <= 0) {
         mPrevMoney = mPlayer.getTotalMoney();
@@ -653,6 +673,7 @@ void Game::update(sf::Time elapsedTime) {
         mPlayer.addMoney(moneyGained);
         mPlayer.increaseNoseSize(enemy.getEnemyLevel());
         mPlayer.restoreHealth();
+        mPlayer.resetItemsUsed();
 
         mCurrentEnemyIdx++;
         if (mCurrentEnemyIdx >= mEnemies.size()) {
@@ -715,6 +736,7 @@ void Game::update(sf::Time elapsedTime) {
       break;
 
     case FightPhase::WAITING_AFTER_PLAYER:
+      mPlayer.resetMultipliers();
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
         mCircleQte = {150.f, 80.f, 40.f, 0.f};
@@ -728,6 +750,7 @@ void Game::update(sf::Time elapsedTime) {
       if (mResolutionTimer <= 0.f) {
         mPlayer.regenMana(5);
         mPlayerTurnResMessage.setString("");
+        mItemNotUsedThisTurn = true;
         mFightPhase = FightPhase::PLAYER_CHOICE;
       }
       break;
@@ -936,26 +959,22 @@ void Game::handleHover() {
       int playerRawDebuff =
           getBestWeaponEffect(AttackType::ELOQUENCE) *
           2.f;    // On montre le debuff max que l'on peut appliqué à l'ennemi
-        int reduction =  (playerRawDebuff * mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()) /
-              mEnemies[mCurrentEnemyIdx].getEnemyLevel();
-      int reelDebuff = std::max(
-          1, mEnemies[mCurrentEnemyIdx].getCurrentDamage() - reduction);
+        int reduction =  static_cast<int>(std::round(playerRawDebuff * mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()));
+
       mHoverInfoText.setString(
-          "Reduce enemy attack\n Max debuff : " +
-                               std::to_string(reelDebuff) + " attack points"
+          "Reduce enemy attack\nDebuff amount : " +
+                               std::to_string(reduction) + " attack points"
              );
     } else if (mDebuffButtons[1].isHovered(mousePosition)) {
       int playerRawDebuff =
           getBestWeaponEffect(AttackType::ELOQUENCE) *
           2.f;  // On montre le debuff max que l'on peut appliqué à l'ennemi
-      int reduction = (playerRawDebuff *
-                       mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()) /
-                      mEnemies[mCurrentEnemyIdx].getEnemyLevel();
-      int reelDebuff = std::max(
-          1, mEnemies[mCurrentEnemyIdx].getCurrentDefense() - reduction);
+      int reduction = static_cast<int>(std::round(playerRawDebuff *
+                       mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()));
+  
       mHoverInfoText.setString(
-          "Reduce enemy defense\n Max debuff : " +
-                               std::to_string(reelDebuff) + " defense points");
+          "Reduce enemy defense\nDebuff amount : " +
+                               std::to_string(reduction) + " defense points");
     } else {
       mHoverInfoText.setString("");
     }
@@ -1081,11 +1100,16 @@ void Game::handleMouseLeftButtonPressed() {
 
             // Si on a trouvé l'objet, on l'utilise
             if (indexToUse != -1) {
-                if(mPlayer.useItem(indexToUse)) 
+              if (mItemNotUsedThisTurn) {
+                if (mPlayer.useItem(indexToUse)) {
                   mPlayerTurnResMessage.setString(itemMessage);
-                else{
+                  mItemNotUsedThisTurn = false;
+                } else {
                   mPlayerTurnResMessage.setString("Non usable Item !");
                 }
+              } else {
+                mPlayerTurnResMessage.setString("Only one item per turn !");
+              }        
             } else {
                 mPlayerTurnResMessage.setString("Out of stock !");
             }
@@ -1276,6 +1300,7 @@ void Game::restartCombat(){
   // restart hp player & ennemie qui vient de nous battre
   mEnemies[mCurrentEnemyIdx].setHealthPoints(mEnemies[mCurrentEnemyIdx].getMaxHealthPoints());
   mPlayer.setHealthPoints(mPlayer.getMaxHealthPoints());
+  mPlayer.resetItemsUsed();
   
   mPlayerTurnResMessage.setString("");
   mSentenceQte.userInput = "";

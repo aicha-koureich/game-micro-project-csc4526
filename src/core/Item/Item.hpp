@@ -1,6 +1,7 @@
 #ifndef ITEM_HPP
 #define ITEM_HPP
 #include <memory>
+#include <iostream>
 
 class Player; // juste pour quil sache que player existe
 class Item {

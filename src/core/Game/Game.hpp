@@ -161,7 +161,7 @@ class Game {
   sf::Text mEnemyLevelText{mFont};
 
   //Mana
-  const int eloquenceCost = 25;
+  const int eloquenceCost = 20;
   sf::RectangleShape mManaBarBg, mManaBar;
   sf::Text mManaText{mFont};
 
@@ -192,6 +192,8 @@ class Game {
   sf::Text mTooltipText{mFont};
   std::vector<std::string> mWeaponTooltips;
   bool mShowTooltip = false;
+
+  bool mItemNotUsedThisTurn = true;
 
 };
 

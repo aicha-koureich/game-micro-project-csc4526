@@ -17,14 +17,20 @@ void Player::increaseNoseSize(int enemyLevel) {
     float noseScore = healthPoints * 0.1f; 
     noseSize += noseScore;
 
-    maxHealthPoints += 10;
-    baseDefense += (2 * enemyLevel);
+    maxHealthPoints += 15;
+    baseDefense += 3;
+
+    maxMana += 10;
+    mana = maxMana;
 
 }
 
 void Player::addMoney(int amount) { totalMoney += amount; }
 
-void Player::restoreHealth() { healthPoints = maxHealthPoints; }
+void Player::restoreHealth() {
+    healthPoints = maxHealthPoints;
+    mItemsUsedThisFight = 0;
+}
 
 
 
@@ -56,27 +62,24 @@ bool Player::purchaseItem(std::unique_ptr<Item>& newItem){
   }   
 }
 bool Player::useItem(size_t idx) {
-  if (idx >= itemInventory.size()) {
-    std::cout << "Index d'item invalide !\n";
+
+  if (mItemsUsedThisFight >= 1) {
+    std::cout << "Un seul item par tour !\n";
     return false;
   }
 
-  // On vérifie que la case n'est pas déjà vide 
-  if (itemInventory[idx] == nullptr) {
-    std::cout << "Aucun item a cet emplacement !\n";
+  if (idx >= itemInventory.size() || itemInventory[idx] == nullptr) {
     return false;
   }
-  // appel de la méthode used de l'item
+
   bool hasBeenUsed = itemInventory[idx]->used(*this);
 
   if (hasBeenUsed) {
-    std::cout << "Item utilise avec succes !\n";
-    itemInventory.erase(itemInventory.begin() + idx); //suppression propre sans case vide
+    mItemsUsedThisFight++;  // 🌟 Incrémente le compteur
+    itemInventory.erase(itemInventory.begin() + idx);
     return true;
-  } else {
-    std::cout << "L'item n'a pas pu etre utilise !\n";
-    return false;
   }
+  return false;
 }
 
 void Player::takeDamage(int attackRes){
@@ -84,6 +87,8 @@ void Player::takeDamage(int attackRes){
   healthPoints = std::max(0, healthPoints - finalDamage);
 }
 
-void Player::playerAttack(Enemy& target, float performance) {
-    currentWeapon->attack(target, performance);
+void Player::playerAttack(Enemy& target, float performance, AttackType type) {
+  float mult =
+      (type == AttackType::STRENGTH) ? strengthMultiplier : eloquenceMultiplier;
+    currentWeapon->attack(target, performance, mult);
 }

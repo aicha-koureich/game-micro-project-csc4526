@@ -17,7 +17,7 @@ void Feather::setDebuffChoice(DebuffType choice) {
 	currentChoice = choice;
 }
 
-void Feather::attack(Enemy& target, float performance) {
+void Feather::attack(Enemy& target, float performance, float playerMult) {
   int calculatedEffect = std::round(effect * performance);
 
   if (currentChoice == DebuffType::STRENGTH) {

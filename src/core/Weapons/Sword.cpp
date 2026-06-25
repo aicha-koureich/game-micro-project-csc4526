@@ -10,7 +10,7 @@ bool Sword::registered = Factory::register_class_name(
 
 Sword::Sword(int damage, std::string swordName, int swordCost) : Weapon(damage, swordName, swordCost, AttackType::STRENGTH) {}
 
-void Sword::attack(Enemy& target, float performance) {
-  int damageToApply = std::round(effect * performance);
+void Sword::attack(Enemy& target, float performance, float playerMult) {
+  int damageToApply = std::round(effect * performance * playerMult);
   target.takeDamage(damageToApply);
 }
