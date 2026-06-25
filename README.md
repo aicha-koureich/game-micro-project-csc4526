@@ -87,4 +87,15 @@ Avant de compiler, assurez-vous d'avoir installé sur votre machine :
    **Sur Windows (Powershell/CMD) :**
    ```cmd
    .\src\main\Debug\main.exe
+   `
+5. Pour lancer les tests unitaires.
+
+   **Sur Linux / macOS :**
+   ```bash
+   ./src/test/unitTests
    ```
+
+   **Sur Windows (Powershell/CMD) :**
+   ```cmd
+   .\src\test\Debug\unitTests.exe
+   `
