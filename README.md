@@ -1,4 +1,4 @@
-# Micro-projet, réalisé en binôme (charge totale de travail estimée à 150-180 heures)
+# Micro-projet, réalisé en binôme (charge totale de travail estimée à +200 heures)
 
 # CyraNose- Le Jeu
 
