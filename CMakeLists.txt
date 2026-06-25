@@ -24,6 +24,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(pugixml)
 
+#analyse fuite mémoire
+  #faite en lancant les tests unitaires, le jeu en lui même ne se lance pas avec ses options
+#add_compile_options(-fsanitize=leak)
+#add_link_options(-fsanitize=leak)
+
 set(CMAKE_CXX_STANDARD 23)
 
 add_subdirectory(src/core)
