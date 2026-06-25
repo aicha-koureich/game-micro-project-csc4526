@@ -447,7 +447,10 @@ void Game::loadWeaponsXML(){
     Button buyBtn(sf::Vector2f(currentX +20.f, currentY + 85.f), sf::Vector2f(60.f, 20.f), "BUY", mFont, sf::Color::Red, 13);
     mShopButtons.push_back(buyBtn);
     currentX += 130.f; 
-    
+
+    std::string tooltipMess = weapon->getName() + "\nEffect : " + std::to_string(weapon->getEffect());
+    mWeaponTooltips.push_back(tooltipMess);
+
     mShopWeapon.push_back(std::move(weapon));
   } else {
     std::cerr << "Type d'arme: " << node.name() << " non reconnu par la factory\n";
@@ -539,8 +542,8 @@ void Game::update(sf::Time elapsedTime) {
     std::string specs = ""; //memoire pour le txt de l'infobulle
       //INFOBULLES ARMES
     for (size_t i = 0; i < mShopWeapon.size(); ++i) {
-      if (mShopWeapon[i] != nullptr && weaponRectangles[i].getGlobalBounds().contains(mousePosF)) {
-        specs = mShopWeapon[i]->getName() + "\nEffect : " + std::to_string(mShopWeapon[i]->getEffect());
+      if (weaponRectangles[i].getGlobalBounds().contains(mousePosF)) {
+        specs = mWeaponTooltips[i];
         break;
       }
     }

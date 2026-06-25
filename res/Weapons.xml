@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Weapons>
-    <Sword type="Sword" name="Baton d'aveugle" effect="5" cost="5" />
-    <Sword type="Sword" name="Rapiere rouillee" effect="10" cost="20" />
-    <Sword type="Sword" name="Fleuret d'entrainement" effect="13" cost="50" />
-    <Sword type="Sword" name="Lame de Gascogne" effect="17" cost="150" />
-    <Sword type="Sword" name="La Flamboyante" effect="25" cost="400" />
+    <Sword type="Sword" name="Blind Man's Cane" effect="5" cost="5" />
+    <Sword type="Sword" name="Rusty Rapier" effect="10" cost="20" />
+    <Sword type="Sword" name="Training Foil" effect="13" cost="50" />
+    <Sword type="Sword" name="Blade of Gascony" effect="17" cost="150" />
+    <Sword type="Sword" name="The Flamboyant" effect="25" cost="400" />
 
-    <Feather type="Feather" name="Stylo Bic baveux" effect="5" cost="5" />
-    <Feather type="Feather" name="Plume de pigeon" effect="15" cost="20" />
-    <Feather type="Feather" name="Plume d'oie" effect="25" cost="50" />
-    <Feather type="Feather" name="Plume de corbeau" effect="40" cost="150" />
-    <Feather type="Feather" name="Le Panache Blanc" effect="60" cost="400" />
+    <Feather type="Feather" name="Leaky Bic Pen" effect="5" cost="5" />
+    <Feather type="Feather" name="Pigeon Feather" effect="15" cost="20" />
+    <Feather type="Feather" name="Goose Quill" effect="25" cost="50" />
+    <Feather type="Feather" name="Raven Quill" effect="40" cost="150" />
+    <Feather type="Feather" name="The White Panache" effect="60" cost="400" />
 </Weapons>
