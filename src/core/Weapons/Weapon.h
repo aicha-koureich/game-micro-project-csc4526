@@ -1,0 +1,44 @@
+#ifndef WEAPON_H
+#define WEAPON_H
+
+#include <string>
+#include <cmath>
+#include "Entities/Enemy.hpp"
+#define MAX_WEAPON_EFFECT 100
+/* - les effets des armes sont sous une variable weaponEffect
+   - Les getters font la meme chose pour sword et feather donc pas besoin qu'ils soient virtuels pures 
+   - J'ai ajout� nom, comme ca ils pourront apparaitre dans le catalogue et le jeu en g�n�ral
+   - AttackType a plus trop d'utilit� en fait, on sait qu'une feather c'est eloq, et la logique d'attaque est dans l'arme mtn donc info redondante*/
+
+
+enum class AttackType {
+	STRENGTH,
+	ELOQUENCE
+};
+
+class Weapon {
+
+	protected:
+		int effect;
+        std::string name;
+        int cost;
+        AttackType type;
+
+	public:
+        Weapon(int weaponEffect, std::string weaponName, int weaponCost,
+               AttackType attackType)
+            : effect(weaponEffect),
+              name(weaponName),
+              cost(weaponCost),
+              type(attackType) {}
+		virtual ~Weapon() = default;
+
+        int getEffect() const {return effect;}
+        int getCost() const{ return cost; }
+        AttackType getType() const { return type; }
+        std::string getName() const {return name;}
+        virtual void attack(Enemy& target, float performance, float playerMult) = 0;
+        void setEffect(int itemBuffer){effect = itemBuffer;}
+};
+
+#endif

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.26)
 
 include(FetchContent)
-project(Corrige3_SimpleGame VERSION 1.0.0 LANGUAGES CXX)
+project(mini-projet VERSION 1.0.0 LANGUAGES CXX)
 
 if(WIN32)
   # SonarLint support for CMake requires the following flag to be set on.
@@ -18,6 +18,12 @@ option(SFML_BUILD_AUDIO "Build audio" ON)
 option(SFML_BUILD_NETWORK "Build network" ON)
 FetchContent_MakeAvailable(sfml)
 
+FetchContent_Declare(
+  pugixml
+  URL https://github.com/zeux/pugixml/archive/refs/tags/v1.14.tar.gz
+)
+FetchContent_MakeAvailable(pugixml)
+
 set(CMAKE_CXX_STANDARD 23)
 
 add_subdirectory(src/core)
@@ -30,6 +36,7 @@ FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/refs/tags/v1.17.0.tar.gz
 )
+
 
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)

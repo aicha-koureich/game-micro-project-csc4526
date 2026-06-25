@@ -1,8 +1,17 @@
 add_library(lib_core
-        Game.cpp Game.hpp
-	RoundTarget.cpp RoundTarget.hpp
-        myMain.cpp myMain.h
+        "Game/Game.cpp" Game/Game.hpp
+        "Game/myMain.cpp" "Game/myMain.h"
+        "Game/Button.cpp" "Game/Button.hpp"
+        "Entities/Enemy.hpp" "Entities/Enemy.cpp"
+        "Entities/Player.hpp" "Entities/Player.cpp"
+        "Entities/Entity.hpp"
+        "Weapons/Feather.h" "Weapons/Feather.cpp"
+        "Weapons/Sword.h" "Weapons/Sword.cpp"
+        "Weapons/Weapon.h"
+        "Item/GasconeWine.hpp" "Item/GasconeWine.cpp"   
+        "Item/RoxanneLetter.hpp" "Item/RoxanneLetter.cpp"
+        "Item/InkFlask.hpp" "Item/InkFlask.cpp"
 )
 
 target_include_directories(lib_core PUBLIC ./)
-target_link_libraries(lib_core PUBLIC sfml-graphics)
+target_link_libraries(lib_core PUBLIC pugixml sfml-graphics)
