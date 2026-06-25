@@ -15,7 +15,6 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   loadWeaponsXML(); //ici
   loadTiradesXML();
 
-  loadXML(); //ici
   //Pause
   mPauseButton = std::make_unique<Button>(sf::Vector2f(615.f, 0.f), sf::Vector2f(25.f, 25.f), "| |", mFont, sf::Color{55, 55, 55, 255}, 18);
   sf::Text titlePause{mFont};
@@ -1266,8 +1265,6 @@ void Game::restartCombat(){
   mPlayerTurnResMessage.setString("");
   mSentenceQte.userInput = "";
   mUserInputText.setString("");
-}
-  }
 
 }
 
