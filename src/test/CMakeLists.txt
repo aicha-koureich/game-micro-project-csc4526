@@ -6,7 +6,7 @@
 
 add_executable(unitTests
 attacks/AttackTest.cpp player/PlayerTest.cpp
- test_factory.cpp
+ test_factory.cpp ItemTest.cpp
  ${CMAKE_SOURCE_DIR}/src/core/Weapons/Sword.cpp 
  ${CMAKE_SOURCE_DIR}/src/core/Weapons/Feather.cpp
  )
