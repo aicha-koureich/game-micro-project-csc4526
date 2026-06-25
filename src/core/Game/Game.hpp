@@ -189,7 +189,9 @@ class Game {
   //weapon tooltips
   sf::RectangleShape mTooltipBg;
   sf::Text mTooltipText{mFont};
+  std::vector<std::string> mWeaponTooltips;
   bool mShowTooltip = false;
+
 };
 
 #endif  // BOOK_GAME_HPP
