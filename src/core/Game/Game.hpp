@@ -192,7 +192,7 @@ class Game {
   std::vector<std::string> mWeaponTooltips;
   bool mShowTooltip = false;
 
-  bool mItemUsedThisTurn = false;
+  bool mItemNotUsedThisTurn = true;
 
 };
 

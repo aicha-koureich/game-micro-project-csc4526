@@ -5,7 +5,7 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
-Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
+Game::Game() : mPlayer(100, 10000, 0, 50, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   assert(mWineTexture.loadFromFile("res/vin.png"));
   assert(mLetterTexture.loadFromFile("res/lettre.png"));
@@ -56,9 +56,9 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
   mShopText.push_back(titleShop);
     //items 
-  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(2, 0.25f);
-  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(1, 0.25f);
-  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(1, 0.25f);
+  std::unique_ptr<Item> vin = std::make_unique<GasconeWine>(15, 0.25f);
+  std::unique_ptr<Item> lettre = std::make_unique<RoxanneLetter>(30, 0.25f);
+  std::unique_ptr<Item> ink = std::make_unique<InkFlask>(25, 0.25f);
 
   sf::Text items{mFont};
   items.setString("ITEMS");
@@ -619,8 +619,6 @@ void Game::update(sf::Time elapsedTime) {
   }
   switch (mFightPhase) { 
     case FightPhase::PLAYER_CHOICE: {
-
-      mItemUsedThisTurn = false;
       
       if (mPlayer.getMana() < eloquenceCost) {
         mFightButtons[1].setBackColor(sf::Color(65, 65, 65));
@@ -665,11 +663,12 @@ void Game::update(sf::Time elapsedTime) {
         mPrevMaxHp = mPlayer.getMaxHealthPoints();
         mPrevBaseDefense = mPlayer.getBaseDefense();
 
-        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.15f) *
+        int moneyGained = static_cast<int>(mPlayer.getHealthPoints() * 0.3f) *
                           enemy.getEnemyLevel();
         mPlayer.addMoney(moneyGained);
         mPlayer.increaseNoseSize(enemy.getEnemyLevel());
         mPlayer.restoreHealth();
+        mPlayer.resetItemsUsed();
 
         mCurrentEnemyIdx++;
         if (mCurrentEnemyIdx >= mEnemies.size()) {
@@ -746,6 +745,7 @@ void Game::update(sf::Time elapsedTime) {
       if (mResolutionTimer <= 0.f) {
         mPlayer.regenMana(5);
         mPlayerTurnResMessage.setString("");
+        mItemNotUsedThisTurn = true;
         mFightPhase = FightPhase::PLAYER_CHOICE;
       }
       break;
@@ -1095,10 +1095,10 @@ void Game::handleMouseLeftButtonPressed() {
 
             // Si on a trouvé l'objet, on l'utilise
             if (indexToUse != -1) {
-              if (!mItemUsedThisTurn) {
+              if (mItemNotUsedThisTurn) {
                 if (mPlayer.useItem(indexToUse)) {
                   mPlayerTurnResMessage.setString(itemMessage);
-                  mItemUsedThisTurn = true;
+                  mItemNotUsedThisTurn = false;
                 } else {
                   mPlayerTurnResMessage.setString("Non usable Item !");
                 }
@@ -1295,6 +1295,7 @@ void Game::restartCombat(){
   // restart hp player & ennemie qui vient de nous battre
   mEnemies[mCurrentEnemyIdx].setHealthPoints(mEnemies[mCurrentEnemyIdx].getMaxHealthPoints());
   mPlayer.setHealthPoints(mPlayer.getMaxHealthPoints());
+  mPlayer.resetItemsUsed();
   
   mPlayerTurnResMessage.setString("");
   mSentenceQte.userInput = "";

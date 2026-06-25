@@ -1,6 +1,8 @@
 #include "RoxanneLetter.hpp"
 #include "Entities/Player.hpp"
 
+using namespace std;
+
 RoxanneLetter::RoxanneLetter(int cost, float effect) : Item(cost, effect) {}
 
 bool RoxanneLetter::used(Player& player) {

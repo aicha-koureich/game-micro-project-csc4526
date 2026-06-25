@@ -18,6 +18,7 @@ class Player : public Entity {
   int baseDefense;
   float strengthMultiplier = 1.0f;
   float eloquenceMultiplier = 1.0f;
+  int mItemsUsedThisFight = 0;
 
   Weapon* currentWeapon;
   vector<unique_ptr<Weapon>> weaponInventory;
@@ -78,5 +79,9 @@ class Player : public Entity {
     strengthMultiplier = 1.0f;
     eloquenceMultiplier = 1.0f;
   }
+
+  void resetItemsUsed() { mItemsUsedThisFight = 0; }
+  int getItemsUsed() const { return mItemsUsedThisFight; }
+  void incrementItemsUsed() { mItemsUsedThisFight++; }
 };
 #endif
