@@ -44,15 +44,46 @@ Le jeu se joue principalement à la souris et au clavier.
 
 ## Instructions de Génération et Compilation
 
-Ce projet utilise **CMake** pour générer les fichiers de build (Makefiles, projets Visual Studio, etc.) et **SFML** pour la gestion graphique.
+Ce projet utilise **CMake** pour générer les fichiers de build (Makefiles, projets Visual Studio, etc.) et la bibliothèque **SFML** pour la gestion graphique et sonore.
 
 Pour configurer et compiler le projet, référez-vous au support officiel :
 [Documentation Outils CSC4526 (CMake)](https://www-inf.telecom-sudparis.eu/COURS/CSC4526/new_site/Supports/Documents/OutilsCSC4526/outilsCSC4526.html#cmake)
 
+### Prérequis
+
+Avant de compiler, assurez-vous d'avoir installé sur votre machine :
+* Un compilateur C++ récent (supportant au moins **C++17**).
+* **CMake** (version 3.15 minimum recommandée).
+* La bibliothèque **SFML** (version 3.x).
+* La bibliothèque **PugiXML** (utilisée pour la lecture des données du magasin et des tirades).
+
 ### Étapes rapides (Ligne de commande)
 
-1. Assurez-vous d'avoir un compilateur compatible (ex: GCC, Clang ou MSVC) et CMake installés.
-2. Clonez ou placez-vous dans le dossier du projet et créez un dossier de build :
+1. Ouvrez votre terminal, placez-vous dans le dossier racine du projet (là où se trouve le fichier `CMakeLists.txt`) et créez un dossier de compilation :
    ```bash
    mkdir build
    cd build
+   ```
+
+2. Générez les fichiers de configuration via CMake :
+   ```bash
+   cmake ..
+   ```
+
+3. Lancez la compilation du projet :
+   ```bash
+   cmake --build .
+   ```
+
+4. Une fois la compilation terminée, lancez l'exécutable généré. 
+   *(Note : Assurez-vous que le dossier de ressources `res/` se trouve bien dans le répertoire depuis lequel vous lancez le jeu, afin que les images et polices chargent correctement).*
+
+   **Sur Linux / macOS :**
+   ```bash
+   ./main
+   ```
+
+   **Sur Windows (Powershell/CMD) :**
+   ```cmd
+   .\Debug\main.exe
+   ```
