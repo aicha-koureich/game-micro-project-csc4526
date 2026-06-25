@@ -86,5 +86,5 @@ Avant de compiler, assurez-vous d'avoir installé sur votre machine :
 
    **Sur Windows (Powershell/CMD) :**
    ```cmd
-   .\Debug\main.exe
+   .\src\main\Debug\main.exe
    ```
