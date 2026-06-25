@@ -81,7 +81,7 @@ Avant de compiler, assurez-vous d'avoir installé sur votre machine :
 
    **Sur Linux / macOS :**
    ```bash
-   ./main
+   ./src/main/main
    ```
 
    **Sur Windows (Powershell/CMD) :**
