@@ -10,6 +10,9 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   assert(mWineTexture.loadFromFile("res/vin.png"));
   assert(mLetterTexture.loadFromFile("res/lettre.png"));
   assert(mInkTexture.loadFromFile("res/ink.png"));
+  assert(mPlayerTexture.loadFromFile("res/player.png"));
+  assert(mNoseTexture.loadFromFile("res/nose.png"));
+
 
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
@@ -160,20 +163,14 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   mPlayerPortraitBg.setPosition({40.f, 49.f});
 
   //Player renderer
-  
-  mPlayerShape.setSize({60.f, 100.f});
-  mPlayerShape.setFillColor(sf::Color::Blue);
-  mPlayerShape.setPosition({130.f, 145.f});
-  
-
-  /*
-  if (!mPlayerTexture.loadFromFile("res/player.png")) {
-    std::cerr << "Erreur res/player.png introuvable\n";
-  }
   mPlayerSprite.setTexture(mPlayerTexture, true);
+  sf::Vector2u texSize = mPlayerTexture.getSize();
+  mPlayerSprite.setScale({150.f / texSize.x, 200.f / texSize.y});
   mPlayerSprite.setPosition({130.f, 145.f});
-  */
 
+  mNoseSprite.setTexture(mNoseTexture, true);
+  mNoseSprite.setOrigin({0.f, mNoseTexture.getSize().y / 2.f});
+  mNoseSprite.setPosition({192.f, 202.f});
 
   // Player Healthbar (background and fill)
   mPlayerHpBarBg.setSize({150.f, 20.f});
@@ -564,9 +561,18 @@ void Game::update(sf::Time elapsedTime) {
   float dt = elapsedTime.asSeconds();
   Enemy& enemy = mEnemies[mCurrentEnemyIdx];
   handleHover();
+  // AGGRANDISSEMENT NEZ
+  float baseX = 150.f / mPlayerTexture.getSize().x;
+  float baseY = 200.f / mPlayerTexture.getSize().y;
+
+  //float pixelsAjoutes = mPlayer.getNoseSize(); 
+  float convPixels = mPlayer.getNoseSize()*2.f;
+  float addedPixels = convPixels / mNoseTexture.getSize().x;
+
+  // On applique l'étirement uniquement sur l'axe X
+  mNoseSprite.setScale({baseX + addedPixels, baseY});
 
   //REPOSITION DES SPRITES ITEMS POUR COMBAT & QUANTITES
-
   float X = 420.f;
   float Y = 320.f;
   float spacing = 60.f;
@@ -593,7 +599,6 @@ void Game::update(sf::Time elapsedTime) {
     mItemQtyTxt[i].setPosition({X + (i * spacing) + 30.f, Y + 30.f});
 
     if (quantities[i] <= 0) {
-      // noir si qté nulle
         mItemSprites[i].setColor(sf::Color(100, 100, 100, 150)); 
     } else {
         mItemSprites[i].setColor(sf::Color::White); 
@@ -787,8 +792,8 @@ void Game::render() {
         for (const auto& text : mFightText) mWindow.draw(text);
 
         mWindow.draw(mPlayerPortraitBg);
-        mWindow.draw(mPlayerShape);
-        //mWindow.draw(mPlayerSprite);
+        mWindow.draw(mPlayerSprite);
+        mWindow.draw(mNoseSprite);
         mWindow.draw(mPlayerHpBarBg);
         mWindow.draw(mPlayerHpBar);
         mWindow.draw(mPlayerHpText);
