@@ -38,10 +38,10 @@ Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   //Start Menu
   mCurrentState = GameState::MAIN_MENU;
   sf::Text titleMenu{mFont};
-  titleMenu.setString(" Cyrano de A&A ");
+  titleMenu.setString(" CyraNose ");
   titleMenu.setCharacterSize(50);
   titleMenu.setFillColor(sf::Color::White);
-  titleMenu.setPosition(sf::Vector2f(130.0f, 100.0f));
+  titleMenu.setPosition(sf::Vector2f(200.0f, 100.0f));
   mMenuText.push_back(titleMenu);
   Button startButton(sf::Vector2f(220.f,240.f ), sf::Vector2f(200.f, 60.f), "START", mFont, sf::Color::Red, 30);
   mMenuButtons.push_back(startButton);

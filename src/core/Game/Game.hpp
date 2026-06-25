@@ -87,7 +87,7 @@ class Game {
 
   GameState mPreviousState;
 
-  sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "Jeu Cyrano AA"};
+  sf::RenderWindow mWindow{sf::VideoMode({640, 480}), "CyraNose"};
   sf::Texture mTexture;
   sf::Font mFont;
   sf::Text mStatisticsText{mFont};
