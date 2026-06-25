@@ -4,7 +4,7 @@
 
 const sf::Time Game::TimePerFrame = sf::seconds(1.f / 60.f);
 
-Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
+Game::Game() : mPlayer(100, 10, 0, 50, 5, nullptr) {
   assert(mFont.openFromFile("res/Sansation.ttf"));
   assert(mWineTexture.loadFromFile("res/vin.png"));
   assert(mLetterTexture.loadFromFile("res/lettre.png"));
@@ -12,6 +12,8 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
 
   mStatisticsText.setPosition({5.f, 5.f});
   mStatisticsText.setCharacterSize(10);
+  loadWeaponsXML(); //ici
+  loadTiradesXML();
 
   loadXML(); //ici
   //Pause
@@ -48,7 +50,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
  
   //Shop
   sf::Text titleShop{mFont};
-  titleShop.setString(" SHOP");
+  titleShop.setString(" MAGASIN");
   titleShop.setCharacterSize(35);
   titleShop.setFillColor(sf::Color::White);
   titleShop.setPosition(sf::Vector2f(220.f, 10.0f));
@@ -59,26 +61,26 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   std::unique_ptr<Item> ink = std::make_unique<InkFlask>(1, 0.25f);
 
   sf::Text items{mFont};
-  items.setString("Items");
+  items.setString("OBJETS");
   items.setCharacterSize(30);
   items.setFillColor(sf::Color::Green);
   items.setPosition(sf::Vector2f(0.0f, 315.0f));
   mShopText.push_back(items);
 
   sf::Text item1{mFont};
-  item1.setString("Vin de Gascogne\n" + std::to_string(vin->getCost()) + " ecus");
+  item1.setString("Gascogne Wine\n" + std::to_string(vin->getCost()) + " ecus");
   item1.setCharacterSize(12);
   item1.setFillColor(sf::Color::White);
   item1.setPosition(sf::Vector2f(50.0f, 350.0f));
   mShopText.push_back(item1);
   sf::Text item2{mFont};
-  item2.setString("Lettre de Roxanne\n" + std::to_string(lettre->getCost()) + " ecus");
+  item2.setString("Roxanne Letter\n" + std::to_string(lettre->getCost()) + "ecus");
   item2.setCharacterSize(12);
   item2.setFillColor(sf::Color::White);
   item2.setPosition(sf::Vector2f(230.0f, 350.0f));
   mShopText.push_back(item2);
   sf::Text item3{mFont};
-  item3.setString("Encre\n" + std::to_string(lettre->getCost()) + " ecus");
+  item3.setString("Ink\n" + std::to_string(lettre->getCost()) + "ecus");
   item3.setCharacterSize(12);
   item3.setFillColor(sf::Color::White);
   item3.setPosition(sf::Vector2f(410.0f, 350.0f));
@@ -141,47 +143,124 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   titleFight.setString(" FIGHT ");
   titleFight.setCharacterSize(40);
   titleFight.setFillColor(sf::Color::White);
-  titleFight.setPosition(sf::Vector2f(220.f, 10.f));
+
+  sf::FloatRect bounds = titleFight.getLocalBounds();
+  titleFight.setOrigin({bounds.size.x / 2.f, bounds.size.y / 2.f});
+
+  titleFight.setPosition(sf::Vector2f(320.f, 10.f));
   mFightText.push_back(titleFight);
 
+  // PLAYER GRAPHICS
+
+  // Player frame
+  mPlayerPortraitBg.setSize({60.f, 60.f});
+  mPlayerPortraitBg.setFillColor(sf::Color(40, 40, 40));  
+  mPlayerPortraitBg.setOutlineThickness(2.f);
+  mPlayerPortraitBg.setOutlineColor(sf::Color(218, 165, 32));  
+  mPlayerPortraitBg.setPosition({40.f, 49.f});
+
   //Player renderer
+  
   mPlayerShape.setSize({60.f, 100.f});
   mPlayerShape.setFillColor(sf::Color::Blue);
-  mPlayerShape.setPosition({80.f, 145.f});
+  mPlayerShape.setPosition({130.f, 145.f});
+  
+
+  /*
+  if (!mPlayerTexture.loadFromFile("res/player.png")) {
+    std::cerr << "Erreur res/player.png introuvable\n";
+  }
+  mPlayerSprite.setTexture(mPlayerTexture, true);
+  mPlayerSprite.setPosition({130.f, 145.f});
+  */
+
 
   // Player Healthbar (background and fill)
   mPlayerHpBarBg.setSize({150.f, 20.f});
   mPlayerHpBarBg.setFillColor(sf::Color(60, 60, 60));
-  mPlayerHpBarBg.setPosition({40.f, 115.f});
+  mPlayerHpBarBg.setPosition({110.f, 65.f});
+  mPlayerHpBarBg.setOutlineThickness(2.f);
+  mPlayerHpBarBg.setOutlineColor(sf::Color(218, 165, 32));
   mPlayerHpBar.setSize({150.f, 20.f});
   mPlayerHpBar.setFillColor(sf::Color::Green);
-  mPlayerHpBar.setPosition({40.f, 115.f});
+  mPlayerHpBar.setPosition({110.f, 65.f});
 
   mPlayerHpText.setString(std::to_string(mPlayer.getHealthPoints()) + "/" +
                           std::to_string(mPlayer.getMaxHealthPoints()));
   mPlayerHpText.setCharacterSize(16);
   mPlayerHpText.setFillColor(sf::Color::White);
-  mPlayerHpText.setPosition({40.f, 90.f});
+  mPlayerHpText.setPosition({120.f, 67.f});
+  mPlayerHpText.setOutlineThickness(1.f);
+  mPlayerHpText.setOutlineColor(sf::Color::Black);
+
+  //Player Mana
+  mManaBarBg.setSize({150.f, 14.f});
+  mManaBarBg.setFillColor(sf::Color(60, 60, 60));
+  mManaBarBg.setPosition({110.f, 95.f});
+  mManaBarBg.setOutlineThickness(2.f);
+  mManaBarBg.setOutlineColor(sf::Color(192, 192, 192));
+  mManaBar.setSize({150.f, 14.f});
+  mManaBar.setFillColor(sf::Color::Blue);
+  mManaBar.setPosition({110.f, 95.f});
+  mManaText.setCharacterSize(14);
+  mManaText.setFillColor(sf::Color::White);
+  mManaText.setPosition({120.f, 97.f});
+  mManaText.setOutlineThickness(1.f);
+  mManaText.setOutlineColor(sf::Color::Black);
+
+
+  // ENEMY GRAPHICS
   
+  //Enemy frame
+  mEnemyPortraitBg.setSize({60.f, 60.f});
+  mEnemyPortraitBg.setFillColor(sf::Color(40, 40, 40));
+  mEnemyPortraitBg.setOutlineThickness(2.f);
+  mEnemyPortraitBg.setOutlineColor(sf::Color(218, 165, 32));
+  mEnemyPortraitBg.setPosition({540.f, 49.f});
 
   //Enemy renderer
+  
   mEnemyShape.setSize({60.f, 100.f});
   mEnemyShape.setFillColor(sf::Color::Magenta);
-  mEnemyShape.setPosition({500.f, 145.f});
+  mEnemyShape.setPosition({450.f, 145.f});
+ 
+
+  /*
+  if (!mEnemyTextures[0].loadFromFile("res/enemy1.png")) {
+    std::cerr << "Erreur res/enemy1.png introuvable\n";
+  }
+
+  mEnemySprite.setTexture(mEnemyTextures[0], true);
+  mEnemySprite.setPosition({450.f, 145.f});
+  */
+  
 
   //Enemy HealthBar (background and fill)
   mEnemyHpBarBg.setSize({150.f, 20.f});
   mEnemyHpBarBg.setFillColor(sf::Color(60, 60, 60));
-  mEnemyHpBarBg.setPosition({450.f, 115.f});
+  mEnemyHpBarBg.setPosition({380.f, 65.f});
+  mEnemyHpBarBg.setOutlineThickness(2.f);
+  mEnemyHpBarBg.setOutlineColor(sf::Color(218, 165, 32));
   mEnemyHpBar.setSize({150.f, 20.f});
   mEnemyHpBar.setFillColor(sf::Color::Red);
-  mEnemyHpBar.setPosition({450.f, 115.f});
+  mEnemyHpBar.setPosition({380.f, 65.f});
 
   mEnemyHpText.setString(std::to_string(mEnemies[mCurrentEnemyIdx].getHealthPoints()) + "/" +
       std::to_string(mEnemies[mCurrentEnemyIdx].getMaxHealthPoints()));
   mEnemyHpText.setCharacterSize(16);
   mEnemyHpText.setFillColor(sf::Color::White);
-  mEnemyHpText.setPosition({450.f, 90.f});
+  mEnemyHpText.setPosition({390.f, 67.f});
+  mEnemyHpText.setOutlineThickness(1.f);
+  mEnemyHpText.setOutlineColor(sf::Color::Black);
+
+  //Enemy level
+  mEnemyLevelText.setCharacterSize(14);
+  mEnemyLevelText.setFillColor(sf::Color::White);
+  mEnemyLevelText.setPosition({390.f, 97.f});
+  mEnemyLevelText.setOutlineThickness(1.f);
+  mEnemyLevelText.setOutlineColor(sf::Color(218, 165, 32));
+  mEnemyLevelText.setString(
+      "LEVEL : " + std::to_string(mEnemies[mCurrentEnemyIdx].getEnemyLevel()));
   
 
   //Weapon Text
@@ -189,7 +268,27 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mWeaponNameText.setFillColor(sf::Color::White);
   mWeaponNameText.setPosition({40.f, 320.f});
 
+  //Hover Infos
+  mHoverInfoText.setCharacterSize(14);
+  mHoverInfoText.setFillColor(sf::Color(220, 220, 100));
+  mHoverInfoText.setPosition(
+      {48.f, 274.f});  
+
+  mHoverInfoBg.setFillColor(
+      sf::Color(20, 20, 20, 200));  
+  mHoverInfoBg.setOutlineColor(sf::Color(220, 220, 100));
+  mHoverInfoBg.setOutlineThickness(1.f);
+  mHoverInfoBg.setPosition({40.f, 268.f});
+  mHoverInfoBg.setSize({0.f, 0.f});
+
   //Circle QTE (strength or defense QTE)
+  // 
+  // Indications for the player
+  mQteText.setCharacterSize(22);
+  mQteText.setFillColor(sf::Color::Yellow);
+  mQteText.setPosition({180.f, 300.f});
+  mQteText.setString("PRESS SPACE !");
+
   //Target Circle
   mQteTargetCircle.setRadius(40.f);
   mQteTargetCircle.setOrigin({40.f, 40.f});
@@ -217,7 +316,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
   mUserInputText.setFillColor(sf::Color::White);
   mUserInputText.setPosition({40.f, 420.f});
 
-  //Message afetr player action
+  //Message after player action
   mPlayerTurnResMessage.setCharacterSize(22);
   mPlayerTurnResMessage.setFillColor(sf::Color::Yellow);
   mPlayerTurnResMessage.setPosition({180.f, 300.f});
@@ -231,7 +330,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
                         "ELOQUENCE", mFont, sf::Color(75, 0, 110), 18);
 
   Button itemButton(sf::Vector2f(440.f, 400.f), sf::Vector2f(150.f, 50.f),
-                        "ITEM", mFont, sf::Color(0, 103, 79), 18);
+                        "ITEMS", mFont, sf::Color(0, 103, 79), 18);
 
   mFightButtons.push_back(strengthButton);
   mFightButtons.push_back(eloquenceButton);
@@ -282,8 +381,7 @@ Game::Game() : mPlayer(100, 10, 0, 5, nullptr) {
 
   
 }
-
-void Game::loadXML(){
+void Game::loadWeaponsXML(){
   pugi::xml_document doc;
   pugi::xml_parse_result res = doc.load_file("res/Weapons.xml");
   if(!res){
@@ -337,6 +435,25 @@ void Game::loadXML(){
     std::cerr << "Type d'arme: " << node.name() << " non reconnu par la factory\n";
   }
 }
+
+}
+
+void Game::loadTiradesXML() {
+  pugi::xml_document doc;
+  pugi::xml_parse_result res = doc.load_file("res/Tirades.xml");
+
+  if (!res) {
+    std::cerr << "Erreur chargement xml\n";
+    return;
+  }
+
+  pugi::xml_node tiradesNode = doc.child("Tirades");
+
+  for (pugi::xml_node node = tiradesNode.first_child(); node;
+       node = node.next_sibling()) {
+    std::string tirade = node.child_value();
+    mTirades.push_back(tirade);
+  }
 
 }
 
@@ -443,6 +560,7 @@ void Game::update(sf::Time elapsedTime) {
   if (mCurrentState != GameState::FIGHT) return;
   float dt = elapsedTime.asSeconds();
   Enemy& enemy = mEnemies[mCurrentEnemyIdx];
+  handleHover();
 
   //REPOSITION DES SPRITES ITEMS POUR COMBAT & QUANTITES
 
@@ -479,8 +597,16 @@ void Game::update(sf::Time elapsedTime) {
     }
   }
   switch (mFightPhase) { 
-    case FightPhase::PLAYER_CHOICE:
+    case FightPhase::PLAYER_CHOICE: {
+      
+      if (mPlayer.getMana() < eloquenceCost) {
+        mFightButtons[1].setBackColor(sf::Color(65, 65, 65));
+      } else {
+        mFightButtons[1].setBackColor(sf::Color(75, 0, 110));
+      }
       break;
+    }
+      
 
     case FightPhase::PLAYER_QTE:
       if (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
@@ -524,7 +650,16 @@ void Game::update(sf::Time elapsedTime) {
         if (mCurrentEnemyIdx >= mEnemies.size()) {
           mCurrentState = GameState::GAME_FINISHED;
         } else {
-          mPlayerTurnResMessage.setString("Enemy is dead !");
+          /*
+          * if (!mEnemyTextures[mCurrentEnemyIdx].loadFromFile(
+                  "res/enemy" + std::to_string(mCurrentEnemyIdx + 1) +
+                  ".png")) {
+            std::cerr << "Erreur chargement sprite ennemi " << mCurrentEnemyIdx
+                      << "\n";
+          }
+          mEnemySprite.setTexture(mEnemyTextures[mCurrentEnemyIdx], true);
+          */ 
+          mPlayerTurnResMessage.setString("L'ENNEMI EST MORT !");
           mCurrentState = GameState::WIN;
         }
         return;
@@ -532,9 +667,9 @@ void Game::update(sf::Time elapsedTime) {
 
       if (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
         enemy.resetDefenseDebuff();
-        mPlayerTurnResMessage.setString("Sword strike !");
+        mPlayerTurnResMessage.setString("COUP D'EPEE !");
       } else {
-        mPlayerTurnResMessage.setString("Debuff applied !");
+        mPlayerTurnResMessage.setString("L'ENNEMI EST AFFAIBLI PAR VOTRE ELOQUENCE !");
       }
 
       mResolutionTimer = 1.5f;
@@ -559,13 +694,13 @@ void Game::update(sf::Time elapsedTime) {
       enemy.enemyAttack(mPlayer, mCircleQte.circlePerf);
 
       if (mPlayer.getHealthPoints() <= 0) {
-        mPlayerTurnResMessage.setString("You lost !");
+        mPlayerTurnResMessage.setString("VOUS AVEZ PERDU !");
         mCurrentState = GameState::DEAD;
         return;
       }
 
       enemy.resetAttackDebuff();
-      mPlayerTurnResMessage.setString("Enemy attacks !");
+      mPlayerTurnResMessage.setString("ATTAQUE DE L'ENNEMI !");
 
       mResolutionTimer = 1.5f;
       mFightPhase = FightPhase::WAITING_AFTER_ENEMY;
@@ -575,6 +710,7 @@ void Game::update(sf::Time elapsedTime) {
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
         mCircleQte = {150.f, 80.f, 40.f, 0.f};
+        mPlayerTurnResMessage.setString("");
         mFightPhase = FightPhase::PLAYER_DEFENSE_QTE;
       }
       break;
@@ -582,6 +718,7 @@ void Game::update(sf::Time elapsedTime) {
     case FightPhase::WAITING_AFTER_ENEMY:
       mResolutionTimer -= dt;
       if (mResolutionTimer <= 0.f) {
+        mPlayer.regenMana(5);
         mPlayerTurnResMessage.setString("");
         mFightPhase = FightPhase::PLAYER_CHOICE;
       }
@@ -600,6 +737,11 @@ void Game::update(sf::Time elapsedTime) {
        16.f});
   mEnemyHpText.setString(std::to_string(enemy.getHealthPoints()) + "/" +
                           std::to_string(enemy.getMaxHealthPoints()));
+
+  // Barres de mana mises � jour
+  mManaBar.setSize({150.f * mPlayer.getMana() / mPlayer.getMaxMana(), 14.f});
+  mManaText.setString(std::to_string(mPlayer.getMana()) + "/" +
+                      std::to_string(mPlayer.getMaxMana()));
 
 }
 
@@ -641,15 +783,30 @@ void Game::render() {
       case GameState::FIGHT:
         for (const auto& text : mFightText) mWindow.draw(text);
 
+        mWindow.draw(mPlayerPortraitBg);
         mWindow.draw(mPlayerShape);
+        //mWindow.draw(mPlayerSprite);
         mWindow.draw(mPlayerHpBarBg);
         mWindow.draw(mPlayerHpBar);
         mWindow.draw(mPlayerHpText);
 
+        mWindow.draw(mEnemyPortraitBg);
         mWindow.draw(mEnemyShape);
+        //mWindow.draw(mEnemySprite);
         mWindow.draw(mEnemyHpBarBg);
         mWindow.draw(mEnemyHpBar);
         mWindow.draw(mEnemyHpText);
+        mWindow.draw(mEnemyLevelText);
+
+        mWindow.draw(mManaBarBg);
+        mWindow.draw(mManaBar);
+        mWindow.draw(mManaText);
+
+        if (!mHoverInfoText.getString().isEmpty()) {
+          mWindow.draw(mHoverInfoBg);
+          mWindow.draw(mHoverInfoText);
+        }
+
 
         mWindow.draw(mWeaponNameText);
         mWindow.draw(mPlayerTurnResMessage);
@@ -664,12 +821,14 @@ void Game::render() {
         } else if (mFightPhase == FightPhase::PLAYER_QTE &&
                    mPlayer.getCurrentWeapon()->getType() ==
                        AttackType::STRENGTH) {
+          mWindow.draw(mQteText);
           mWindow.draw(mQteTargetCircle);
           mWindow.draw(mQteMovingCircle);
         } else if (mFightPhase == FightPhase::PLAYER_QTE) {
           mWindow.draw(mSentenceText);
           mWindow.draw(mUserInputText);
         } else if (mFightPhase == FightPhase::PLAYER_DEFENSE_QTE) {
+          mWindow.draw(mQteText);
           mWindow.draw(mQteTargetCircle);
           mWindow.draw(mQteMovingCircle);
         }
@@ -743,6 +902,69 @@ void Game::updateStatistics(sf::Time elapsedTime) {
     mStatisticsUpdateTime -= sf::seconds(1.0f);
     mStatisticsNumFrames = 0;
   }
+}
+
+
+void Game::handleHover() {
+  sf::Vector2i mousePosition = sf::Mouse::getPosition(mWindow);
+
+  if (mFightPhase == FightPhase::PLAYER_CHOICE) {
+    if (mFightButtons[0].isHovered(mousePosition)) {
+      int effect = getBestWeaponEffect(AttackType::STRENGTH);
+      mHoverInfoText.setString(effect >= 0
+                                   ? "Degats bruts : " + std::to_string(effect)
+                                   : "Aucune epee equipee");
+    } else if (mFightButtons[1].isHovered(mousePosition)) {
+      int effect = getBestWeaponEffect(AttackType::ELOQUENCE);
+      mHoverInfoText.setString(
+          effect >= 0 ? "Cout : " +
+                            std::to_string(eloquenceCost) + " mana"
+                      : "Aucune plume equipee");
+    } else {
+      mHoverInfoText.setString("");
+    }   
+  } else if (mFightPhase == FightPhase::DEBUFF_CHOICE) {
+    if (mDebuffButtons[0].isHovered(mousePosition)) {
+      int playerRawDebuff =
+          getBestWeaponEffect(AttackType::ELOQUENCE) *
+          2.f;    // On montre le debuff max que l'on peut appliqué à l'ennemi
+        int reduction =  (playerRawDebuff * mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()) /
+              mEnemies[mCurrentEnemyIdx].getEnemyLevel();
+      int reelDebuff = std::max(
+          1, mEnemies[mCurrentEnemyIdx].getCurrentDamage() - reduction);
+      mHoverInfoText.setString(
+          "Reduit l'attaque de l'ennemi\n Reduction max : " +
+                               std::to_string(reelDebuff) + " points d'attaque"
+             );
+    } else if (mDebuffButtons[1].isHovered(mousePosition)) {
+      int playerRawDebuff =
+          getBestWeaponEffect(AttackType::ELOQUENCE) *
+          2.f;  // On montre le debuff max que l'on peut appliqué à l'ennemi
+      int reduction = (playerRawDebuff *
+                       mEnemies[mCurrentEnemyIdx].getSensitivityToEloq()) /
+                      mEnemies[mCurrentEnemyIdx].getEnemyLevel();
+      int reelDebuff = std::max(
+          1, mEnemies[mCurrentEnemyIdx].getCurrentDefense() - reduction);
+      mHoverInfoText.setString(
+          "Reduit la defense de l'ennemi\n Reduction max : " +
+                               std::to_string(reelDebuff) + " points de defense");
+    } else {
+      mHoverInfoText.setString("");
+    }
+  } else {
+    mHoverInfoText.setString("");
+    mHoverInfoBg.setSize(sf::Vector2f(0, 0));
+  }
+
+  sf::FloatRect bounds = mHoverInfoText.getLocalBounds();
+  if (!mHoverInfoText.getString().isEmpty()) {
+    float padding = 8.f;
+    mHoverInfoBg.setPosition({mHoverInfoText.getPosition().x - padding,
+                              mHoverInfoText.getPosition().y - padding});
+    mHoverInfoBg.setSize(
+        {bounds.size.x + padding * 2.f, bounds.size.y + padding * 2.f});
+  }
+  
 }
 
 void Game::handleMouseLeftButtonPressed() {
@@ -867,32 +1089,55 @@ void Game::handleMouseLeftButtonPressed() {
     // Strength attack
       //Fix bug crash si pas l'arme adaptée
     if (mFightButtons[0].isPressed(mousePosition)) {
-      if (equipBestWeapon(AttackType::STRENGTH)){
-        mCircleQte = {150.f, 80.f, 40.f, 0.f};
-        mFightPhase = FightPhase::PLAYER_QTE;
-      }
+      equipBestWeapon(AttackType::STRENGTH);
+      mPlayerTurnResMessage.setString("ESPACE : ATTAQUER   ECHAP : ANNULER");
+      mFightPhase = FightPhase::PRE_QTE;
     } else if (mFightButtons[1].isPressed(mousePosition)) {
-      if(equipBestWeapon(AttackType::ELOQUENCE))
-        mFightPhase = FightPhase::DEBUFF_CHOICE;
+      if (mPlayer.getMana() < eloquenceCost) {
+        mPlayerTurnResMessage.setString("PAS ASSEZ DE MANA !");
+        mMouseLeftButtonReleased = false;
+        return;
+      }
+      equipBestWeapon(AttackType::ELOQUENCE);
+      mFightPhase = FightPhase::DEBUFF_CHOICE;
     }
   } else if (mCurrentState == GameState::FIGHT && mFightPhase == FightPhase::DEBUFF_CHOICE) {
+    //if (mPlayer.getMana() >= eloquenceCost) {
     if (mDebuffButtons[0].isPressed(mousePosition)) {
-        mPendingDebuffChoice = DebuffType::STRENGTH;
+      mPendingDebuffChoice = DebuffType::STRENGTH;
+
     } else if (mDebuffButtons[1].isPressed(mousePosition)) {
       mPendingDebuffChoice = DebuffType::DEFENSE;
     } else {
       mMouseLeftButtonReleased = false;
       return;
     }
+    /*
+    * else {
+      mMouseLeftButtonReleased = false;
+      return;
+    }
+    */ 
+    
+    
+    
     
     if (auto* feather = dynamic_cast<Feather*>(mPlayer.getCurrentWeapon())) {
         feather->setDebuffChoice(mPendingDebuffChoice);
     }
 
-    mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
+    if (!mTirades.empty()) {
+      int randomIdx = rand() % mTirades.size();
+      mSentenceQte = {mTirades[randomIdx], "", 8.f, 0.f};
+    } else {
+      mSentenceQte = {"Je suis Cyrano de Bergerac", "", 8.f, 0.f};
+    }
+
     mSentenceText.setString(mSentenceQte.sentence);
     mUserInputText.setString("");
-    mFightPhase = FightPhase::PLAYER_QTE;
+    mPlayerTurnResMessage.setString("ESPACE : COMMENCER   ECHAP : ANNULER");
+    mFightPhase = FightPhase::PRE_QTE;
+
   } else if (mCurrentState == GameState::WIN) {
     if (!mWinButtons.empty() && mWinButtons[0].isPressed(mousePosition)) {
       mCurrentState = GameState::SHOP;
@@ -910,7 +1155,24 @@ void Game::handleMouseLeftButtonPressed() {
 
 // Cette m�thode est appel� lorsque le joueur va devoir executer une QTE avec un cercle: cela peut �tre pour son tour lors d'une attaque � l'�p�e ou lorsqu'il doit d�fendre pendant le tour de l'ennemi
 void Game::handleFightKeyPressed(sf::Keyboard::Key key) {
+  if (key == sf::Keyboard::Key::Escape) {
+    handleCancelAction();
+    return;
+  }
+
   if (key != sf::Keyboard::Key::Space) return;
+
+  if (mFightPhase == FightPhase::PRE_QTE) {
+    mPlayerTurnResMessage.setString("");
+    if (mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
+      mCircleQte = {150.f, 80.f, 40.f, 0.f};
+    } else {
+      mPlayer.reduceMana(eloquenceCost);
+    }
+    mFightPhase = FightPhase::PLAYER_QTE;
+    return;
+  }
+
   if (mFightPhase == FightPhase::PLAYER_QTE && mPlayer.getCurrentWeapon()->getType() == AttackType::STRENGTH) {
     
     // On calcule la distance entre le rayon du cercle qui r�tr�cit et le rayon du cercle vis�, plus cette distance est petite, plus la performance est proche de 1 donc les d�gats sont �lev�s
@@ -928,10 +1190,11 @@ void Game::handleFightKeyPressed(sf::Keyboard::Key key) {
   }
 }
 
-void Game::handleFightTextEntred(std::uint32_t unicode) { 
-    if (unicode == 8) { //backspace
-        if (!mSentenceQte.userInput.empty()) mSentenceQte.userInput.pop_back();
-        return;
+void Game::handleFightTextEntred(std::uint32_t unicode) {
+  if (mPlayer.getCurrentWeapon()->getType() != AttackType::STRENGTH) {
+    if (unicode == 8) {  // backspace
+      if (!mSentenceQte.userInput.empty()) mSentenceQte.userInput.pop_back();
+      return;
     }
     if (unicode < 128) {
       mSentenceQte.userInput += static_cast<char>(unicode);
@@ -939,7 +1202,9 @@ void Game::handleFightTextEntred(std::uint32_t unicode) {
       if (mSentenceQte.userInput.size() >= mSentenceQte.sentence.size()) {
         int correct = 0;
         for (std::size_t i = 0; i < mSentenceQte.sentence.size(); ++i) {
-          if (i < mSentenceQte.userInput.size() && mSentenceQte.userInput[i] == mSentenceQte.sentence[i]) correct++;
+          if (i < mSentenceQte.userInput.size() &&
+              mSentenceQte.userInput[i] == mSentenceQte.sentence[i])
+            correct++;
         }
 
         mSentenceQte.sentencePerf =
@@ -947,6 +1212,25 @@ void Game::handleFightTextEntred(std::uint32_t unicode) {
         mFightPhase = FightPhase::RESOLUTION_PLAYER;
       }
     }
+  }
+    
+}
+
+void Game::handleCancelAction() {
+    switch (mFightPhase) { 
+      case FightPhase::DEBUFF_CHOICE:
+      case FightPhase::PRE_QTE:
+        mPlayerTurnResMessage.setString("");
+        if (mPlayer.getCurrentWeapon()->getType() == AttackType::ELOQUENCE) {
+          mPlayer.regenMana(eloquenceCost);
+        }
+        mFightPhase = FightPhase::PLAYER_CHOICE;
+        break;
+
+      default:
+        break;
+    }
+
 }
 
 /* MOdifs: devenu un bool pour fixer le bug : si t'as pas l'arme correspondant a l'attaque ca crash*/
@@ -982,4 +1266,18 @@ void Game::restartCombat(){
   mPlayerTurnResMessage.setString("");
   mSentenceQte.userInput = "";
   mUserInputText.setString("");
+}
+  }
+
+}
+
+int Game::getBestWeaponEffect(AttackType type) const {
+  const auto& inventory = mPlayer.getWeaponInventory();
+  int bestEffect = -1;
+  for (const auto& weapon : inventory) {
+    if (weapon->getType() == type && weapon->getEffect() > bestEffect) {
+      bestEffect = weapon->getEffect();
+    }
+  }
+  return bestEffect;
 }

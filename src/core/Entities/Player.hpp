@@ -13,19 +13,25 @@ class Player : public Entity {
  private:
   int totalMoney;
   float noseSize;
+  int mana;
+  int maxMana;
   int baseDefense;
   Weapon* currentWeapon;
   vector<unique_ptr<Weapon>> weaponInventory;
   vector<std::unique_ptr<Item>> itemInventory;
 
  public:
-  Player(int maxHp, int money, float size, int defense, Weapon* playerWeapon);
+  Player(int maxHp, int money, float size, int maxMana, int defense, Weapon* playerWeapon);
   ~Player() override = default;
 
   // Getters
   int getTotalMoney() const { return totalMoney; }
 
   float getNoseSize() const { return noseSize; }
+
+  int getMana() const { return mana; }
+
+  int getMaxMana() const { return maxMana; }
 
   int getBaseDefense() const { return baseDefense; }
  
@@ -47,6 +53,10 @@ class Player : public Entity {
   //Attack Methods
   void takeDamage(int attackRes) override;
   void playerAttack(Enemy& target, float performance);
+
+  //Mana Methods
+  void reduceMana(int cost) { mana = std::max(0, mana - cost); }
+  void regenMana(int amount) { mana = std::min(maxMana, mana + amount); }
 
   
   //Items Methodes

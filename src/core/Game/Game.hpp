@@ -29,6 +29,7 @@ enum class GameState {
 enum class FightPhase { 
 	PLAYER_CHOICE, 
 	DEBUFF_CHOICE,
+	PRE_QTE,
 	PLAYER_QTE, 
 	RESOLUTION_PLAYER,
 	WAITING_AFTER_PLAYER,
@@ -59,10 +60,14 @@ class Game {
   Game(const Game &) = delete;
   Game &operator=(const Game &) = delete;
   void run();
-  void loadXML();
+  void loadWeaponsXML();
+  void loadTiradesXML();
 
  private:
+  void handleHover();
   void handleMouseLeftButtonPressed();
+  void handleCancelAction();
+
   void processEvents();
   void update(sf::Time elapsedTime);
   void render();
@@ -74,6 +79,11 @@ class Game {
 
   bool equipBestWeapon(AttackType type);
   void restartCombat();
+  void equipBestWeapon(AttackType type);
+
+  int getBestWeaponEffect(AttackType type) const;
+
+
   static const sf::Time TimePerFrame;
 
   GameState mPreviousState;
@@ -104,6 +114,12 @@ class Game {
   std::vector<unique_ptr<Weapon>> mShopWeapon;
   std::vector<unique_ptr<Item>> mShopItem;
   sf::Text mMoneyText{mFont};
+
+  std::vector<std::string> mTirades;
+
+  sf::RectangleShape mHoverInfoBg;
+  sf::Text mHoverInfoText{mFont};
+
   std::unique_ptr<Button> mPauseButton;
   //Fight Phase
  
@@ -113,6 +129,19 @@ class Game {
 
   sf::RectangleShape mPlayerShape;
   sf::RectangleShape mEnemyShape;
+
+  //Sprites
+  /*
+  sf::Texture mPlayerTexture;
+  std::vector<sf::Texture> mEnemyTextures;
+  sf::Sprite mPlayerSprite{mPlayerTexture};
+  sf::Sprite mEnemySprite;
+  */
+ 
+
+  // UI Portraits
+  sf::RectangleShape mPlayerPortraitBg;
+  sf::RectangleShape mEnemyPortraitBg;
 
   FightPhase mFightPhase{FightPhase::PLAYER_CHOICE};
   DebuffType mPendingDebuffChoice{DebuffType::DEFENSE};
@@ -124,12 +153,19 @@ class Game {
   sf::RectangleShape mEnemyHpBarBg, mEnemyHpBar;
   sf::Text mPlayerHpText{mFont};
   sf::Text mEnemyHpText{mFont};
+  sf::Text mEnemyLevelText{mFont};
+
+  //Mana
+  const int eloquenceCost = 25;
+  sf::RectangleShape mManaBarBg, mManaBar;
+  sf::Text mManaText{mFont};
 
 
 
   sf::Text mWeaponNameText{mFont};
   sf::Text mPlayerStatsText{mFont};
 
+  sf::Text mQteText{mFont};
   sf::CircleShape mQteTargetCircle;
   sf::CircleShape mQteMovingCircle;
   sf::Text mSentenceText{mFont};
