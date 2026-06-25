@@ -23,8 +23,6 @@ Le système de combat repose sur un "Chifoumi" tactique où il faut affaiblir le
 ![Fight scene](doc/9.png)
 ![Fight scene](doc/10.png)
 
-![CyraNose](doc/1.png)
-
 ---
 
 ## Instructions pour Jouer
