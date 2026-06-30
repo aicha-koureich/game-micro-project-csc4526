@@ -11,7 +11,7 @@ add_library(lib_core
         "Item/GasconeWine.hpp" "Item/GasconeWine.cpp"   
         "Item/RoxanneLetter.hpp" "Item/RoxanneLetter.cpp"
         "Item/InkFlask.hpp" "Item/InkFlask.cpp"
-)
+ "FSM/fsm.h" "FSM/FightStateMachine.cpp")
 
 target_include_directories(lib_core PUBLIC ./)
 target_link_libraries(lib_core PUBLIC pugixml sfml-graphics)
